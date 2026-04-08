@@ -230,8 +230,8 @@ export default function Participant({ user, session }) {
 
   if (!hasSessionAccess) {
     return (
-      <div className="min-h-screen bg-[#64a2cc] font-sans px-4 py-6 md:py-10 flex items-center justify-center">
-        <div className="w-full max-w-md rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 text-center shadow-lg md:p-9">
+      <div className="min-h-screen bg-[#64a2cc] font-sans px-3 py-4 md:px-4 md:py-6 lg:px-6 lg:py-8 flex items-center justify-center">
+        <div className="w-full rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 text-center shadow-lg md:p-9">
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#3f2abe] mb-2 break-words">
             Ingresar a sesión activa
           </h2>
@@ -280,8 +280,8 @@ export default function Participant({ user, session }) {
 
   if (!isNameSet) {
     return (
-      <div className="min-h-screen bg-[#64a2cc] font-sans px-4 py-6 md:py-10 flex items-center justify-center">
-        <div className="w-full max-w-sm rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 text-center shadow-lg md:p-9">
+      <div className="min-h-screen bg-[#64a2cc] font-sans px-3 py-4 md:px-4 md:py-6 lg:px-6 lg:py-8 flex items-center justify-center">
+        <div className="w-full rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 text-center shadow-lg md:p-9">
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#3f2abe] mb-2 break-words">
             {session?.title || 'Sesión activa'}
           </h2>
@@ -326,8 +326,8 @@ export default function Participant({ user, session }) {
   }
 
   return (
-    <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-8 pb-[calc(11rem+env(safe-area-inset-bottom))] md:pb-8 relative">
-      <section className="mx-auto w-full max-w-4xl flex flex-col gap-5 md:gap-6">
+    <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6 pb-[calc(11rem+env(safe-area-inset-bottom))] md:pb-8 relative">
+      <section className="mx-auto w-full flex flex-col gap-5 md:gap-6">
         <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-md md:p-7">
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Participante</h1>
           <p className="mt-2 text-sm md:text-base font-semibold text-[#3f2abe] break-words">
@@ -557,7 +557,7 @@ export default function Participant({ user, session }) {
       <div className="fixed bottom-0 left-0 right-0 z-30 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] bg-[#e6f2fa] md:static md:p-0">
         <form
           onSubmit={handleSubmitQuestion}
-          className="mx-auto max-w-4xl rounded-[2rem] bg-[#e6f2fa] p-4 md:p-5 shadow-lg flex flex-col gap-2 sm:flex-row sm:items-center"
+          className="w-full rounded-[2rem] bg-[#e6f2fa] p-4 md:p-5 shadow-lg flex flex-col gap-2 sm:flex-row sm:items-center"
         >
           <label htmlFor="participant-question-input" className="sr-only">
             Escribe tu pregunta

@@ -164,8 +164,8 @@ export default function Moderator({
   }
 
   return (
-    <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-8">
-      <section className="mx-auto w-full max-w-[1180px] flex flex-col gap-6 lg:gap-7">
+    <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6">
+      <section className="mx-auto w-full flex flex-col gap-6 lg:gap-7">
         <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 md:p-9 shadow-md">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>

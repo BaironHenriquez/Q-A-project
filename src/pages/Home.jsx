@@ -121,8 +121,8 @@ export default function Home({
 
   if (!isModeratorAuthenticated) {
     return (
-      <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-8">
-        <section className="mx-auto w-full max-w-lg">
+      <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6">
+        <section className="mx-auto w-full">
           <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 md:p-9 shadow-md">
             <p className="text-sm font-extrabold text-[#8b0368]">Q&A en tiempo real</p>
             <h1 className="mt-2 text-3xl font-extrabold tracking-tight leading-tight">Ingreso moderador</h1>
@@ -220,8 +220,8 @@ export default function Home({
   }
 
   return (
-    <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-8">
-      <section className="mx-auto w-full max-w-[1100px] flex flex-col gap-6 lg:gap-7">
+    <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6">
+      <section className="mx-auto w-full flex flex-col gap-6 lg:gap-7">
         <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 md:p-9 shadow-md">
           <p className="text-sm font-extrabold text-[#8b0368]">Q&A en tiempo real</p>
           <h1 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
@@ -343,7 +343,7 @@ export default function Home({
           )}
         </article>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-6">
           <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 shadow-sm">
             <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#8b0368]">
               <PlusCircle size={20} />

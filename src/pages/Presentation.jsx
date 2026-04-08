@@ -27,8 +27,8 @@ export default function Presentation({ session }) {
   )
 
   return (
-    <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-6 lg:p-8">
-      <section className="mx-auto flex min-h-[calc(100vh-2rem)] w-full max-w-[1280px] flex-wrap items-start gap-6 lg:gap-7">
+    <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6">
+      <section className="mx-auto flex min-h-[calc(100vh-1.5rem)] w-full flex-wrap items-start gap-6 lg:gap-7">
         <aside className="w-full rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-md sm:p-7 md:w-[320px] md:flex-none md:p-8 xl:w-[350px] lg:p-9">
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">Acceso audiencia</h2>
           <p className="mt-2 text-sm md:text-base font-semibold text-[#3f2abe] leading-relaxed">
