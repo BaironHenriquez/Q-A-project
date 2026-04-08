@@ -7,6 +7,7 @@ import {
   MessageSquare,
   PenSquare,
   Pin,
+  SendHorizontal,
   UserRound,
   X,
 } from 'lucide-react'
@@ -30,6 +31,7 @@ export default function Moderator({
     setQuestionStatus,
     updateQuestionFields,
     editQuestionContent,
+    addAnswer,
     moderateAnswer,
   } = useQuestions(session?.sessionId)
 
@@ -38,6 +40,9 @@ export default function Moderator({
   const [editError, setEditError] = useState('')
   const [sessionActionError, setSessionActionError] = useState('')
   const [deletingSession, setDeletingSession] = useState(false)
+  const [answerDrafts, setAnswerDrafts] = useState({})
+  const [answeringQuestionId, setAnsweringQuestionId] = useState('')
+  const [answerError, setAnswerError] = useState('')
 
   const pendingAnswersQueue = useMemo(
     () =>
@@ -84,7 +89,7 @@ export default function Moderator({
 
   const handleDeleteSession = async () => {
     const confirmed = window.confirm(
-      'Se borrara la sesion activa. Esta accion no se puede deshacer. Continuar?',
+      'Se borrará la sesión activa. Esta acción no se puede deshacer. ¿Continuar?',
     )
     if (!confirmed) return
 
@@ -95,7 +100,7 @@ export default function Moderator({
 
     setDeletingSession(false)
     if (!result.ok) {
-      setSessionActionError(result.message || 'No se pudo borrar la sesion activa.')
+      setSessionActionError(result.message || 'No se pudo borrar la sesión activa.')
       return
     }
 
@@ -107,17 +112,54 @@ export default function Moderator({
     navigate('/')
   }
 
+  const handleAnswerDraftChange = (questionId, value) => {
+    setAnswerDrafts((previous) => ({
+      ...previous,
+      [questionId]: value,
+    }))
+  }
+
+  const handleSubmitModeratorAnswer = async (event, questionId) => {
+    event.preventDefault()
+
+    const text = (answerDrafts[questionId] || '').trim()
+    if (!text) return
+    if (answeringQuestionId === questionId) return
+
+    setAnsweringQuestionId(questionId)
+    setAnswerError('')
+
+    try {
+      await addAnswer({
+        questionId,
+        author: 'Moderador',
+        userId: 'mod',
+        content: text,
+        isModerator: true,
+      })
+
+      setAnswerDrafts((previous) => ({
+        ...previous,
+        [questionId]: '',
+      }))
+    } catch (error) {
+      setAnswerError(error.message || 'No se pudo publicar la respuesta del moderador.')
+    } finally {
+      setAnsweringQuestionId('')
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[#f8fbfe] text-[#3f2abe] font-sans p-4 md:p-8">
       <section className="mx-auto max-w-6xl flex flex-col gap-5">
         <article className="rounded-[2rem] bg-white p-6 md:p-8 shadow-md">
           <h1 className="text-3xl font-bold">Panel moderador</h1>
           <p className="mt-2 text-sm font-medium text-[#716274] break-words">
-            Usuario activo: {user?.uid || 'anonimo'}
+            Usuario activo: {user?.uid || 'anónimo'}
           </p>
 
           <div className="mt-5 rounded-3xl bg-[#e6f2fa] p-5">
-            <p className="text-lg font-bold break-words">{session?.title || 'Sesion sin titulo'}</p>
+            <p className="text-lg font-bold break-words">{session?.title || 'Sesión sin título'}</p>
             <p className="mt-1 text-sm font-medium text-[#716274] break-words">
               ID: {session?.sessionId || 'sin id'}
             </p>
@@ -135,13 +177,13 @@ export default function Moderator({
                     : 'bg-[#8b0368] text-white'
                 }`}
               >
-                {session?.isAcceptingQuestions ? 'Pausar recepcion' : 'Reanudar recepcion'}
+                {session?.isAcceptingQuestions ? 'Pausar recepción' : 'Reanudar recepción'}
               </button>
               <Link
                 to="/presentacion"
                 className="h-12 inline-flex items-center justify-center rounded-full bg-[#0a79e8] px-6 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
               >
-                Abrir presentacion
+                Abrir presentación
               </Link>
               <Link
                 to="/"
@@ -155,14 +197,14 @@ export default function Moderator({
                 disabled={deletingSession}
                 className="h-12 inline-flex items-center justify-center rounded-full bg-[#8b0368] px-6 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
               >
-                {deletingSession ? 'Borrando sesion...' : 'Borrar sesion activa'}
+                {deletingSession ? 'Borrando sesión...' : 'Borrar sesión activa'}
               </button>
               <button
                 type="button"
                 onClick={handleLogout}
                 className="h-12 inline-flex items-center justify-center rounded-full bg-white px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
               >
-                Cerrar sesion moderador
+                Cerrar sesión de moderador
               </button>
             </div>
             {sessionActionError && (
@@ -185,8 +227,8 @@ export default function Moderator({
             {!loadingQuestions && !pendingQuestions.length && !questionsError && (
               <div className="mt-8 rounded-3xl bg-[#e6f2fa] p-8 text-center">
                 <MessageSquare size={34} className="mx-auto text-[#716274]" />
-                <p className="mt-3 text-base font-bold text-[#3f2abe]">Tu bandeja esta limpia</p>
-                <p className="mt-1 text-sm font-medium text-[#716274]">La audiencia esta pensando...</p>
+                <p className="mt-3 text-base font-bold text-[#3f2abe]">Tu bandeja está limpia</p>
+                <p className="mt-1 text-sm font-medium text-[#716274]">La audiencia está pensando...</p>
               </div>
             )}
 
@@ -325,7 +367,7 @@ export default function Moderator({
                     Pregunta: {answer.questionContent}
                   </p>
                   <p className="mt-2 text-xs font-bold text-[#716274] break-words">
-                    {answer.author || 'Anonimo'}
+                    {answer.author || 'Anónimo'}
                   </p>
                   <p className="mt-1 text-sm font-medium text-[#3f2abe] break-words">{answer.content}</p>
 
@@ -362,18 +404,60 @@ export default function Moderator({
             </div>
 
             <h3 className="mt-6 text-lg font-bold">Preguntas aprobadas ({approvedQuestions.length})</h3>
+            {answerError && (
+              <p className="mt-2 text-sm font-bold text-[#8b0368] break-words">{answerError}</p>
+            )}
             <div className="mt-3 flex flex-col gap-2">
               {!approvedQuestions.length && (
                 <div className="rounded-3xl bg-[#e6f2fa] p-5 text-center">
-                  <p className="text-sm font-medium text-[#716274]">Aun no hay preguntas aprobadas.</p>
+                  <p className="text-sm font-medium text-[#716274]">Aún no hay preguntas aprobadas.</p>
                 </div>
               )}
               {approvedQuestions.slice(0, 8).map((question) => (
                 <article key={question.id} className="rounded-3xl bg-[#f8fbfe] p-4 shadow-sm">
                   <p className="text-sm font-bold text-[#3f2abe] break-words">{question.content}</p>
                   <p className="mt-1 text-xs font-medium text-[#716274] break-words">
-                    {question.author || 'Anonimo'}
+                    {question.author || 'Anónimo'}
                   </p>
+
+                  {Array.isArray(question.answers) && question.answers.length > 0 && (
+                    <div className="mt-3 border-l-4 border-[#64a2cc] pl-3 flex flex-col gap-2">
+                      {question.answers
+                        .filter((answer) => answer.status === 'approved')
+                        .map((answer) => (
+                          <div key={answer.id} className="rounded-2xl bg-gray-50 p-3">
+                            <p className="text-xs font-bold text-[#716274] break-words">{answer.author}</p>
+                            <p className="mt-1 text-sm font-medium text-[#3f2abe] break-words">{answer.content}</p>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+
+                  <form
+                    onSubmit={(event) => handleSubmitModeratorAnswer(event, question.id)}
+                    className="mt-3 rounded-3xl bg-white p-3 flex items-center gap-2"
+                  >
+                    <input
+                      type="text"
+                      maxLength={250}
+                      value={answerDrafts[question.id] || ''}
+                      onChange={(event) => handleAnswerDraftChange(question.id, event.target.value)}
+                      placeholder="Responder como moderador"
+                      className="h-10 w-full rounded-full bg-[#f8fbfe] px-4 text-xs font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none"
+                      disabled={answeringQuestionId === question.id}
+                    />
+                    <button
+                      type="submit"
+                      disabled={
+                        answeringQuestionId === question.id ||
+                        !(answerDrafts[question.id] || '').trim()
+                      }
+                      className="h-10 shrink-0 inline-flex items-center gap-2 rounded-full bg-[#0a79e8] px-4 text-xs font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+                    >
+                      <SendHorizontal size={14} />
+                      Responder
+                    </button>
+                  </form>
                 </article>
               ))}
             </div>

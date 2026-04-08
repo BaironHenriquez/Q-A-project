@@ -82,12 +82,12 @@ export default function Participant({ user, session }) {
 
     const code = sessionCode.trim()
     if (!code) {
-      setSessionCodeError('Ingresa el ID de la sesion activa.')
+      setSessionCodeError('Ingresa el ID de la sesión activa.')
       return
     }
 
     if (code !== session?.sessionId) {
-      setSessionCodeError('El ID no coincide con la sesion activa.')
+      setSessionCodeError('El ID no coincide con la sesión activa.')
       return
     }
 
@@ -147,14 +147,9 @@ export default function Participant({ user, session }) {
 
   const handleToggleVote = async (question) => {
     try {
-      const hasVoted = Array.isArray(question.upvotedBy)
-        ? question.upvotedBy.includes(user?.uid)
-        : false
-
       await toggleVote({
         questionId: question.id,
         userId: user?.uid,
-        hasVoted,
       })
     } catch (error) {
       setQuestionError(error.message || 'No se pudo registrar tu voto.')
@@ -166,15 +161,15 @@ export default function Participant({ user, session }) {
       <div className="min-h-screen bg-[#f8fbfe] font-sans px-4 py-6 md:py-10 flex items-center justify-center">
         <div className="w-full max-w-md p-6 md:p-8 rounded-[2rem] bg-white shadow-lg text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-[#3f2abe] mb-2 break-words">
-            Ingresar a sesion activa
+            Ingresar a sesión activa
           </h2>
           <p className="text-sm md:text-base font-medium mb-6 text-[#716274]">
-            Accede con QR o escribe el ID de la sesion activa.
+            Accede con QR o escribe el ID de la sesión activa.
           </p>
 
           {sidFromUrl && sidFromUrl !== session?.sessionId && (
             <p className="mb-4 text-sm font-bold text-[#8b0368] break-words">
-              El codigo QR no corresponde a la sesion activa.
+                El codigo QR no corresponde a la sesion activa.
             </p>
           )}
 
@@ -185,14 +180,14 @@ export default function Participant({ user, session }) {
               maxLength={40}
               value={sessionCode}
               onChange={(event) => setSessionCode(event.target.value)}
-              placeholder="ID de sesion"
+              placeholder="ID de sesión"
               className="h-12 md:h-14 w-full rounded-full bg-[#f8fbfe] px-5 text-center text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none mb-4"
             />
             <button
               type="submit"
               className="h-12 md:h-14 w-full rounded-full text-sm md:text-base font-bold text-white bg-[#0a79e8] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
             >
-              Validar sesion
+              Validar sesión
             </button>
           </form>
 
@@ -209,7 +204,7 @@ export default function Participant({ user, session }) {
       <div className="min-h-screen bg-[#f8fbfe] font-sans px-4 py-6 md:py-10 flex items-center justify-center">
         <div className="w-full max-w-sm p-6 md:p-8 rounded-[2rem] bg-white shadow-lg text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-[#3f2abe] mb-2 break-words">
-            {session?.title || 'Sesion activa'}
+            {session?.title || 'Sesión activa'}
           </h2>
           <p className="text-sm md:text-base font-medium mb-6 text-[#716274]">
             Ingresa un nombre para participar
@@ -253,14 +248,14 @@ export default function Participant({ user, session }) {
         <article className="rounded-[2rem] bg-white p-5 md:p-6 shadow-sm">
           <h1 className="text-2xl md:text-3xl font-bold">Participante</h1>
           <p className="mt-2 text-sm md:text-base font-medium text-[#716274] break-words">
-            {session?.title || 'Sesion activa'}
+              {session?.title || 'Sesión activa'}
           </p>
           <div className="mt-4 rounded-3xl bg-[#e6f2fa] p-4 md:p-5 text-sm md:text-base">
             <p className="font-bold text-[#3f2abe]">Hola, {myName}</p>
-            <p className="mt-1 font-medium text-[#716274] break-words">UID: {user?.uid || 'anonimo'}</p>
+              <p className="mt-1 font-medium text-[#716274] break-words">UID: {user?.uid || 'anónimo'}</p>
             <p className="mt-1 font-medium text-[#716274]">Preguntas visibles: {visibleQuestions.length}</p>
             <p className="mt-1 font-medium text-[#716274]">
-              Las respuestas de participantes pasan por moderacion antes de mostrarse.
+              Las respuestas de participantes pasan por moderación antes de mostrarse.
             </p>
           </div>
           {(questionError || questionsError) && (
@@ -273,7 +268,7 @@ export default function Participant({ user, session }) {
           )}
           {!session?.isAcceptingQuestions && (
             <p className="mt-2 text-sm font-bold text-[#8b0368]">
-              El moderador pauso temporalmente el envio de nuevas preguntas.
+              El moderador pausó temporalmente el envío de nuevas preguntas.
             </p>
           )}
         </article>
@@ -287,7 +282,7 @@ export default function Participant({ user, session }) {
             <article className="rounded-[2rem] bg-white p-8 md:p-10 shadow-sm text-center">
               <Sparkles size={36} className="mx-auto text-[#716274]" />
               <p className="mt-3 text-lg md:text-xl font-bold text-[#3f2abe]">Sin preguntas publicadas por ahora</p>
-              <p className="mt-1 text-sm md:text-base font-medium text-[#716274]">Cuando moderacion apruebe preguntas, apareceran aqui.</p>
+                <p className="mt-1 text-sm md:text-base font-medium text-[#716274]">Cuando moderación apruebe preguntas, aparecerán aquí.</p>
             </article>
           )}
 
@@ -310,7 +305,7 @@ export default function Participant({ user, session }) {
                   <span className="rounded-full bg-[#e6f2fa] px-3 py-1">
                     {question.status || 'pending'}
                   </span>
-                  <span>{question.author || 'Anonimo'}</span>
+                    <span>{question.author || 'Anónimo'}</span>
                 </div>
                 <p className="mt-3 text-base md:text-lg font-medium text-[#3f2abe] break-words">{question.content}</p>
 
@@ -375,7 +370,7 @@ export default function Participant({ user, session }) {
 
                 {myPendingAnswers.length > 0 && (
                   <div className="mt-3 rounded-2xl bg-[#e6f2fa] p-3">
-                    <p className="text-xs font-bold text-[#716274]">Tienes respuestas pendientes de revision:</p>
+                    <p className="text-xs font-bold text-[#716274]">Tienes respuestas pendientes de revisión:</p>
                     <div className="mt-2 flex flex-col gap-2">
                       {myPendingAnswers.map((answer) => (
                         <p key={answer.id} className="text-sm font-medium text-[#3f2abe] break-words">

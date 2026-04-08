@@ -30,7 +30,7 @@ export default function Home({
 
     const success = loginModerator(username, password)
     if (!success) {
-      setLoginError('Credenciales invalidas. Usa usuario y contrasena de moderador.')
+      setLoginError('Credenciales inválidas. Usa usuario y contraseña de moderador.')
       return
     }
 
@@ -43,7 +43,7 @@ export default function Home({
     const sessionId = participantSessionId.trim()
 
     if (!sessionId) {
-      setParticipantError('Ingresa el ID de la sesion para continuar.')
+      setParticipantError('Ingresa el ID de la sesión para continuar.')
       return
     }
 
@@ -72,12 +72,12 @@ export default function Home({
       return
     }
 
-    setCreateError(result.message || 'No se pudo crear la sesion. Intenta de nuevo.')
+    setCreateError(result.message || 'No se pudo crear la sesión. Intenta de nuevo.')
   }
 
   const goToActiveSession = () => {
     if (!hasActiveSession) {
-      setCreateError('Primero crea una sesion para habilitar la moderacion.')
+      setCreateError('Primero crea una sesión para habilitar la moderación.')
       return
     }
 
@@ -89,7 +89,7 @@ export default function Home({
     if (!session?.sessionId) return
 
     const confirmed = window.confirm(
-      'Se borrara la sesion activa. Esta accion no se puede deshacer. Continuar?',
+      'Se borrará la sesión activa. Esta acción no se puede deshacer. ¿Continuar?',
     )
     if (!confirmed) return
 
@@ -100,7 +100,7 @@ export default function Home({
 
     setDeleting(false)
     if (!result.ok) {
-      setCreateError(result.message || 'No se pudo borrar la sesion activa.')
+      setCreateError(result.message || 'No se pudo borrar la sesión activa.')
       return
     }
 
@@ -115,7 +115,7 @@ export default function Home({
             <p className="text-sm font-bold text-[#0a79e8]">Q&A en tiempo real</p>
             <h1 className="mt-2 text-3xl font-bold leading-tight">Ingreso moderador</h1>
             <p className="mt-3 text-sm font-medium text-[#716274]">
-              Solo el moderador puede crear, ingresar o borrar la sesion activa.
+              Solo el moderador puede crear, ingresar o borrar la sesión activa.
             </p>
 
             <form onSubmit={handleLogin} className="mt-6 flex flex-col gap-3">
@@ -150,7 +150,7 @@ export default function Home({
             <div className="mt-6 border-t border-[#e6f2fa] pt-6">
               <h2 className="text-xl font-bold">Ingreso usuario</h2>
               <p className="mt-2 text-sm font-medium text-[#716274]">
-                Si eres participante, escribe el ID de la sesion para unirte.
+                Si eres participante, escribe el ID de la sesión para unirte.
               </p>
 
               <form onSubmit={handleParticipantJoin} className="mt-4 flex flex-col gap-3">
@@ -159,7 +159,7 @@ export default function Home({
                   required
                   value={participantSessionId}
                   onChange={(event) => setParticipantSessionId(event.target.value)}
-                  placeholder="ID de sesion"
+                  placeholder="ID de sesión"
                   className="h-12 w-full rounded-full bg-[#f8fbfe] px-5 font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none"
                 />
                 <button
@@ -188,10 +188,10 @@ export default function Home({
         <article className="rounded-[2rem] bg-white p-6 md:p-8 shadow-md">
           <p className="text-sm font-bold text-[#0a79e8]">Q&A en tiempo real</p>
           <h1 className="mt-2 text-3xl md:text-4xl font-bold leading-tight">
-            Centro de control para moderacion
+            Centro de control para moderación
           </h1>
           <p className="mt-3 text-base font-medium text-[#716274] break-words">
-            Esta vista es solo para moderador. Participantes entran unicamente por QR o con el ID de sesion activa.
+            Esta vista es solo para moderador. Participantes entran únicamente por QR o con el ID de sesión activa.
           </p>
 
             <div className="mt-4">
@@ -200,7 +200,7 @@ export default function Home({
                 onClick={handleLogout}
                 className="h-10 inline-flex items-center justify-center rounded-full bg-white px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
               >
-                Cerrar sesion moderador
+                Cerrar sesión de moderador
               </button>
             </div>
 
@@ -211,7 +211,7 @@ export default function Home({
               maxLength={60}
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              placeholder="Titulo de la sesion"
+              placeholder="Título de la sesión"
               className="h-12 w-full rounded-full bg-[#f8fbfe] px-5 font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none"
                 disabled={hasActiveSession || creating}
             />
@@ -226,7 +226,7 @@ export default function Home({
 
             {hasActiveSession && (
               <p className="mt-3 text-xs font-bold text-[#716274]">
-                Ya existe una sesion activa. Borra la sesion actual para crear una nueva.
+                Ya existe una sesión activa. Borra la sesión actual para crear una nueva.
               </p>
             )}
 
@@ -238,10 +238,10 @@ export default function Home({
             <div className="mt-5 rounded-3xl bg-[#e6f2fa] p-5 shadow-sm">
               <div className="flex items-center gap-2 text-[#0a79e8]">
                 <BadgeCheck size={18} />
-                <p className="text-sm font-bold">Sesion activa</p>
+                <p className="text-sm font-bold">Sesión activa</p>
               </div>
               <p className="mt-2 text-lg font-bold break-words text-[#3f2abe]">
-                {session.title || 'Sin titulo'}
+                {session.title || 'Sin título'}
               </p>
               <p className="mt-1 text-sm font-medium break-words text-[#716274]">
                 ID: {session.sessionId}
@@ -255,7 +255,7 @@ export default function Home({
                   onClick={goToActiveSession}
                   className="h-11 inline-flex items-center justify-center rounded-full bg-[#0a79e8] px-5 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                 >
-                  Ingresar a sesion activa
+                  Ingresar a sesión activa
                 </button>
 
                 <button
@@ -265,7 +265,7 @@ export default function Home({
                   className="ml-2 mt-2 sm:mt-0 h-11 inline-flex items-center justify-center gap-2 rounded-full bg-[#8b0368] px-5 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
                 >
                   <Trash2 size={15} />
-                  {deleting ? 'Borrando...' : 'Borrar sesion activa'}
+                  {deleting ? 'Borrando...' : 'Borrar sesión activa'}
                 </button>
               </div>
             </div>
@@ -277,9 +277,9 @@ export default function Home({
             <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#0a79e8]">
               <PlusCircle size={20} />
             </div>
-            <h2 className="mt-3 text-xl font-bold">Crear sesion</h2>
+            <h2 className="mt-3 text-xl font-bold">Crear sesión</h2>
             <p className="mt-2 text-sm font-medium text-[#716274]">
-              Inicia una nueva sesion para habilitar preguntas, moderacion y presentacion.
+              Inicia una nueva sesión para habilitar preguntas, moderación y presentación.
             </p>
             <p className="mt-5 text-xs font-bold text-[#716274]">
               Usa el formulario superior para crearla.
@@ -290,9 +290,9 @@ export default function Home({
             <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#3f2abe]">
               <LogIn size={20} />
             </div>
-            <h2 className="mt-3 text-xl font-bold">Ingresar a sesion activa</h2>
+            <h2 className="mt-3 text-xl font-bold">Ingresar a sesión activa</h2>
             <p className="mt-2 text-sm font-medium text-[#716274]">
-              Retoma la sesion que ya esta creada para administrar preguntas en vivo.
+              Retoma la sesión que ya está creada para administrar preguntas en vivo.
             </p>
             <button
               type="button"

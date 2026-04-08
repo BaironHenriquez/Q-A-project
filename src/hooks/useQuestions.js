@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   addDoc,
-  arrayRemove,
   arrayUnion,
   collection,
   doc,
   getDoc,
-  increment,
   onSnapshot,
+  runTransaction,
   updateDoc,
 } from 'firebase/firestore'
 import { appId, db } from '../services/firebase'
@@ -38,6 +37,17 @@ const normalizeAnswerVotes = (answer) => {
     isIncorrectVotedBy: incorrectVoters,
     isCorrectVotes: correctVoters.length,
     isIncorrectVotes: incorrectVoters.length,
+  }
+}
+
+const normalizeQuestionVotes = (question) => {
+  const voters = Array.isArray(question.upvotedBy) ? question.upvotedBy : []
+  const uniqueVoters = [...new Set(voters.filter(Boolean))]
+
+  return {
+    ...question,
+    upvotedBy: uniqueVoters,
+    upvotes: uniqueVoters.length,
   }
 }
 
@@ -81,10 +91,10 @@ export function useQuestions(sessionId) {
     [sessionId, snapshotMeta.error, snapshotMeta.sessionId],
   )
 
-  const sortedQuestions = useMemo(
-    () => [...activeQuestions].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
-    [activeQuestions],
-  )
+  const sortedQuestions = useMemo(() => {
+    const normalizedQuestions = activeQuestions.map(normalizeQuestionVotes)
+    return normalizedQuestions.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+  }, [activeQuestions])
 
   const pendingQuestions = useMemo(
     () => sortedQuestions.filter((q) => q.status === 'pending' && !q.isHidden),
@@ -124,22 +134,29 @@ export function useQuestions(sessionId) {
   )
 
   const toggleVote = useCallback(
-    async ({ questionId, userId, hasVoted }) => {
+    async ({ questionId, userId }) => {
       if (!sessionId || !questionId || !userId) return
 
       const qRef = buildQuestionDocRef(sessionId, questionId)
 
-      if (hasVoted) {
-        await updateDoc(qRef, {
-          upvotes: increment(-1),
-          upvotedBy: arrayRemove(userId),
+      await runTransaction(db, async (transaction) => {
+        const qSnap = await transaction.get(qRef)
+        if (!qSnap.exists()) return
+
+        const data = qSnap.data()
+        const currentVoters = Array.isArray(data.upvotedBy) ? data.upvotedBy : []
+        const uniqueVoters = [...new Set(currentVoters.filter(Boolean))]
+        const hasVoted = uniqueVoters.includes(userId)
+
+        const nextVoters = hasVoted
+          ? uniqueVoters.filter((uid) => uid !== userId)
+          : [...uniqueVoters, userId]
+
+        transaction.update(qRef, {
+          upvotedBy: nextVoters,
+          upvotes: nextVoters.length,
         })
-      } else {
-        await updateDoc(qRef, {
-          upvotes: increment(1),
-          upvotedBy: arrayUnion(userId),
-        })
-      }
+      })
     },
     [sessionId],
   )
