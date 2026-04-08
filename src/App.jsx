@@ -4,6 +4,7 @@ import { Moon, Sun } from 'lucide-react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { useAuth } from './hooks/useAuth'
+import { useModeratorAuth } from './hooks/useModeratorAuth'
 import { useSession } from './hooks/useSession'
 import Home from './pages/Home'
 import Moderator from './pages/Moderator'
@@ -21,7 +22,13 @@ const getInitialTheme = () => {
     : 'light'
 }
 
-function ProtectedRoute({ session, loading, user, requireModerator = false, children }) {
+function ProtectedRoute({
+  session,
+  loading,
+  requireModerator = false,
+  isModeratorAuthenticated = false,
+  children,
+}) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#e6f2fa]">
@@ -34,7 +41,7 @@ function ProtectedRoute({ session, loading, user, requireModerator = false, chil
     return <Navigate to="/" replace />
   }
 
-  if (requireModerator && session.moderatorId !== user?.uid) {
+  if (requireModerator && !isModeratorAuthenticated) {
     return <Navigate to="/" replace />
   }
 
@@ -43,11 +50,17 @@ function ProtectedRoute({ session, loading, user, requireModerator = false, chil
 
 export default function App() {
   const { user, loading: authLoading } = useAuth()
+  const {
+    isModeratorAuthenticated,
+    loginModerator,
+    logoutModerator,
+  } = useModeratorAuth()
   const [theme, setTheme] = useState(getInitialTheme)
   const {
     session,
     loading: sessionLoading,
     createSession,
+    deleteSession,
     toggleSessionStatus,
   } = useSession()
 
@@ -82,7 +95,16 @@ export default function App() {
       <Routes>
         <Route
           path="/"
-          element={<Home user={user} session={session} createSession={createSession} />}
+          element={
+            <Home
+              session={session}
+              createSession={createSession}
+              deleteSession={deleteSession}
+              isModeratorAuthenticated={isModeratorAuthenticated}
+              loginModerator={loginModerator}
+              logoutModerator={logoutModerator}
+            />
+          }
         />
         <Route
           path="/moderador"
@@ -90,13 +112,15 @@ export default function App() {
             <ProtectedRoute
               session={session}
               loading={sessionLoading}
-              user={user}
               requireModerator
+              isModeratorAuthenticated={isModeratorAuthenticated}
             >
               <Moderator
                 user={user}
                 session={session}
                 toggleSessionStatus={toggleSessionStatus}
+                deleteSession={deleteSession}
+                logoutModerator={logoutModerator}
               />
             </ProtectedRoute>
           }
@@ -107,8 +131,8 @@ export default function App() {
             <ProtectedRoute
               session={session}
               loading={sessionLoading}
-              user={user}
               requireModerator
+              isModeratorAuthenticated={isModeratorAuthenticated}
             >
               <Presentation session={session} />
             </ProtectedRoute>
@@ -117,7 +141,7 @@ export default function App() {
         <Route
           path="/participante"
           element={
-            <ProtectedRoute session={session} loading={sessionLoading} user={user}>
+            <ProtectedRoute session={session} loading={sessionLoading}>
               <Participant user={user} session={session} />
             </ProtectedRoute>
           }

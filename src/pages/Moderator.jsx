@@ -10,10 +10,17 @@ import {
   UserRound,
   X,
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useQuestions } from '../hooks/useQuestions'
 
-export default function Moderator({ user, session, toggleSessionStatus }) {
+export default function Moderator({
+  user,
+  session,
+  toggleSessionStatus,
+  deleteSession,
+  logoutModerator,
+}) {
+  const navigate = useNavigate()
   const {
     sortedQuestions,
     pendingQuestions,
@@ -29,6 +36,8 @@ export default function Moderator({ user, session, toggleSessionStatus }) {
   const [editingQuestionId, setEditingQuestionId] = useState('')
   const [editingText, setEditingText] = useState('')
   const [editError, setEditError] = useState('')
+  const [sessionActionError, setSessionActionError] = useState('')
+  const [deletingSession, setDeletingSession] = useState(false)
 
   const pendingAnswersQueue = useMemo(
     () =>
@@ -73,6 +82,31 @@ export default function Moderator({ user, session, toggleSessionStatus }) {
     }
   }
 
+  const handleDeleteSession = async () => {
+    const confirmed = window.confirm(
+      'Se borrara la sesion activa. Esta accion no se puede deshacer. Continuar?',
+    )
+    if (!confirmed) return
+
+    setDeletingSession(true)
+    setSessionActionError('')
+
+    const result = await deleteSession()
+
+    setDeletingSession(false)
+    if (!result.ok) {
+      setSessionActionError(result.message || 'No se pudo borrar la sesion activa.')
+      return
+    }
+
+    navigate('/')
+  }
+
+  const handleLogout = () => {
+    logoutModerator()
+    navigate('/')
+  }
+
   return (
     <main className="min-h-screen bg-[#f8fbfe] text-[#3f2abe] font-sans p-4 md:p-8">
       <section className="mx-auto max-w-6xl flex flex-col gap-5">
@@ -115,7 +149,25 @@ export default function Moderator({ user, session, toggleSessionStatus }) {
               >
                 Volver al inicio
               </Link>
+              <button
+                type="button"
+                onClick={handleDeleteSession}
+                disabled={deletingSession}
+                className="h-12 inline-flex items-center justify-center rounded-full bg-[#8b0368] px-6 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+              >
+                {deletingSession ? 'Borrando sesion...' : 'Borrar sesion activa'}
+              </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="h-12 inline-flex items-center justify-center rounded-full bg-white px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+              >
+                Cerrar sesion moderador
+              </button>
             </div>
+            {sessionActionError && (
+              <p className="mt-3 text-sm font-bold text-[#8b0368] break-words">{sessionActionError}</p>
+            )}
           </div>
         </article>
 
