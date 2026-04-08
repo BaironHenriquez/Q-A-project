@@ -33,7 +33,10 @@ function ProtectedRoute({
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#e6f2fa]">
-        <Loader2 className="animate-spin text-[#0a79e8]" size={48} />
+        <div className="inline-flex items-center gap-3 rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] px-5 py-4 shadow-sm">
+          <Loader2 className="animate-spin text-[#0a79e8]" size={28} />
+          <p className="text-sm font-semibold text-[#3f2abe]">Cargando vista...</p>
+        </div>
       </div>
     )
   }
@@ -52,7 +55,10 @@ function ProtectedRoute({
 function RouteLoader() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#e6f2fa]">
-      <Loader2 className="animate-spin text-[#0a79e8]" size={48} />
+      <div className="inline-flex items-center gap-3 rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] px-5 py-4 shadow-sm">
+        <Loader2 className="animate-spin text-[#0a79e8]" size={28} />
+        <p className="text-sm font-semibold text-[#3f2abe]">Preparando módulo...</p>
+      </div>
     </div>
   )
 }
@@ -85,7 +91,10 @@ export default function App() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#3f2abe]">
-        <Loader2 className="animate-spin text-[#e6f2fa]" size={48} />
+        <div className="inline-flex items-center gap-3 rounded-2xl border border-[#64a2cc] bg-[#3f2abe] px-5 py-4 shadow-sm">
+          <Loader2 className="animate-spin text-[#e6f2fa]" size={28} />
+          <p className="text-sm font-semibold text-[#e6f2fa]">Conectando sesión...</p>
+        </div>
       </div>
     )
   }
@@ -95,7 +104,7 @@ export default function App() {
       <button
         type="button"
         onClick={toggleTheme}
-        className="theme-toggle fixed right-4 top-4 z-50 inline-flex h-11 items-center gap-2 rounded-full border border-[#64a2cc] bg-[#3f2abe] px-4 text-xs font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+        className="theme-toggle fixed right-4 top-4 z-50 inline-flex h-12 items-center gap-2 rounded-full border border-[#64a2cc] bg-[#3f2abe] px-5 text-xs font-extrabold tracking-tight text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
         aria-label="Cambiar tema"
       >
         {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}

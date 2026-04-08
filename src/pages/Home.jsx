@@ -123,14 +123,14 @@ export default function Home({
     return (
       <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-8">
         <section className="mx-auto max-w-md">
-          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 md:p-8 shadow-md">
-            <p className="text-sm font-bold text-[#8b0368]">Q&A en tiempo real</p>
-            <h1 className="mt-2 text-3xl font-bold leading-tight">Ingreso moderador</h1>
-            <p className="mt-3 text-sm font-medium text-[#3f2abe]">
+          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 md:p-9 shadow-md">
+            <p className="text-sm font-extrabold text-[#8b0368]">Q&A en tiempo real</p>
+            <h1 className="mt-2 text-3xl font-extrabold tracking-tight leading-tight">Ingreso moderador</h1>
+            <p className="mt-3 text-sm font-semibold text-[#3f2abe]">
               Solo el moderador puede crear, ingresar o borrar la sesión activa.
             </p>
 
-            <form onSubmit={handleLogin} className="mt-6 flex flex-col gap-3">
+            <form onSubmit={handleLogin} className="mt-6 flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <label htmlFor="moderator-username" className="text-xs font-bold text-[#3f2abe]">
                   Usuario de moderador
@@ -172,18 +172,18 @@ export default function Home({
             </form>
 
             {loginError && (
-              <p role="alert" className="mt-3 text-sm font-bold text-[#8b0368] break-words">
+              <p role="alert" className="mt-3 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368] break-words">
                 {loginError}
               </p>
             )}
 
             <div className="mt-6 border-t border-[#e6f2fa] pt-6">
-              <h2 className="text-xl font-bold">Ingreso usuario</h2>
-              <p className="mt-2 text-sm font-medium text-[#3f2abe]">
+              <h2 className="text-xl font-extrabold tracking-tight">Ingreso usuario</h2>
+              <p className="mt-2 text-sm font-semibold text-[#3f2abe]">
                 Si eres participante, escribe el ID de la sesión para unirte.
               </p>
 
-              <form onSubmit={handleParticipantJoin} className="mt-4 flex flex-col gap-3">
+              <form onSubmit={handleParticipantJoin} className="mt-4 flex flex-col gap-4">
                 <div className="flex flex-col gap-1">
                   <label htmlFor="participant-session-id-home" className="text-xs font-bold text-[#3f2abe]">
                     ID de sesión
@@ -208,7 +208,7 @@ export default function Home({
               </form>
 
               {participantError && (
-                <p role="alert" className="mt-3 text-sm font-bold text-[#8b0368] break-words">
+                <p role="alert" className="mt-3 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368] break-words">
                   {participantError}
                 </p>
               )}
@@ -221,13 +221,13 @@ export default function Home({
 
   return (
     <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-8">
-      <section className="mx-auto max-w-4xl flex flex-col gap-5">
-        <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 md:p-8 shadow-md">
-          <p className="text-sm font-bold text-[#8b0368]">Q&A en tiempo real</p>
-          <h1 className="mt-2 text-3xl md:text-4xl font-bold leading-tight">
+      <section className="mx-auto max-w-4xl flex flex-col gap-6">
+        <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 md:p-9 shadow-md">
+          <p className="text-sm font-extrabold text-[#8b0368]">Q&A en tiempo real</p>
+          <h1 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
             Centro de control para moderación
           </h1>
-          <p className="mt-3 text-base font-medium text-[#3f2abe] break-words">
+          <p className="mt-3 text-base font-semibold text-[#3f2abe] break-words leading-relaxed">
             Esta vista es solo para moderador. Participantes entran únicamente por QR o con el ID de sesión activa.
           </p>
 
@@ -241,9 +241,9 @@ export default function Home({
             </button>
           </div>
 
-          <form onSubmit={handleCreate} className="mt-6 flex flex-col md:flex-row gap-3">
+          <form onSubmit={handleCreate} className="mt-6 flex flex-col md:flex-row gap-4">
             <div className="w-full flex flex-col gap-1">
-              <label htmlFor="session-title" className="text-xs font-bold text-[#3f2abe]">
+              <label htmlFor="session-title" className="text-[11px] font-extrabold uppercase tracking-wide text-[#3f2abe]">
                 Título de la sesión
               </label>
               <input
@@ -269,30 +269,30 @@ export default function Home({
           </form>
 
           {hasActiveSession && (
-            <p className="mt-3 text-xs font-bold text-[#3f2abe]">
+            <p className="mt-3 text-xs font-semibold text-[#3f2abe]">
               Ya existe una sesión activa. Borra la sesión actual para crear una nueva.
             </p>
           )}
 
           {createError && (
-            <p role="alert" className="mt-3 text-sm font-bold text-[#8b0368] break-words">
+            <p role="alert" className="mt-3 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368] break-words">
               {createError}
             </p>
           )}
 
           {session && (
-            <div className="mt-5 rounded-3xl bg-[#e6f2fa] p-5 shadow-sm">
+            <div className="mt-5 rounded-3xl bg-[#e6f2fa] p-6 shadow-sm">
               <div className="flex items-center gap-2 text-[#8b0368]">
                 <BadgeCheck size={18} />
                 <p className="text-sm font-bold">Sesión activa</p>
               </div>
-              <p className="mt-2 text-lg font-bold break-words text-[#3f2abe]">
+              <p className="mt-2 text-xl font-extrabold break-words text-[#3f2abe]">
                 {session.title || 'Sin título'}
               </p>
-              <p className="mt-1 text-sm font-medium break-words text-[#3f2abe]">
+              <p className="mt-1 text-sm font-semibold break-words text-[#3f2abe]">
                 ID: {session.sessionId}
               </p>
-              <p className="mt-1 text-sm font-medium text-[#3f2abe]">Acceso de moderador verificado.</p>
+              <p className="mt-1 text-sm font-semibold text-[#3f2abe]">Acceso de moderador verificado.</p>
               <div className="mt-4">
                 <button
                   type="button"
@@ -316,7 +316,7 @@ export default function Home({
               {confirmDeleteOpen && (
                 <div className="mt-4 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] p-4">
                   <p className="text-sm font-bold text-[#8b0368]">Confirmar borrado de sesión activa</p>
-                  <p className="mt-1 text-xs font-medium text-[#3f2abe]">
+                  <p className="mt-1 text-xs font-semibold text-[#3f2abe]">
                     Esta acción elimina preguntas y respuestas de la sesión y no se puede deshacer.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -343,26 +343,26 @@ export default function Home({
           )}
         </article>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 shadow-sm">
             <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#8b0368]">
               <PlusCircle size={20} />
             </div>
-            <h2 className="mt-3 text-xl font-bold">Crear sesión</h2>
-            <p className="mt-2 text-sm font-medium text-[#3f2abe]">
+            <h2 className="mt-3 text-xl font-extrabold tracking-tight">Crear sesión</h2>
+            <p className="mt-2 text-sm font-semibold text-[#3f2abe]">
               Inicia una nueva sesión para habilitar preguntas, moderación y presentación.
             </p>
-            <p className="mt-5 text-xs font-bold text-[#3f2abe]">
+            <p className="mt-5 text-xs font-semibold text-[#3f2abe]">
               Usa el formulario superior para crearla.
             </p>
           </article>
 
-          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-sm">
+          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 shadow-sm">
             <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#3f2abe]">
               <LogIn size={20} />
             </div>
-            <h2 className="mt-3 text-xl font-bold">Ingresar a sesión activa</h2>
-            <p className="mt-2 text-sm font-medium text-[#3f2abe]">
+            <h2 className="mt-3 text-xl font-extrabold tracking-tight">Ingresar a sesión activa</h2>
+            <p className="mt-2 text-sm font-semibold text-[#3f2abe]">
               Retoma la sesión que ya está creada para administrar preguntas en vivo.
             </p>
             <button
