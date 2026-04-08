@@ -14,6 +14,8 @@ export default function Home({
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
+  const [participantSessionId, setParticipantSessionId] = useState('')
+  const [participantError, setParticipantError] = useState('')
 
   const [title, setTitle] = useState('')
   const [creating, setCreating] = useState(false)
@@ -34,6 +36,19 @@ export default function Home({
 
     setUsername('')
     setPassword('')
+  }
+
+  const handleParticipantJoin = (event) => {
+    event.preventDefault()
+    const sessionId = participantSessionId.trim()
+
+    if (!sessionId) {
+      setParticipantError('Ingresa el ID de la sesion para continuar.')
+      return
+    }
+
+    setParticipantError('')
+    navigate(`/participante?sid=${encodeURIComponent(sessionId)}`)
   }
 
   const handleLogout = () => {
@@ -131,6 +146,36 @@ export default function Home({
             {loginError && (
               <p className="mt-3 text-sm font-bold text-[#8b0368] break-words">{loginError}</p>
             )}
+
+            <div className="mt-6 border-t border-[#e6f2fa] pt-6">
+              <h2 className="text-xl font-bold">Ingreso usuario</h2>
+              <p className="mt-2 text-sm font-medium text-[#716274]">
+                Si eres participante, escribe el ID de la sesion para unirte.
+              </p>
+
+              <form onSubmit={handleParticipantJoin} className="mt-4 flex flex-col gap-3">
+                <input
+                  type="text"
+                  required
+                  value={participantSessionId}
+                  onChange={(event) => setParticipantSessionId(event.target.value)}
+                  placeholder="ID de sesion"
+                  className="h-12 w-full rounded-full bg-[#f8fbfe] px-5 font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none"
+                />
+                <button
+                  type="submit"
+                  className="h-12 rounded-full bg-[#39d3b4] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                >
+                  Unirse como usuario
+                </button>
+              </form>
+
+              {participantError && (
+                <p className="mt-3 text-sm font-bold text-[#8b0368] break-words">
+                  {participantError}
+                </p>
+              )}
+            </div>
           </article>
         </section>
       </main>
