@@ -17,28 +17,28 @@ Plataforma de preguntas y respuestas en tiempo real con 4 vistas:
 
 ```txt
 src/
-├─ App.jsx                 # Router principal y proteccion de rutas
+├─ App.jsx                 # Router principal y protección de rutas
 ├─ main.jsx                # Punto de entrada React
 ├─ pages/
-│  ├─ Home.jsx             # Login moderador y creacion/gestion de sesion activa
-│  ├─ Moderator.jsx        # Moderacion de preguntas en vivo
-│  ├─ Presentation.jsx     # Vista de proyeccion con QR y preguntas destacadas
-│  └─ Participant.jsx      # Vista movil para participantes
+│  ├─ Home.jsx             # Login moderador y creación/gestión de sesión activa
+│  ├─ Moderator.jsx        # Moderación de preguntas en vivo
+│  ├─ Presentation.jsx     # Vista de proyección con QR y preguntas destacadas
+│  └─ Participant.jsx      # Vista móvil para participantes
 ├─ hooks/
-│  ├─ useAuth.js           # Autenticacion (anonima/custom token en Firebase)
+│  ├─ useAuth.js           # Autenticación (anónima/custom token en Firebase)
 │  ├─ useModeratorAuth.js  # Estado de acceso del moderador
-│  ├─ useSession.js        # Sesion activa (crear, leer, cerrar)
+│  ├─ useSession.js        # Sesión activa (crear, leer, cerrar)
 │  └─ useQuestions.js      # CRUD y reacciones de preguntas/respuestas
 └─ services/
-   └─ firebase.js          # Inicializacion de Firebase (Auth + Firestore)
+   └─ firebase.js          # Inicialización de Firebase (Auth + Firestore)
 ```
 
 ### Rutas de interfaz
 
-- `/`: Home (ingreso moderador y control de sesion).
+- `/`: Home (ingreso moderador y control de sesión).
 - `/moderador`: panel del moderador (protegida).
-- `/presentacion`: vista para proyeccion (protegida).
-- `/participante`: vista de participantes (protegida por sesion activa).
+- `/presentacion`: vista para proyección (protegida).
+- `/participante`: vista de participantes (protegida por sesión activa).
 
 ## Variables de entorno
 
