@@ -34,10 +34,12 @@ export default function Participant({ user, session }) {
   const [questionText, setQuestionText] = useState('')
   const [sendingQuestion, setSendingQuestion] = useState(false)
   const [questionError, setQuestionError] = useState('')
+  const [questionSuccess, setQuestionSuccess] = useState('')
   const [cooldownUntil, setCooldownUntil] = useState(0)
   const [answerDrafts, setAnswerDrafts] = useState({})
   const [sendingAnswerQuestionId, setSendingAnswerQuestionId] = useState('')
   const [answerError, setAnswerError] = useState('')
+  const [answerSuccess, setAnswerSuccess] = useState('')
   const actorId = user?.uid || participantId || ''
   const hasSessionAccess = Boolean(
     session?.sessionId && authorizedSessionId === session.sessionId,
@@ -69,6 +71,26 @@ export default function Participant({ user, session }) {
     }
   }, [session?.sessionId, sidFromUrl])
 
+  useEffect(() => {
+    if (!questionSuccess) return undefined
+
+    const timeoutId = window.setTimeout(() => {
+      setQuestionSuccess('')
+    }, 5000)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [questionSuccess])
+
+  useEffect(() => {
+    if (!answerSuccess) return undefined
+
+    const timeoutId = window.setTimeout(() => {
+      setAnswerSuccess('')
+    }, 5000)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [answerSuccess])
+
   const visibleQuestions = sortedQuestions.filter(
     (question) => question.status === 'approved' && !question.isHidden,
   )
@@ -79,9 +101,14 @@ export default function Participant({ user, session }) {
     event.preventDefault()
     if (!questionText.trim()) return
     if (cooldownSeconds > 0) return
-    if (!session?.isAcceptingQuestions) return
+    if (!session?.isAcceptingQuestions) {
+      setQuestionError('La sesión está pausada. Espera a que moderación reanude preguntas.')
+      setQuestionSuccess('')
+      return
+    }
     if (!actorId) {
       setQuestionError('No se pudo identificar tu usuario para enviar la pregunta.')
+      setQuestionSuccess('')
       return
     }
 
@@ -96,8 +123,10 @@ export default function Participant({ user, session }) {
       })
       setQuestionText('')
       setCooldownUntil(Date.now() + 5000)
+      setQuestionSuccess('Tu pregunta se envió y quedará visible cuando moderación la apruebe.')
     } catch (error) {
       setQuestionError(error.message || 'No se pudo enviar la pregunta.')
+      setQuestionSuccess('')
     } finally {
       setSendingQuestion(false)
     }
@@ -136,6 +165,7 @@ export default function Participant({ user, session }) {
     if (sendingAnswerQuestionId === questionId) return
     if (!actorId) {
       setAnswerError('No se pudo identificar tu usuario para responder.')
+      setAnswerSuccess('')
       return
     }
 
@@ -155,8 +185,10 @@ export default function Participant({ user, session }) {
         ...previous,
         [questionId]: '',
       }))
+      setAnswerSuccess('Tu respuesta se envió y quedará visible cuando moderación la apruebe.')
     } catch (error) {
       setAnswerError(error.message || 'No se pudo enviar tu respuesta.')
+      setAnswerSuccess('')
     } finally {
       setSendingAnswerQuestionId('')
     }
@@ -199,11 +231,11 @@ export default function Participant({ user, session }) {
   if (!hasSessionAccess) {
     return (
       <div className="min-h-screen bg-[#64a2cc] font-sans px-4 py-6 md:py-10 flex items-center justify-center">
-        <div className="w-full max-w-md rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 text-center shadow-lg md:p-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-[#3f2abe] mb-2 break-words">
+        <div className="w-full max-w-md rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 text-center shadow-lg md:p-9">
+          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#3f2abe] mb-2 break-words">
             Ingresar a sesión activa
           </h2>
-          <p className="text-sm md:text-base font-medium mb-6 text-[#3f2abe]">
+          <p className="text-sm md:text-base font-semibold mb-6 text-[#3f2abe]">
             Accede con QR o escribe el ID de la sesión activa.
           </p>
 
@@ -249,11 +281,11 @@ export default function Participant({ user, session }) {
   if (!isNameSet) {
     return (
       <div className="min-h-screen bg-[#64a2cc] font-sans px-4 py-6 md:py-10 flex items-center justify-center">
-        <div className="w-full max-w-sm rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 text-center shadow-lg md:p-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-[#3f2abe] mb-2 break-words">
+        <div className="w-full max-w-sm rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 text-center shadow-lg md:p-9">
+          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#3f2abe] mb-2 break-words">
             {session?.title || 'Sesión activa'}
           </h2>
-          <p className="text-sm md:text-base font-medium mb-6 text-[#3f2abe]">
+          <p className="text-sm md:text-base font-semibold mb-6 text-[#3f2abe]">
             Ingresa un nombre para participar
           </p>
           <form
@@ -295,55 +327,78 @@ export default function Participant({ user, session }) {
 
   return (
     <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-8 pb-[calc(11rem+env(safe-area-inset-bottom))] md:pb-8 relative">
-      <section className="mx-auto max-w-3xl flex flex-col gap-4 md:gap-5">
-        <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-sm md:p-6">
-          <h1 className="text-2xl md:text-3xl font-bold">Participante</h1>
-          <p className="mt-2 text-sm md:text-base font-medium text-[#3f2abe] break-words">
+      <section className="mx-auto max-w-3xl flex flex-col gap-5 md:gap-6">
+        <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-md md:p-7">
+          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Participante</h1>
+          <p className="mt-2 text-sm md:text-base font-semibold text-[#3f2abe] break-words">
               {session?.title || 'Sesión activa'}
           </p>
-          <div className="mt-4 rounded-3xl bg-[#e6f2fa] p-4 md:p-5 text-sm md:text-base">
+          <div className="mt-4 rounded-3xl bg-[#e6f2fa] p-5 md:p-6 text-sm md:text-base">
             <p className="font-bold text-[#3f2abe]">Hola, {myName}</p>
-            <p className="mt-1 font-medium text-[#3f2abe]">
+            <p className="mt-1 font-semibold text-[#3f2abe]">
               Identidad de participación activada.
             </p>
-            <p className="mt-1 font-medium text-[#3f2abe]">Preguntas visibles: {visibleQuestions.length}</p>
-            <p className="mt-1 font-medium text-[#3f2abe]">
-              Las respuestas de participantes pasan por moderación antes de mostrarse.
+            <p className="mt-1 font-semibold text-[#3f2abe]">Preguntas visibles: {visibleQuestions.length}</p>
+            <p className="mt-1 font-semibold text-[#3f2abe]">
+              Tus preguntas y respuestas pasan por moderación antes de mostrarse.
             </p>
           </div>
+
+          {questionSuccess && (
+            <p
+              role="status"
+              aria-live="polite"
+              className="mt-3 rounded-2xl bg-[#39d3b5] px-4 py-3 text-sm font-bold text-[#3f2abe] break-words"
+            >
+              {questionSuccess}
+            </p>
+          )}
+
+          {answerSuccess && (
+            <p
+              role="status"
+              aria-live="polite"
+              className="mt-2 rounded-2xl bg-[#39d3b5] px-4 py-3 text-sm font-bold text-[#3f2abe] break-words"
+            >
+              {answerSuccess}
+            </p>
+          )}
+
           {(questionError || questionsError) && (
-            <p className="mt-3 text-sm font-bold text-[#8b0368] break-words">
+            <p role="alert" className="mt-3 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368] break-words">
               {questionError || questionsError}
             </p>
           )}
           {answerError && (
-            <p className="mt-2 text-sm font-bold text-[#8b0368] break-words">{answerError}</p>
+            <p role="alert" className="mt-2 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368] break-words">
+              {answerError}
+            </p>
           )}
           {!session?.isAcceptingQuestions && (
-            <p className="mt-2 text-sm font-bold text-[#8b0368]">
+            <p className="mt-2 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368]">
               El moderador pausó temporalmente el envío de nuevas preguntas.
             </p>
           )}
         </article>
 
-        <section className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-3 shadow-sm md:p-4">
+        <section className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-4 shadow-md md:p-5">
           <div className="mb-3 flex items-center justify-between gap-3">
-            <h2 className="text-lg md:text-xl font-bold text-[#3f2abe]">Preguntas publicadas</h2>
-            <span className="rounded-full bg-[#e6f2fa] px-3 py-1 text-xs font-bold text-[#3f2abe]">
+            <h2 className="text-lg md:text-xl font-extrabold tracking-tight text-[#3f2abe]">Preguntas publicadas</h2>
+            <span className="rounded-full bg-[#e6f2fa] px-3 py-1.5 text-xs font-extrabold text-[#3f2abe]">
               {visibleQuestions.length}
             </span>
           </div>
 
           <div className="flex flex-col gap-3">
           {loadingQuestions && (
-            <p className="text-sm md:text-base font-medium text-[#3f2abe]">Actualizando preguntas...</p>
+            <p className="text-sm md:text-base font-semibold text-[#3f2abe]">Actualizando preguntas...</p>
           )}
 
           {!loadingQuestions && visibleQuestions.length === 0 && (
-            <article className="rounded-[2rem] bg-[#e6f2fa] p-8 md:p-10 shadow-sm text-center">
+            <article className="rounded-[2rem] bg-[#e6f2fa] p-9 md:p-11 shadow-md text-center">
               <Sparkles size={36} className="mx-auto text-[#3f2abe]" />
-              <p className="mt-3 text-lg md:text-xl font-bold text-[#3f2abe]">Sin preguntas publicadas por ahora</p>
-                <p className="mt-1 text-sm md:text-base font-medium text-[#3f2abe]">Cuando moderación apruebe preguntas, aparecerán aquí.</p>
+              <p className="mt-3 text-lg md:text-xl font-extrabold text-[#3f2abe]">Sin preguntas publicadas por ahora</p>
+                <p className="mt-1 text-sm md:text-base font-semibold text-[#3f2abe]">Cuando moderación apruebe preguntas, aparecerán aquí.</p>
             </article>
           )}
 
@@ -362,16 +417,16 @@ export default function Participant({ user, session }) {
 
             return (
               <article key={question.id} className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-5 md:p-6 shadow-sm">
-                <p className="text-[11px] font-bold uppercase tracking-wide text-[#3f2abe]">
+                <p className="text-[11px] font-extrabold uppercase tracking-wider text-[#3f2abe]">
                   Pregunta {index + 1}
                 </p>
-                <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-[#3f2abe]">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-[#3f2abe]">
                   <span className="rounded-full bg-[#e6f2fa] px-3 py-1">
                     {question.status || 'pending'}
                   </span>
                     <span>{question.author || 'Anónimo'}</span>
                 </div>
-                <p className="mt-3 text-base md:text-lg font-medium text-[#3f2abe] break-words">{question.content}</p>
+                <p className="mt-3 text-base md:text-lg font-semibold text-[#3f2abe] break-words">{question.content}</p>
 
                 {approvedAnswers.length > 0 && (
                   <div className="mt-3 border-l-4 border-[#64a2cc] pl-3 flex flex-col gap-2">
@@ -447,7 +502,7 @@ export default function Participant({ user, session }) {
 
                 <form
                   onSubmit={(event) => handleSubmitAnswer(event, question.id)}
-                  className="mt-4 rounded-3xl bg-[#e6f2fa] p-3 flex items-center gap-2"
+                  className="mt-4 rounded-3xl bg-[#e6f2fa] p-4 flex items-center gap-2"
                 >
                   <label htmlFor={`answer-${question.id}`} className="sr-only">
                     Responder a la pregunta {index + 1}
@@ -502,7 +557,7 @@ export default function Participant({ user, session }) {
       <div className="fixed bottom-0 left-0 right-0 z-30 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] bg-[#e6f2fa] md:static md:p-0">
         <form
           onSubmit={handleSubmitQuestion}
-          className="mx-auto max-w-3xl rounded-[2rem] bg-[#e6f2fa] p-3 md:p-4 shadow-lg flex items-center gap-2"
+          className="mx-auto max-w-3xl rounded-[2rem] bg-[#e6f2fa] p-4 md:p-5 shadow-lg flex items-center gap-2"
         >
           <label htmlFor="participant-question-input" className="sr-only">
             Escribe tu pregunta

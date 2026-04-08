@@ -165,67 +165,87 @@ export default function Moderator({
 
   return (
     <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-8">
-      <section className="mx-auto max-w-6xl flex flex-col gap-5">
-        <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 md:p-8 shadow-md">
-          <h1 className="text-3xl font-bold">Panel moderador</h1>
-          <p className="mt-2 text-sm font-medium text-[#3f2abe]">Moderador autenticado.</p>
+      <section className="mx-auto max-w-6xl flex flex-col gap-6">
+        <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 md:p-9 shadow-md">
+          <h1 className="text-3xl md:text-[2.2rem] font-extrabold tracking-tight">Panel moderador</h1>
+          <p className="mt-2 text-sm font-semibold text-[#3f2abe]">Moderador autenticado.</p>
 
-          <div className="mt-5 rounded-3xl bg-[#e6f2fa] p-5">
-            <p className="text-lg font-bold break-words">{session?.title || 'Sesión sin título'}</p>
-            <p className="mt-1 text-sm font-medium text-[#3f2abe] break-words">
+          <div className="mt-6 rounded-3xl bg-[#e6f2fa] p-6">
+            <p className="text-xl font-extrabold break-words">{session?.title || 'Sesión sin título'}</p>
+            <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words">
               ID: {session?.sessionId || 'sin id'}
             </p>
-            <p className="mt-2 text-sm font-bold text-[#3f2abe]">
+            <p className="mt-2 text-sm font-semibold text-[#3f2abe]">
               Estado: {session?.isAcceptingQuestions ? 'Aceptando preguntas' : 'Pausada'}
             </p>
 
-            <div className="mt-4 flex flex-col sm:flex-row gap-2">
-              <button
-                type="button"
-                onClick={toggleSessionStatus}
-                className={`h-12 rounded-full px-6 text-sm font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 ${
-                  session?.isAcceptingQuestions
-                    ? 'bg-[#39d3b5] text-[#3f2abe]'
-                    : 'bg-[#8b0368] text-[#e6f2fa]'
-                }`}
-              >
-                {session?.isAcceptingQuestions ? 'Pausar recepción' : 'Reanudar recepción'}
-              </button>
-              <a
-                href={presentationUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="h-12 inline-flex items-center justify-center rounded-full bg-[#3f2abe] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
-              >
-                Abrir presentación
-              </a>
-              <Link
-                to="/"
-                className="h-12 inline-flex items-center justify-center rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
-              >
-                Volver al inicio
-              </Link>
-              <button
-                type="button"
-                onClick={requestDeleteSession}
-                disabled={deletingSession}
-                className="h-12 inline-flex items-center justify-center rounded-full bg-[#8b0368] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
-              >
-                Borrar sesión activa
-              </button>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="h-12 inline-flex items-center justify-center rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
-              >
-                Cerrar sesión de moderador
-              </button>
+            <div className="mt-5 grid gap-4">
+              <div className="rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-4">
+                <p className="px-1 text-[11px] font-extrabold uppercase tracking-wide text-[#3f2abe]">Acciones en vivo</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={toggleSessionStatus}
+                    className={`h-12 rounded-full px-6 text-sm font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 ${
+                      session?.isAcceptingQuestions
+                        ? 'bg-[#39d3b5] text-[#3f2abe]'
+                        : 'bg-[#8b0368] text-[#e6f2fa]'
+                    }`}
+                  >
+                    {session?.isAcceptingQuestions ? 'Pausar recepción' : 'Reanudar recepción'}
+                  </button>
+                  <a
+                    href={presentationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="h-12 inline-flex items-center justify-center rounded-full bg-[#3f2abe] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                  >
+                    Abrir presentación
+                  </a>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-4">
+                <p className="px-1 text-[11px] font-extrabold uppercase tracking-wide text-[#3f2abe]">Navegación y sesión</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <Link
+                    to="/"
+                    className="h-12 inline-flex items-center justify-center rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                  >
+                    Volver al inicio
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="h-12 inline-flex items-center justify-center rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                  >
+                    Cerrar sesión de moderador
+                  </button>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-[#8b0368] bg-[#e6f2fa] p-4">
+                <p className="px-1 text-[11px] font-extrabold uppercase tracking-wide text-[#8b0368]">Zona sensible</p>
+                <p className="mt-1 px-1 text-xs font-semibold leading-relaxed text-[#3f2abe]">
+                  El borrado de sesión es irreversible.
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={requestDeleteSession}
+                    disabled={deletingSession}
+                    className="h-12 inline-flex items-center justify-center rounded-full bg-[#8b0368] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+                  >
+                    Borrar sesión activa
+                  </button>
+                </div>
+              </div>
             </div>
 
             {confirmDeleteOpen && (
               <div className="mt-4 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] p-4">
                 <p className="text-sm font-bold text-[#8b0368]">Confirmar borrado de sesión activa</p>
-                <p className="mt-1 text-xs font-medium text-[#3f2abe]">
+                <p className="mt-1 text-xs font-semibold text-[#3f2abe]">
                   Esta acción elimina preguntas y respuestas de la sesión y no se puede deshacer.
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -257,11 +277,11 @@ export default function Moderator({
           </div>
         </article>
 
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-sm">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-sm">
             <div className="flex items-center gap-2">
               <ClipboardList size={18} className="text-[#8b0368]" />
-              <h2 className="text-xl font-bold">Preguntas pendientes ({pendingQuestions.length})</h2>
+              <h2 className="text-xl font-extrabold tracking-tight">Preguntas pendientes ({pendingQuestions.length})</h2>
             </div>
 
             {loadingQuestions && (
@@ -287,8 +307,8 @@ export default function Moderator({
                 const isEditing = editingQuestionId === question.id
 
                 return (
-                  <article key={question.id} className="rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-4 shadow-sm">
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-[#3f2abe]">
+                  <article key={question.id} className="rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-sm">
+                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-[#3f2abe]">
                       <span className="inline-flex items-center gap-1">
                         <UserRound size={14} />
                         {question.author || 'Anónimo'}
@@ -303,7 +323,7 @@ export default function Moderator({
                     </div>
 
                     {!isEditing && (
-                      <p className="mt-3 text-sm font-medium text-[#3f2abe] break-words">
+                      <p className="mt-3 text-sm md:text-base font-semibold text-[#3f2abe] break-words">
                         {question.content}
                       </p>
                     )}
@@ -365,8 +385,8 @@ export default function Moderator({
                         </button>
                       </div>
 
-                      <div className="rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-2">
-                        <p className="px-1 text-xs font-bold text-[#3f2abe]">
+                      <div className="rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-3">
+                        <p className="px-1 text-[11px] font-extrabold uppercase tracking-wide text-[#3f2abe]">
                           Acciones avanzadas
                         </p>
                         <div className="mt-2 flex flex-wrap gap-2">
@@ -407,8 +427,8 @@ export default function Moderator({
             </div>
           </article>
 
-          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-sm">
-            <h2 className="text-xl font-bold">Respuestas pendientes ({pendingAnswersQueue.length})</h2>
+          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-sm">
+            <h2 className="text-xl font-extrabold tracking-tight">Respuestas pendientes ({pendingAnswersQueue.length})</h2>
 
             {!pendingAnswersQueue.length && (
               <div className="mt-4 rounded-3xl bg-[#e6f2fa] p-6 text-center">
@@ -473,7 +493,7 @@ export default function Moderator({
                 </div>
               )}
               {approvedQuestions.slice(0, 8).map((question) => (
-                <article key={question.id} className="rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-4 shadow-sm">
+                <article key={question.id} className="rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-sm">
                   <p className="text-sm font-bold text-[#3f2abe] break-words">{question.content}</p>
                   <p className="mt-1 text-xs font-medium text-[#3f2abe] break-words">
                     {question.author || 'Anónimo'}
@@ -494,7 +514,7 @@ export default function Moderator({
 
                   <form
                     onSubmit={(event) => handleSubmitModeratorAnswer(event, question.id)}
-                    className="mt-3 rounded-3xl bg-[#e6f2fa] p-3 flex items-center gap-2"
+                    className="mt-3 rounded-3xl bg-[#e6f2fa] p-4 flex items-center gap-2"
                   >
                     <label htmlFor={`moderator-answer-${question.id}`} className="sr-only">
                       Responder como moderador a esta pregunta
