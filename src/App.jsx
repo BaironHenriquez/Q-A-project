@@ -8,7 +8,7 @@ import Moderator from './pages/Moderator'
 import Participant from './pages/Participant'
 import Presentation from './pages/Presentation'
 
-function ProtectedRoute({ session, loading, children }) {
+function ProtectedRoute({ session, loading, user, requireModerator = false, children }) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#e6f2fa]">
@@ -18,6 +18,10 @@ function ProtectedRoute({ session, loading, children }) {
   }
 
   if (!session) {
+    return <Navigate to="/" replace />
+  }
+
+  if (requireModerator && session.moderatorId !== user?.uid) {
     return <Navigate to="/" replace />
   }
 
@@ -51,8 +55,14 @@ export default function App() {
         <Route
           path="/moderador"
           element={
-            <ProtectedRoute session={session} loading={sessionLoading}>
+            <ProtectedRoute
+              session={session}
+              loading={sessionLoading}
+              user={user}
+              requireModerator
+            >
               <Moderator
+                user={user}
                 session={session}
                 toggleSessionStatus={toggleSessionStatus}
               />
@@ -62,7 +72,12 @@ export default function App() {
         <Route
           path="/presentacion"
           element={
-            <ProtectedRoute session={session} loading={sessionLoading}>
+            <ProtectedRoute
+              session={session}
+              loading={sessionLoading}
+              user={user}
+              requireModerator
+            >
               <Presentation session={session} />
             </ProtectedRoute>
           }
@@ -70,7 +85,7 @@ export default function App() {
         <Route
           path="/participante"
           element={
-            <ProtectedRoute session={session} loading={sessionLoading}>
+            <ProtectedRoute session={session} loading={sessionLoading} user={user}>
               <Participant user={user} session={session} />
             </ProtectedRoute>
           }

@@ -14,6 +14,9 @@ export default function Participant({ user, session }) {
   const [sendingQuestion, setSendingQuestion] = useState(false)
   const [questionError, setQuestionError] = useState('')
   const [cooldownUntil, setCooldownUntil] = useState(0)
+  const [answerDrafts, setAnswerDrafts] = useState({})
+  const [sendingAnswerQuestionId, setSendingAnswerQuestionId] = useState('')
+  const [answerError, setAnswerError] = useState('')
 
   const {
     sortedQuestions,
@@ -21,11 +24,15 @@ export default function Participant({ user, session }) {
     questionsError,
     createQuestion,
     toggleVote,
+    addAnswer,
+    voteAnswerCorrectness,
   } = useQuestions(
     isNameSet ? session?.sessionId : null,
   )
 
-  const visibleQuestions = sortedQuestions.filter((question) => !question.isHidden)
+  const visibleQuestions = sortedQuestions.filter(
+    (question) => question.status === 'approved' && !question.isHidden,
+  )
 
   const cooldownSeconds = Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000))
 
@@ -33,6 +40,7 @@ export default function Participant({ user, session }) {
     event.preventDefault()
     if (!questionText.trim()) return
     if (cooldownSeconds > 0) return
+    if (!session?.isAcceptingQuestions) return
 
     setSendingQuestion(true)
     setQuestionError('')
@@ -49,6 +57,56 @@ export default function Participant({ user, session }) {
       setQuestionError(error.message || 'No se pudo enviar la pregunta.')
     } finally {
       setSendingQuestion(false)
+    }
+  }
+
+  const handleAnswerDraftChange = (questionId, value) => {
+    setAnswerDrafts((previous) => ({
+      ...previous,
+      [questionId]: value,
+    }))
+  }
+
+  const handleSubmitAnswer = async (event, questionId) => {
+    event.preventDefault()
+
+    const answerText = (answerDrafts[questionId] || '').trim()
+    if (!answerText) return
+    if (sendingAnswerQuestionId === questionId) return
+
+    setSendingAnswerQuestionId(questionId)
+    setAnswerError('')
+
+    try {
+      await addAnswer({
+        questionId,
+        author: myName,
+        userId: user?.uid,
+        content: answerText,
+        isModerator: false,
+      })
+
+      setAnswerDrafts((previous) => ({
+        ...previous,
+        [questionId]: '',
+      }))
+    } catch (error) {
+      setAnswerError(error.message || 'No se pudo enviar tu respuesta.')
+    } finally {
+      setSendingAnswerQuestionId('')
+    }
+  }
+
+  const handleVoteAnswerCorrectness = async ({ questionId, answerId, voteType }) => {
+    try {
+      await voteAnswerCorrectness({
+        questionId,
+        answerId,
+        userId: user?.uid,
+        voteType,
+      })
+    } catch (error) {
+      setAnswerError(error.message || 'No se pudo registrar tu voto en la respuesta.')
     }
   }
 
@@ -123,10 +181,21 @@ export default function Participant({ user, session }) {
             <p className="font-bold text-[#3f2abe]">Hola, {myName}</p>
             <p className="mt-1 font-medium text-[#716274] break-words">UID: {user?.uid || 'anonimo'}</p>
             <p className="mt-1 font-medium text-[#716274]">Preguntas visibles: {visibleQuestions.length}</p>
+            <p className="mt-1 font-medium text-[#716274]">
+              Las respuestas de participantes pasan por moderacion antes de mostrarse.
+            </p>
           </div>
           {(questionError || questionsError) && (
             <p className="mt-3 text-sm font-bold text-[#8b0368] break-words">
               {questionError || questionsError}
+            </p>
+          )}
+          {answerError && (
+            <p className="mt-2 text-sm font-bold text-[#8b0368] break-words">{answerError}</p>
+          )}
+          {!session?.isAcceptingQuestions && (
+            <p className="mt-2 text-sm font-bold text-[#8b0368]">
+              El moderador pauso temporalmente el envio de nuevas preguntas.
             </p>
           )}
         </article>
@@ -139,8 +208,8 @@ export default function Participant({ user, session }) {
           {!loadingQuestions && visibleQuestions.length === 0 && (
             <article className="rounded-[2rem] bg-white p-8 md:p-10 shadow-sm text-center">
               <Sparkles size={36} className="mx-auto text-[#716274]" />
-              <p className="mt-3 text-lg md:text-xl font-bold text-[#3f2abe]">La audiencia esta pensando...</p>
-              <p className="mt-1 text-sm md:text-base font-medium text-[#716274]">Se el primero en lanzar una pregunta.</p>
+              <p className="mt-3 text-lg md:text-xl font-bold text-[#3f2abe]">Sin preguntas publicadas por ahora</p>
+              <p className="mt-1 text-sm md:text-base font-medium text-[#716274]">Cuando moderacion apruebe preguntas, apareceran aqui.</p>
             </article>
           )}
 
@@ -148,6 +217,14 @@ export default function Participant({ user, session }) {
             const hasVoted = Array.isArray(question.upvotedBy)
               ? question.upvotedBy.includes(user?.uid)
               : false
+            const approvedAnswers = Array.isArray(question.answers)
+              ? question.answers.filter((answer) => answer.status === 'approved')
+              : []
+            const myPendingAnswers = Array.isArray(question.answers)
+              ? question.answers.filter(
+                  (answer) => answer.status === 'pending' && answer.userId === user?.uid,
+                )
+              : []
 
             return (
               <article key={question.id} className="rounded-[2rem] bg-white p-5 md:p-6 shadow-sm">
@@ -159,16 +236,99 @@ export default function Participant({ user, session }) {
                 </div>
                 <p className="mt-3 text-base md:text-lg font-medium text-[#3f2abe] break-words">{question.content}</p>
 
-                {Array.isArray(question.answers) && question.answers.length > 0 && (
+                {approvedAnswers.length > 0 && (
                   <div className="mt-3 border-l-4 border-[#64a2cc] pl-3 flex flex-col gap-2">
-                    {question.answers.map((answer) => (
+                    {approvedAnswers.map((answer) => {
+                      const correctVoters = Array.isArray(answer.isCorrectVotedBy)
+                        ? answer.isCorrectVotedBy
+                        : []
+                      const incorrectVoters = Array.isArray(answer.isIncorrectVotedBy)
+                        ? answer.isIncorrectVotedBy
+                        : []
+                      const hasCorrectVote = correctVoters.includes(user?.uid)
+                      const hasIncorrectVote = incorrectVoters.includes(user?.uid)
+
+                      return (
                       <div key={answer.id} className="rounded-2xl bg-gray-50 p-3">
                         <p className="text-xs md:text-sm font-bold text-[#716274] break-words">{answer.author}</p>
                         <p className="mt-1 text-sm md:text-base font-medium text-[#3f2abe] break-words">{answer.content}</p>
+
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleVoteAnswerCorrectness({
+                                questionId: question.id,
+                                answerId: answer.id,
+                                voteType: 'correct',
+                              })
+                            }
+                            className={`h-9 rounded-full px-4 text-xs font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 ${
+                              hasCorrectVote
+                                ? 'bg-[#39d3b4] text-[#3f2abe]'
+                                : 'bg-white text-[#3f2abe]'
+                            }`}
+                          >
+                            Es correcto ({answer.isCorrectVotes || 0})
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleVoteAnswerCorrectness({
+                                questionId: question.id,
+                                answerId: answer.id,
+                                voteType: 'incorrect',
+                              })
+                            }
+                            className={`h-9 rounded-full px-4 text-xs font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 ${
+                              hasIncorrectVote
+                                ? 'bg-[#e08ad4] text-[#3f2abe]'
+                                : 'bg-white text-[#3f2abe]'
+                            }`}
+                          >
+                            No es correcto ({answer.isIncorrectVotes || 0})
+                          </button>
+                        </div>
                       </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 )}
+
+                {myPendingAnswers.length > 0 && (
+                  <div className="mt-3 rounded-2xl bg-[#e6f2fa] p-3">
+                    <p className="text-xs font-bold text-[#716274]">Tienes respuestas pendientes de revision:</p>
+                    <div className="mt-2 flex flex-col gap-2">
+                      {myPendingAnswers.map((answer) => (
+                        <p key={answer.id} className="text-sm font-medium text-[#3f2abe] break-words">
+                          {answer.content}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <form
+                  onSubmit={(event) => handleSubmitAnswer(event, question.id)}
+                  className="mt-4 rounded-3xl bg-[#f8fbfe] p-3 flex items-center gap-2"
+                >
+                  <input
+                    type="text"
+                    maxLength={250}
+                    value={answerDrafts[question.id] || ''}
+                    onChange={(event) => handleAnswerDraftChange(question.id, event.target.value)}
+                    placeholder="Responder a esta pregunta"
+                    className="h-11 w-full rounded-full bg-white px-4 text-sm font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none"
+                    disabled={sendingAnswerQuestionId === question.id}
+                  />
+                  <button
+                    type="submit"
+                    disabled={sendingAnswerQuestionId === question.id || !(answerDrafts[question.id] || '').trim()}
+                    className="h-11 shrink-0 rounded-full bg-white px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+                  >
+                    Responder
+                  </button>
+                </form>
 
                 <div className="mt-4 flex items-center justify-between gap-3">
                   <button
@@ -181,7 +341,7 @@ export default function Participant({ user, session }) {
                     }`}
                   >
                     <ThumbsUp size={16} />
-                    {hasVoted ? 'Votaste' : 'Votar'}
+                    {hasVoted ? '-1 me resto' : '+1 me sumo'}
                   </button>
                   <p className="text-sm md:text-base font-bold text-[#0a79e8]">{question.upvotes || 0}</p>
                 </div>
@@ -212,11 +372,16 @@ export default function Participant({ user, session }) {
             onChange={(event) => setQuestionText(event.target.value)}
             placeholder={cooldownSeconds > 0 ? `Espera ${cooldownSeconds}s...` : 'Escribe tu pregunta'}
             className="h-12 md:h-14 w-full rounded-full bg-[#f8fbfe] px-5 text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none"
-            disabled={sendingQuestion || cooldownSeconds > 0}
+            disabled={sendingQuestion || cooldownSeconds > 0 || !session?.isAcceptingQuestions}
           />
           <button
             type="submit"
-            disabled={sendingQuestion || cooldownSeconds > 0 || !questionText.trim()}
+            disabled={
+              sendingQuestion ||
+              cooldownSeconds > 0 ||
+              !questionText.trim() ||
+              !session?.isAcceptingQuestions
+            }
             className="h-12 md:h-14 shrink-0 rounded-full bg-[#0a79e8] px-5 text-sm md:text-base font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60 inline-flex items-center gap-2"
           >
             <SendHorizontal size={16} />
