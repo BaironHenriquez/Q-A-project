@@ -1,21 +1,21 @@
 :root {
   --m3-blue: #0a79e8;
-  --m3-teal: #39d3b4;
+  --m3-teal: #39d3b5;
   --m3-sky: #64a2cc;
   --m3-surface: #e6f2fa;
   --m3-magenta: #8b0368;
   --m3-pink: #e08ad4;
   --m3-indigo: #3f2abe;
-  --m3-lilac: #716274;
+  --m3-lilac: #7162d8;
 
   --bg-page: #3f2abe;
   --bg-surface: #e6f2fa;
   --bg-surface-soft: #64a2cc;
   --text-main: #3f2abe;
-  --text-soft: #716274;
+  --text-soft: #7162d8;
   --line: #64a2cc;
   --line-strong: #0a79e8;
-  --accent: #39d3b4;
+  --accent: #39d3b5;
   --danger: #8b0368;
   --radius-xl: 18px;
   --radius-md: 12px;
@@ -27,10 +27,10 @@
   --bg-surface: #e6f2fa;
   --bg-surface-soft: #64a2cc;
   --text-main: #3f2abe;
-  --text-soft: #716274;
+  --text-soft: #7162d8;
   --line: #64a2cc;
   --line-strong: #0a79e8;
-  --accent: #39d3b4;
+  --accent: #39d3b5;
   --danger: #8b0368;
 }
 

@@ -10,18 +10,18 @@ export default function Presentation({ session }) {
   const { approvedQuestions } = useQuestions(session?.sessionId)
 
   return (
-    <main className="min-h-screen bg-[#f8fbfe] text-[#3f2abe] font-sans p-4 md:p-6 lg:p-8">
+    <main className="min-h-screen bg-[#e6f2fa] text-[#3f2abe] font-sans p-4 md:p-6 lg:p-8">
       <section className="grid min-h-[calc(100vh-2rem)] w-full grid-cols-1 gap-5 md:grid-cols-[380px_minmax(0,1fr)] lg:gap-6">
         <aside className="rounded-[2rem] bg-[#e6f2fa] p-6 md:p-7 lg:p-8 shadow-md">
           <h2 className="text-2xl md:text-3xl font-bold">Acceso audiencia</h2>
-          <p className="mt-2 text-sm md:text-base font-medium text-[#716274]">
+          <p className="mt-2 text-sm md:text-base font-medium text-[#7162d8]">
             Escanea y entra directo a la vista de participante.
           </p>
-          <div className="mt-5 inline-flex rounded-3xl bg-white p-4 lg:p-5 shadow-sm">
+          <div className="mt-5 inline-flex rounded-3xl bg-[#e6f2fa] p-4 lg:p-5 shadow-sm">
             <QRCodeSVG
               value={joinUrl}
               size={280}
-              bgColor="#ffffff"
+              bgColor="#e6f2fa"
               fgColor="#3f2abe"
               level="H"
             />
@@ -29,20 +29,20 @@ export default function Presentation({ session }) {
           <p className="mt-3 break-words text-sm md:text-base font-bold text-[#0a79e8]">{joinUrl}</p>
           <Link
             to="/moderador"
-            className="mt-5 h-11 md:h-12 inline-flex items-center justify-center rounded-full bg-white px-5 md:px-6 text-sm md:text-base font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+            className="mt-5 h-11 md:h-12 inline-flex items-center justify-center rounded-full bg-[#e6f2fa] px-5 md:px-6 text-sm md:text-base font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
           >
             Volver a moderador
           </Link>
         </aside>
 
-        <article className="rounded-[2rem] bg-white p-6 md:p-8 lg:p-10 shadow-md flex min-h-0 flex-col">
+        <article className="rounded-[2rem] bg-[#e6f2fa] p-6 md:p-8 lg:p-10 shadow-md flex min-h-0 flex-col">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">Presentación en vivo</h1>
-          <p className="mt-2 text-base md:text-lg font-medium text-[#716274] break-words">
+          <p className="mt-2 text-base md:text-lg font-medium text-[#7162d8] break-words">
             Sesión: {session?.title || 'Sin título'}
           </p>
 
           {!session?.isAcceptingQuestions && (
-            <div className="mt-4 rounded-2xl bg-[#8b0368] px-4 py-3 text-sm md:text-base font-bold text-white">
+            <div className="mt-4 rounded-2xl bg-[#8b0368] px-4 py-3 text-sm md:text-base font-bold text-[#e6f2fa]">
               El moderador pausó temporalmente la recepción de nuevas preguntas.
             </div>
           )}
@@ -50,11 +50,11 @@ export default function Presentation({ session }) {
           <div className="mt-6 flex-1 overflow-y-auto pr-1">
             {!approvedQuestions.length && (
               <div className="rounded-3xl bg-[#e6f2fa] p-10 lg:p-14 text-center">
-                <MessageSquare size={44} className="mx-auto text-[#716274]" />
+                <MessageSquare size={44} className="mx-auto text-[#7162d8]" />
                 <p className="mt-3 text-lg md:text-xl lg:text-2xl font-bold text-[#3f2abe]">
                   Aún no hay preguntas destacadas
                 </p>
-                <p className="mt-1 text-sm md:text-base font-medium text-[#716274]">
+                <p className="mt-1 text-sm md:text-base font-medium text-[#7162d8]">
                   La audiencia está calentando motores.
                 </p>
               </div>
@@ -68,7 +68,7 @@ export default function Presentation({ session }) {
                     : []
 
                   return (
-                    <article key={question.id} className="rounded-3xl bg-[#f8fbfe] p-5 md:p-6 shadow-sm">
+                    <article key={question.id} className="rounded-3xl bg-[#e6f2fa] p-5 md:p-6 shadow-sm">
                       {question.isPinned && (
                         <span className="inline-flex rounded-full bg-[#e08ad4] px-3 py-1 text-xs font-bold text-[#3f2abe]">
                           Fijada
@@ -78,7 +78,7 @@ export default function Presentation({ session }) {
                         {question.content}
                       </p>
                       <div className="mt-3 flex items-center justify-between gap-3">
-                        <p className="text-sm md:text-base font-medium text-[#716274] break-words">
+                        <p className="text-sm md:text-base font-medium text-[#7162d8] break-words">
                           {question.author || 'Anónimo'}
                         </p>
                         <p className="text-sm md:text-base font-bold text-[#0a79e8]">
@@ -87,12 +87,12 @@ export default function Presentation({ session }) {
                       </div>
 
                       {approvedAnswers.length > 0 && (
-                        <div className="mt-4 rounded-2xl border border-[#d6e7f3] bg-white p-3">
-                          <p className="text-xs font-bold text-[#716274]">Respuestas aprobadas</p>
+                        <div className="mt-4 rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-3">
+                          <p className="text-xs font-bold text-[#7162d8]">Respuestas aprobadas</p>
                           <div className="mt-2 flex flex-col gap-2">
                             {approvedAnswers.map((answer) => (
-                              <div key={answer.id} className="rounded-xl bg-[#f3f8fd] p-3">
-                                <p className="text-xs font-bold text-[#716274] break-words">
+                              <div key={answer.id} className="rounded-xl bg-[#e6f2fa] p-3">
+                                <p className="text-xs font-bold text-[#7162d8] break-words">
                                   {answer.author || 'Anónimo'}
                                 </p>
                                 <p className="mt-1 text-sm font-medium text-[#3f2abe] break-words">

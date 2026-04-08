@@ -109,12 +109,12 @@ export default function Home({
 
   if (!isModeratorAuthenticated) {
     return (
-      <main className="min-h-screen bg-[#f8fbfe] text-[#3f2abe] font-sans p-4 md:p-8">
+      <main className="min-h-screen bg-[#e6f2fa] text-[#3f2abe] font-sans p-4 md:p-8">
         <section className="mx-auto max-w-md">
-          <article className="rounded-[2rem] bg-white p-6 md:p-8 shadow-md">
+          <article className="rounded-[2rem] bg-[#e6f2fa] p-6 md:p-8 shadow-md">
             <p className="text-sm font-bold text-[#0a79e8]">Q&A en tiempo real</p>
             <h1 className="mt-2 text-3xl font-bold leading-tight">Ingreso moderador</h1>
-            <p className="mt-3 text-sm font-medium text-[#716274]">
+            <p className="mt-3 text-sm font-medium text-[#7162d8]">
               Solo el moderador puede crear, ingresar o borrar la sesión activa.
             </p>
 
@@ -125,19 +125,19 @@ export default function Home({
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
                 placeholder="Usuario"
-                className="h-12 w-full rounded-full bg-[#f8fbfe] px-5 font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none"
+                className="h-12 w-full rounded-full bg-[#e6f2fa] px-5 font-medium text-[#3f2abe] placeholder:text-[#7162d8] outline-none"
               />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                placeholder="Contrasena"
-                className="h-12 w-full rounded-full bg-[#f8fbfe] px-5 font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none"
+                placeholder="Contraseña"
+                className="h-12 w-full rounded-full bg-[#e6f2fa] px-5 font-medium text-[#3f2abe] placeholder:text-[#7162d8] outline-none"
               />
               <button
                 type="submit"
-                className="h-12 rounded-full bg-[#0a79e8] px-6 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                className="h-12 rounded-full bg-[#0a79e8] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
               >
                 Ingresar como moderador
               </button>
@@ -149,7 +149,7 @@ export default function Home({
 
             <div className="mt-6 border-t border-[#e6f2fa] pt-6">
               <h2 className="text-xl font-bold">Ingreso usuario</h2>
-              <p className="mt-2 text-sm font-medium text-[#716274]">
+              <p className="mt-2 text-sm font-medium text-[#7162d8]">
                 Si eres participante, escribe el ID de la sesión para unirte.
               </p>
 
@@ -160,11 +160,11 @@ export default function Home({
                   value={participantSessionId}
                   onChange={(event) => setParticipantSessionId(event.target.value)}
                   placeholder="ID de sesión"
-                  className="h-12 w-full rounded-full bg-[#f8fbfe] px-5 font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none"
+                  className="h-12 w-full rounded-full bg-[#e6f2fa] px-5 font-medium text-[#3f2abe] placeholder:text-[#7162d8] outline-none"
                 />
                 <button
                   type="submit"
-                  className="h-12 rounded-full bg-[#39d3b4] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                  className="h-12 rounded-full bg-[#39d3b5] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                 >
                   Unirse como usuario
                 </button>
@@ -183,14 +183,14 @@ export default function Home({
   }
 
   return (
-    <main className="min-h-screen bg-[#f8fbfe] text-[#3f2abe] font-sans p-4 md:p-8">
+    <main className="min-h-screen bg-[#e6f2fa] text-[#3f2abe] font-sans p-4 md:p-8">
       <section className="mx-auto max-w-4xl flex flex-col gap-5">
-        <article className="rounded-[2rem] bg-white p-6 md:p-8 shadow-md">
+        <article className="rounded-[2rem] bg-[#e6f2fa] p-6 md:p-8 shadow-md">
           <p className="text-sm font-bold text-[#0a79e8]">Q&A en tiempo real</p>
           <h1 className="mt-2 text-3xl md:text-4xl font-bold leading-tight">
             Centro de control para moderación
           </h1>
-          <p className="mt-3 text-base font-medium text-[#716274] break-words">
+          <p className="mt-3 text-base font-medium text-[#7162d8] break-words">
             Esta vista es solo para moderador. Participantes entran únicamente por QR o con el ID de sesión activa.
           </p>
 
@@ -198,7 +198,7 @@ export default function Home({
               <button
                 type="button"
                 onClick={handleLogout}
-                className="h-10 inline-flex items-center justify-center rounded-full bg-white px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                className="h-10 inline-flex items-center justify-center rounded-full bg-[#e6f2fa] px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
               >
                 Cerrar sesión de moderador
               </button>
@@ -212,20 +212,20 @@ export default function Home({
               value={title}
               onChange={(event) => setTitle(event.target.value)}
               placeholder="Título de la sesión"
-              className="h-12 w-full rounded-full bg-[#f8fbfe] px-5 font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none"
+              className="h-12 w-full rounded-full bg-[#e6f2fa] px-5 font-medium text-[#3f2abe] placeholder:text-[#7162d8] outline-none"
                 disabled={hasActiveSession || creating}
             />
             <button
               type="submit"
                 disabled={creating || hasActiveSession}
-              className="h-12 rounded-full bg-[#0a79e8] px-6 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+              className="h-12 rounded-full bg-[#0a79e8] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
             >
-              {creating ? 'Creando...' : 'Crear sesion'}
+              {creating ? 'Creando...' : 'Crear sesión'}
             </button>
           </form>
 
             {hasActiveSession && (
-              <p className="mt-3 text-xs font-bold text-[#716274]">
+              <p className="mt-3 text-xs font-bold text-[#7162d8]">
                 Ya existe una sesión activa. Borra la sesión actual para crear una nueva.
               </p>
             )}
@@ -243,17 +243,17 @@ export default function Home({
               <p className="mt-2 text-lg font-bold break-words text-[#3f2abe]">
                 {session.title || 'Sin título'}
               </p>
-              <p className="mt-1 text-sm font-medium break-words text-[#716274]">
+              <p className="mt-1 text-sm font-medium break-words text-[#7162d8]">
                 ID: {session.sessionId}
               </p>
-              <p className="mt-1 text-sm font-medium break-words text-[#716274]">
+              <p className="mt-1 text-sm font-medium break-words text-[#7162d8]">
                 Moderador actual: {session.moderatorId || 'sin asignar'}
               </p>
               <div className="mt-4">
                 <button
                   type="button"
                   onClick={goToActiveSession}
-                  className="h-11 inline-flex items-center justify-center rounded-full bg-[#0a79e8] px-5 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                  className="h-11 inline-flex items-center justify-center rounded-full bg-[#0a79e8] px-5 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                 >
                   Ingresar a sesión activa
                 </button>
@@ -262,7 +262,7 @@ export default function Home({
                   type="button"
                   onClick={handleDeleteActiveSession}
                   disabled={deleting}
-                  className="ml-2 mt-2 sm:mt-0 h-11 inline-flex items-center justify-center gap-2 rounded-full bg-[#8b0368] px-5 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+                  className="ml-2 mt-2 sm:mt-0 h-11 inline-flex items-center justify-center gap-2 rounded-full bg-[#8b0368] px-5 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
                 >
                   <Trash2 size={15} />
                   {deleting ? 'Borrando...' : 'Borrar sesión activa'}
@@ -273,31 +273,31 @@ export default function Home({
         </article>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <article className="rounded-[2rem] bg-white p-6 shadow-sm">
+          <article className="rounded-[2rem] bg-[#e6f2fa] p-6 shadow-sm">
             <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#0a79e8]">
               <PlusCircle size={20} />
             </div>
             <h2 className="mt-3 text-xl font-bold">Crear sesión</h2>
-            <p className="mt-2 text-sm font-medium text-[#716274]">
+            <p className="mt-2 text-sm font-medium text-[#7162d8]">
               Inicia una nueva sesión para habilitar preguntas, moderación y presentación.
             </p>
-            <p className="mt-5 text-xs font-bold text-[#716274]">
+            <p className="mt-5 text-xs font-bold text-[#7162d8]">
               Usa el formulario superior para crearla.
             </p>
           </article>
 
-          <article className="rounded-[2rem] bg-white p-6 shadow-sm">
+          <article className="rounded-[2rem] bg-[#e6f2fa] p-6 shadow-sm">
             <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#3f2abe]">
               <LogIn size={20} />
             </div>
             <h2 className="mt-3 text-xl font-bold">Ingresar a sesión activa</h2>
-            <p className="mt-2 text-sm font-medium text-[#716274]">
+            <p className="mt-2 text-sm font-medium text-[#7162d8]">
               Retoma la sesión que ya está creada para administrar preguntas en vivo.
             </p>
             <button
               type="button"
               onClick={goToActiveSession}
-              className="mt-5 h-11 inline-flex items-center justify-center rounded-full bg-[#0a79e8] px-6 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+              className="mt-5 h-11 inline-flex items-center justify-center rounded-full bg-[#0a79e8] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
             >
               Entrar ahora
             </button>

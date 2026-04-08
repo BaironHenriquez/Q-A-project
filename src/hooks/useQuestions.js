@@ -108,16 +108,16 @@ export function useQuestions(sessionId) {
 
   const createQuestion = useCallback(
     async ({ author, userId, content }) => {
-      if (!sessionId) throw new Error('No existe una sesion activa')
+      if (!sessionId) throw new Error('No existe una sesión activa')
 
       const text = (content || '').trim()
-      if (!text) throw new Error('La pregunta no puede estar vacia')
+      if (!text) throw new Error('La pregunta no puede estar vacía')
       if (text.length > MAX_QUESTION) {
-        throw new Error(`La pregunta supera el limite de ${MAX_QUESTION} caracteres`)
+        throw new Error(`La pregunta supera el límite de ${MAX_QUESTION} caracteres`)
       }
 
       await addDoc(buildQuestionsCollectionRef(sessionId), {
-        author: author || 'Anonimo',
+        author: author || 'Anónimo',
         userId: userId || 'unknown',
         content: text,
         status: 'pending',
@@ -187,9 +187,9 @@ export function useQuestions(sessionId) {
       if (!sessionId || !questionId) return
 
       const text = (content || '').trim()
-      if (!text) throw new Error('La pregunta no puede estar vacia')
+      if (!text) throw new Error('La pregunta no puede estar vacía')
       if (text.length > MAX_QUESTION) {
-        throw new Error(`La pregunta supera el limite de ${MAX_QUESTION} caracteres`)
+        throw new Error(`La pregunta supera el límite de ${MAX_QUESTION} caracteres`)
       }
 
       await updateDoc(buildQuestionDocRef(sessionId, questionId), { content: text })
@@ -202,14 +202,14 @@ export function useQuestions(sessionId) {
       if (!sessionId || !questionId) return
 
       const text = (content || '').trim()
-      if (!text) throw new Error('La respuesta no puede estar vacia')
+      if (!text) throw new Error('La respuesta no puede estar vacía')
       if (text.length > MAX_ANSWER) {
-        throw new Error(`La respuesta supera el limite de ${MAX_ANSWER} caracteres`)
+        throw new Error(`La respuesta supera el límite de ${MAX_ANSWER} caracteres`)
       }
 
       const newAnswer = {
         id: createId(),
-        author: author || 'Anonimo',
+        author: author || 'Anónimo',
         userId: userId || 'unknown',
         content: text,
         status: isModerator ? 'approved' : 'pending',

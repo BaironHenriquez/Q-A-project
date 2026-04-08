@@ -26,7 +26,7 @@ export function useSession() {
         setLoading(false)
       },
       (err) => {
-        console.error('Error al escuchar la sesion:', err)
+        console.error('Error al escuchar la sesión:', err)
         setError(err)
         setLoading(false)
       },
@@ -43,7 +43,7 @@ export function useSession() {
       if (existingSession.exists()) {
         return {
           ok: false,
-          message: 'Ya existe una sesion activa. Debes borrarla antes de crear una nueva.',
+          message: 'Ya existe una sesión activa. Debes borrarla antes de crear una nueva.',
         }
       }
 
@@ -60,17 +60,17 @@ export function useSession() {
 
       return { ok: true }
     } catch (err) {
-      console.error('Error creando sesion:', err)
+      console.error('Error creando sesión:', err)
       return {
         ok: false,
-        message: 'No se pudo crear la sesion. Intenta de nuevo.',
+        message: 'No se pudo crear la sesión. Intenta de nuevo.',
       }
     }
   }
 
   const deleteSession = async () => {
     if (!session) {
-      return { ok: false, message: 'No hay una sesion activa para borrar.' }
+      return { ok: false, message: 'No hay una sesión activa para borrar.' }
     }
 
     try {
@@ -78,10 +78,10 @@ export function useSession() {
       await deleteDoc(sessionRef)
       return { ok: true }
     } catch (err) {
-      console.error('Error borrando sesion activa:', err)
+      console.error('Error borrando sesión activa:', err)
       return {
         ok: false,
-        message: 'No se pudo borrar la sesion activa. Intenta de nuevo.',
+        message: 'No se pudo borrar la sesión activa. Intenta de nuevo.',
       }
     }
   }
@@ -95,7 +95,7 @@ export function useSession() {
         isAcceptingQuestions: !session.isAcceptingQuestions,
       })
     } catch (err) {
-      console.error('Error actualizando estado de sesion:', err)
+      console.error('Error actualizando estado de sesión:', err)
     }
   }
 

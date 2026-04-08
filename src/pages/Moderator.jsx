@@ -153,17 +153,17 @@ export default function Moderator({
   }
 
   return (
-    <main className="min-h-screen bg-[#f8fbfe] text-[#3f2abe] font-sans p-4 md:p-8">
+    <main className="min-h-screen bg-[#e6f2fa] text-[#3f2abe] font-sans p-4 md:p-8">
       <section className="mx-auto max-w-6xl flex flex-col gap-5">
-        <article className="rounded-[2rem] bg-white p-6 md:p-8 shadow-md">
+        <article className="rounded-[2rem] bg-[#e6f2fa] p-6 md:p-8 shadow-md">
           <h1 className="text-3xl font-bold">Panel moderador</h1>
-          <p className="mt-2 text-sm font-medium text-[#716274] break-words">
+          <p className="mt-2 text-sm font-medium text-[#7162d8] break-words">
             Usuario activo: {user?.uid || 'anónimo'}
           </p>
 
           <div className="mt-5 rounded-3xl bg-[#e6f2fa] p-5">
             <p className="text-lg font-bold break-words">{session?.title || 'Sesión sin título'}</p>
-            <p className="mt-1 text-sm font-medium text-[#716274] break-words">
+            <p className="mt-1 text-sm font-medium text-[#7162d8] break-words">
               ID: {session?.sessionId || 'sin id'}
             </p>
             <p className="mt-2 text-sm font-bold text-[#3f2abe]">
@@ -176,8 +176,8 @@ export default function Moderator({
                 onClick={toggleSessionStatus}
                 className={`h-12 rounded-full px-6 text-sm font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 ${
                   session?.isAcceptingQuestions
-                    ? 'bg-[#39d3b4] text-[#3f2abe]'
-                    : 'bg-[#8b0368] text-white'
+                    ? 'bg-[#39d3b5] text-[#3f2abe]'
+                    : 'bg-[#8b0368] text-[#e6f2fa]'
                 }`}
               >
                 {session?.isAcceptingQuestions ? 'Pausar recepción' : 'Reanudar recepción'}
@@ -186,13 +186,13 @@ export default function Moderator({
                 href={presentationUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="h-12 inline-flex items-center justify-center rounded-full bg-[#0a79e8] px-6 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                className="h-12 inline-flex items-center justify-center rounded-full bg-[#0a79e8] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
               >
                 Abrir presentación
               </a>
               <Link
                 to="/"
-                className="h-12 inline-flex items-center justify-center rounded-full bg-white px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                className="h-12 inline-flex items-center justify-center rounded-full bg-[#e6f2fa] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
               >
                 Volver al inicio
               </Link>
@@ -200,14 +200,14 @@ export default function Moderator({
                 type="button"
                 onClick={handleDeleteSession}
                 disabled={deletingSession}
-                className="h-12 inline-flex items-center justify-center rounded-full bg-[#8b0368] px-6 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+                className="h-12 inline-flex items-center justify-center rounded-full bg-[#8b0368] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
               >
                 {deletingSession ? 'Borrando sesión...' : 'Borrar sesión activa'}
               </button>
               <button
                 type="button"
                 onClick={handleLogout}
-                className="h-12 inline-flex items-center justify-center rounded-full bg-white px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                className="h-12 inline-flex items-center justify-center rounded-full bg-[#e6f2fa] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
               >
                 Cerrar sesión de moderador
               </button>
@@ -219,21 +219,21 @@ export default function Moderator({
         </article>
 
         <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <article className="rounded-[2rem] bg-white p-5 shadow-sm">
+          <article className="rounded-[2rem] bg-[#e6f2fa] p-5 shadow-sm">
             <div className="flex items-center gap-2">
               <ClipboardList size={18} className="text-[#0a79e8]" />
               <h2 className="text-xl font-bold">Preguntas pendientes ({pendingQuestions.length})</h2>
             </div>
 
             {loadingQuestions && (
-              <p className="mt-4 text-sm font-medium text-[#716274]">Cargando bandeja...</p>
+              <p className="mt-4 text-sm font-medium text-[#7162d8]">Cargando bandeja...</p>
             )}
 
             {!loadingQuestions && !pendingQuestions.length && !questionsError && (
               <div className="mt-8 rounded-3xl bg-[#e6f2fa] p-8 text-center">
-                <MessageSquare size={34} className="mx-auto text-[#716274]" />
+                <MessageSquare size={34} className="mx-auto text-[#7162d8]" />
                 <p className="mt-3 text-base font-bold text-[#3f2abe]">Tu bandeja está limpia</p>
-                <p className="mt-1 text-sm font-medium text-[#716274]">La audiencia está pensando...</p>
+                <p className="mt-1 text-sm font-medium text-[#7162d8]">La audiencia está pensando...</p>
               </div>
             )}
 
@@ -246,11 +246,11 @@ export default function Moderator({
                 const isEditing = editingQuestionId === question.id
 
                 return (
-                  <article key={question.id} className="rounded-3xl bg-[#f8fbfe] p-4 shadow-sm">
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-[#716274]">
+                  <article key={question.id} className="rounded-3xl bg-[#e6f2fa] p-4 shadow-sm">
+                    <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-[#7162d8]">
                       <span className="inline-flex items-center gap-1">
                         <UserRound size={14} />
-                        {question.author || 'Anonimo'}
+                        {question.author || 'Anónimo'}
                       </span>
                       <span className="inline-flex items-center gap-1">
                         <Clock3 size={14} />
@@ -274,20 +274,20 @@ export default function Moderator({
                           maxLength={100}
                           value={editingText}
                           onChange={(event) => setEditingText(event.target.value)}
-                          className="h-11 w-full rounded-full bg-white px-4 text-sm font-medium text-[#3f2abe] outline-none"
+                          className="h-11 w-full rounded-full bg-[#e6f2fa] px-4 text-sm font-medium text-[#3f2abe] outline-none"
                         />
                         <div className="mt-2 flex flex-wrap gap-2">
                           <button
                             type="button"
                             onClick={() => saveEdit(question.id)}
-                            className="h-10 rounded-full bg-[#0a79e8] px-4 text-xs font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                            className="h-10 rounded-full bg-[#0a79e8] px-4 text-xs font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                           >
                             Guardar
                           </button>
                           <button
                             type="button"
                             onClick={cancelEdit}
-                            className="h-10 rounded-full bg-white px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                            className="h-10 rounded-full bg-[#e6f2fa] px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                           >
                             Cancelar
                           </button>
@@ -303,7 +303,7 @@ export default function Moderator({
                         <button
                           type="button"
                           onClick={() => setQuestionStatus(question.id, 'approved')}
-                          className="h-11 inline-flex items-center gap-2 rounded-full bg-[#39d3b4] px-5 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                          className="h-11 inline-flex items-center gap-2 rounded-full bg-[#39d3b5] px-5 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                         >
                           <Check size={16} />
                           Aprobar
@@ -311,7 +311,7 @@ export default function Moderator({
                         <button
                           type="button"
                           onClick={() => setQuestionStatus(question.id, 'rejected')}
-                          className="h-11 inline-flex items-center gap-2 rounded-full bg-[#8b0368] px-5 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                          className="h-11 inline-flex items-center gap-2 rounded-full bg-[#8b0368] px-5 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                         >
                           <X size={16} />
                           Rechazar
@@ -322,7 +322,7 @@ export default function Moderator({
                         <button
                           type="button"
                           onClick={() => startEdit(question)}
-                          className="h-10 inline-flex items-center gap-2 rounded-full bg-white px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                          className="h-10 inline-flex items-center gap-2 rounded-full bg-[#e6f2fa] px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                         >
                           <PenSquare size={14} />
                           Editar
@@ -332,7 +332,7 @@ export default function Moderator({
                           onClick={() =>
                             updateQuestionFields(question.id, { isPinned: !question.isPinned })
                           }
-                          className="h-10 inline-flex items-center gap-2 rounded-full bg-white px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                          className="h-10 inline-flex items-center gap-2 rounded-full bg-[#e6f2fa] px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                         >
                           <Pin size={14} />
                           {question.isPinned ? 'Desfijar' : 'Fijar'}
@@ -342,7 +342,7 @@ export default function Moderator({
                           onClick={() =>
                             updateQuestionFields(question.id, { isHidden: !question.isHidden })
                           }
-                          className="h-10 inline-flex items-center gap-2 rounded-full bg-white px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                          className="h-10 inline-flex items-center gap-2 rounded-full bg-[#e6f2fa] px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                         >
                           <EyeOff size={14} />
                           {question.isHidden ? 'Mostrar' : 'Ocultar'}
@@ -355,23 +355,23 @@ export default function Moderator({
             </div>
           </article>
 
-          <article className="rounded-[2rem] bg-white p-5 shadow-sm">
+          <article className="rounded-[2rem] bg-[#e6f2fa] p-5 shadow-sm">
             <h2 className="text-xl font-bold">Respuestas pendientes ({pendingAnswersQueue.length})</h2>
 
             {!pendingAnswersQueue.length && (
               <div className="mt-4 rounded-3xl bg-[#e6f2fa] p-6 text-center">
-                <MessageSquare size={30} className="mx-auto text-[#716274]" />
-                <p className="mt-2 text-sm font-medium text-[#716274]">No hay respuestas en revision.</p>
+                <MessageSquare size={30} className="mx-auto text-[#7162d8]" />
+                <p className="mt-2 text-sm font-medium text-[#7162d8]">No hay respuestas en revisión.</p>
               </div>
             )}
 
             <div className="mt-4 flex flex-col gap-3">
               {pendingAnswersQueue.map((answer) => (
-                <article key={answer.id} className="rounded-3xl bg-[#f8fbfe] p-4 shadow-sm">
-                  <p className="text-xs font-medium text-[#716274] break-words">
+                <article key={answer.id} className="rounded-3xl bg-[#e6f2fa] p-4 shadow-sm">
+                  <p className="text-xs font-medium text-[#7162d8] break-words">
                     Pregunta: {answer.questionContent}
                   </p>
-                  <p className="mt-2 text-xs font-bold text-[#716274] break-words">
+                  <p className="mt-2 text-xs font-bold text-[#7162d8] break-words">
                     {answer.author || 'Anónimo'}
                   </p>
                   <p className="mt-1 text-sm font-medium text-[#3f2abe] break-words">{answer.content}</p>
@@ -386,7 +386,7 @@ export default function Moderator({
                           nextStatus: 'approved',
                         })
                       }
-                      className="h-10 rounded-full bg-[#39d3b4] px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                      className="h-10 rounded-full bg-[#39d3b5] px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                     >
                       Aprobar respuesta
                     </button>
@@ -399,7 +399,7 @@ export default function Moderator({
                           nextStatus: 'rejected',
                         })
                       }
-                      className="h-10 rounded-full bg-[#8b0368] px-4 text-xs font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                      className="h-10 rounded-full bg-[#8b0368] px-4 text-xs font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                     >
                       Rechazar respuesta
                     </button>
@@ -415,13 +415,13 @@ export default function Moderator({
             <div className="mt-3 flex flex-col gap-2">
               {!approvedQuestions.length && (
                 <div className="rounded-3xl bg-[#e6f2fa] p-5 text-center">
-                  <p className="text-sm font-medium text-[#716274]">Aún no hay preguntas aprobadas.</p>
+                  <p className="text-sm font-medium text-[#7162d8]">Aún no hay preguntas aprobadas.</p>
                 </div>
               )}
               {approvedQuestions.slice(0, 8).map((question) => (
-                <article key={question.id} className="rounded-3xl bg-[#f8fbfe] p-4 shadow-sm">
+                <article key={question.id} className="rounded-3xl bg-[#e6f2fa] p-4 shadow-sm">
                   <p className="text-sm font-bold text-[#3f2abe] break-words">{question.content}</p>
-                  <p className="mt-1 text-xs font-medium text-[#716274] break-words">
+                  <p className="mt-1 text-xs font-medium text-[#7162d8] break-words">
                     {question.author || 'Anónimo'}
                   </p>
 
@@ -430,8 +430,8 @@ export default function Moderator({
                       {question.answers
                         .filter((answer) => answer.status === 'approved')
                         .map((answer) => (
-                          <div key={answer.id} className="rounded-2xl bg-gray-50 p-3">
-                            <p className="text-xs font-bold text-[#716274] break-words">{answer.author}</p>
+                          <div key={answer.id} className="rounded-2xl bg-[#e6f2fa] p-3">
+                            <p className="text-xs font-bold text-[#7162d8] break-words">{answer.author}</p>
                             <p className="mt-1 text-sm font-medium text-[#3f2abe] break-words">{answer.content}</p>
                           </div>
                         ))}
@@ -440,7 +440,7 @@ export default function Moderator({
 
                   <form
                     onSubmit={(event) => handleSubmitModeratorAnswer(event, question.id)}
-                    className="mt-3 rounded-3xl bg-white p-3 flex items-center gap-2"
+                    className="mt-3 rounded-3xl bg-[#e6f2fa] p-3 flex items-center gap-2"
                   >
                     <input
                       type="text"
@@ -448,7 +448,7 @@ export default function Moderator({
                       value={answerDrafts[question.id] || ''}
                       onChange={(event) => handleAnswerDraftChange(question.id, event.target.value)}
                       placeholder="Responder como moderador"
-                      className="h-10 w-full rounded-full bg-[#f8fbfe] px-4 text-xs font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none"
+                      className="h-10 w-full rounded-full bg-[#e6f2fa] px-4 text-xs font-medium text-[#3f2abe] placeholder:text-[#7162d8] outline-none"
                       disabled={answeringQuestionId === question.id}
                     />
                     <button
@@ -457,7 +457,7 @@ export default function Moderator({
                         answeringQuestionId === question.id ||
                         !(answerDrafts[question.id] || '').trim()
                       }
-                      className="h-10 shrink-0 inline-flex items-center gap-2 rounded-full bg-[#0a79e8] px-4 text-xs font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+                      className="h-10 shrink-0 inline-flex items-center gap-2 rounded-full bg-[#0a79e8] px-4 text-xs font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
                     >
                       <SendHorizontal size={14} />
                       Responder

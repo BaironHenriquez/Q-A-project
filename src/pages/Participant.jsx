@@ -191,18 +191,18 @@ export default function Participant({ user, session }) {
 
   if (!hasSessionAccess) {
     return (
-      <div className="min-h-screen bg-[#f8fbfe] font-sans px-4 py-6 md:py-10 flex items-center justify-center">
-        <div className="w-full max-w-md p-6 md:p-8 rounded-[2rem] bg-white shadow-lg text-center">
+      <div className="min-h-screen bg-[#e6f2fa] font-sans px-4 py-6 md:py-10 flex items-center justify-center">
+        <div className="w-full max-w-md p-6 md:p-8 rounded-[2rem] bg-[#e6f2fa] shadow-lg text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-[#3f2abe] mb-2 break-words">
             Ingresar a sesión activa
           </h2>
-          <p className="text-sm md:text-base font-medium mb-6 text-[#716274]">
+          <p className="text-sm md:text-base font-medium mb-6 text-[#7162d8]">
             Accede con QR o escribe el ID de la sesión activa.
           </p>
 
           {sidFromUrl && sidFromUrl !== session?.sessionId && (
             <p className="mb-4 text-sm font-bold text-[#8b0368] break-words">
-                El codigo QR no corresponde a la sesion activa.
+                El código QR no corresponde a la sesión activa.
             </p>
           )}
 
@@ -214,11 +214,11 @@ export default function Participant({ user, session }) {
               value={sessionCode}
               onChange={(event) => setSessionCode(event.target.value)}
               placeholder="ID de sesión"
-              className="h-12 md:h-14 w-full rounded-full bg-[#f8fbfe] px-5 text-center text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none mb-4"
+              className="h-12 md:h-14 w-full rounded-full bg-[#e6f2fa] px-5 text-center text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#7162d8] outline-none mb-4"
             />
             <button
               type="submit"
-              className="h-12 md:h-14 w-full rounded-full text-sm md:text-base font-bold text-white bg-[#0a79e8] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+              className="h-12 md:h-14 w-full rounded-full text-sm md:text-base font-bold text-[#e6f2fa] bg-[#0a79e8] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
             >
               Validar sesión
             </button>
@@ -234,12 +234,12 @@ export default function Participant({ user, session }) {
 
   if (!isNameSet) {
     return (
-      <div className="min-h-screen bg-[#f8fbfe] font-sans px-4 py-6 md:py-10 flex items-center justify-center">
-        <div className="w-full max-w-sm p-6 md:p-8 rounded-[2rem] bg-white shadow-lg text-center">
+      <div className="min-h-screen bg-[#e6f2fa] font-sans px-4 py-6 md:py-10 flex items-center justify-center">
+        <div className="w-full max-w-sm p-6 md:p-8 rounded-[2rem] bg-[#e6f2fa] shadow-lg text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-[#3f2abe] mb-2 break-words">
             {session?.title || 'Sesión activa'}
           </h2>
-          <p className="text-sm md:text-base font-medium mb-6 text-[#716274]">
+          <p className="text-sm md:text-base font-medium mb-6 text-[#7162d8]">
             Ingresa un nombre para participar
           </p>
           <form
@@ -261,11 +261,11 @@ export default function Participant({ user, session }) {
               value={myName}
               onChange={(event) => setMyName(event.target.value)}
               placeholder="Tu nombre..."
-              className="h-12 md:h-14 w-full rounded-full bg-[#f8fbfe] px-5 text-center text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none mb-4"
+              className="h-12 md:h-14 w-full rounded-full bg-[#e6f2fa] px-5 text-center text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#7162d8] outline-none mb-4"
             />
             <button
               type="submit"
-              className="h-12 md:h-14 w-full rounded-full text-sm md:text-base font-bold text-white bg-[#0a79e8] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+              className="h-12 md:h-14 w-full rounded-full text-sm md:text-base font-bold text-[#e6f2fa] bg-[#0a79e8] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
             >
               Entrar a la sala
             </button>
@@ -276,18 +276,18 @@ export default function Participant({ user, session }) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f8fbfe] text-[#3f2abe] font-sans p-4 md:p-8 pb-[calc(11rem+env(safe-area-inset-bottom))] md:pb-8 relative">
+    <main className="min-h-screen bg-[#e6f2fa] text-[#3f2abe] font-sans p-4 md:p-8 pb-[calc(11rem+env(safe-area-inset-bottom))] md:pb-8 relative">
       <section className="mx-auto max-w-3xl flex flex-col gap-4 md:gap-5">
-        <article className="rounded-[2rem] bg-white p-5 md:p-6 shadow-sm">
+        <article className="rounded-[2rem] bg-[#e6f2fa] p-5 md:p-6 shadow-sm">
           <h1 className="text-2xl md:text-3xl font-bold">Participante</h1>
-          <p className="mt-2 text-sm md:text-base font-medium text-[#716274] break-words">
+          <p className="mt-2 text-sm md:text-base font-medium text-[#7162d8] break-words">
               {session?.title || 'Sesión activa'}
           </p>
           <div className="mt-4 rounded-3xl bg-[#e6f2fa] p-4 md:p-5 text-sm md:text-base">
             <p className="font-bold text-[#3f2abe]">Hola, {myName}</p>
-              <p className="mt-1 font-medium text-[#716274] break-words">UID: {actorId || 'anónimo'}</p>
-            <p className="mt-1 font-medium text-[#716274]">Preguntas visibles: {visibleQuestions.length}</p>
-            <p className="mt-1 font-medium text-[#716274]">
+              <p className="mt-1 font-medium text-[#7162d8] break-words">UID: {actorId || 'anónimo'}</p>
+            <p className="mt-1 font-medium text-[#7162d8]">Preguntas visibles: {visibleQuestions.length}</p>
+            <p className="mt-1 font-medium text-[#7162d8]">
               Las respuestas de participantes pasan por moderación antes de mostrarse.
             </p>
           </div>
@@ -309,21 +309,21 @@ export default function Participant({ user, session }) {
         <section className="rounded-[2rem] bg-[#e6f2fa] p-3 md:p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between gap-3">
             <h2 className="text-lg md:text-xl font-bold text-[#3f2abe]">Preguntas publicadas</h2>
-            <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-[#3f2abe]">
+            <span className="rounded-full bg-[#e6f2fa] px-3 py-1 text-xs font-bold text-[#3f2abe]">
               {visibleQuestions.length}
             </span>
           </div>
 
           <div className="flex flex-col gap-3">
           {loadingQuestions && (
-            <p className="text-sm md:text-base font-medium text-[#716274]">Actualizando preguntas...</p>
+            <p className="text-sm md:text-base font-medium text-[#7162d8]">Actualizando preguntas...</p>
           )}
 
           {!loadingQuestions && visibleQuestions.length === 0 && (
-            <article className="rounded-[2rem] bg-white p-8 md:p-10 shadow-sm text-center">
-              <Sparkles size={36} className="mx-auto text-[#716274]" />
+            <article className="rounded-[2rem] bg-[#e6f2fa] p-8 md:p-10 shadow-sm text-center">
+              <Sparkles size={36} className="mx-auto text-[#7162d8]" />
               <p className="mt-3 text-lg md:text-xl font-bold text-[#3f2abe]">Sin preguntas publicadas por ahora</p>
-                <p className="mt-1 text-sm md:text-base font-medium text-[#716274]">Cuando moderación apruebe preguntas, aparecerán aquí.</p>
+                <p className="mt-1 text-sm md:text-base font-medium text-[#7162d8]">Cuando moderación apruebe preguntas, aparecerán aquí.</p>
             </article>
           )}
 
@@ -341,11 +341,11 @@ export default function Participant({ user, session }) {
               : []
 
             return (
-              <article key={question.id} className="rounded-[2rem] border border-[#d2e5f3] bg-white p-5 md:p-6 shadow-sm">
-                <p className="text-[11px] font-bold uppercase tracking-wide text-[#716274]">
+              <article key={question.id} className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-5 md:p-6 shadow-sm">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-[#7162d8]">
                   Pregunta {index + 1}
                 </p>
-                <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-[#716274]">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-[#7162d8]">
                   <span className="rounded-full bg-[#e6f2fa] px-3 py-1">
                     {question.status || 'pending'}
                   </span>
@@ -366,8 +366,8 @@ export default function Participant({ user, session }) {
                       const hasIncorrectVote = incorrectVoters.includes(actorId)
 
                       return (
-                      <div key={answer.id} className="rounded-2xl bg-gray-50 p-3">
-                        <p className="text-xs md:text-sm font-bold text-[#716274] break-words">{answer.author}</p>
+                      <div key={answer.id} className="rounded-2xl bg-[#e6f2fa] p-3">
+                        <p className="text-xs md:text-sm font-bold text-[#7162d8] break-words">{answer.author}</p>
                         <p className="mt-1 text-sm md:text-base font-medium text-[#3f2abe] break-words">{answer.content}</p>
 
                         <div className="mt-3 flex flex-wrap gap-2">
@@ -382,8 +382,8 @@ export default function Participant({ user, session }) {
                             }
                             className={`h-9 rounded-full px-4 text-xs font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 ${
                               hasCorrectVote
-                                ? 'bg-[#39d3b4] text-[#3f2abe]'
-                                : 'bg-white text-[#3f2abe]'
+                                ? 'bg-[#39d3b5] text-[#3f2abe]'
+                                : 'bg-[#e6f2fa] text-[#3f2abe]'
                             }`}
                           >
                             Es correcto ({answer.isCorrectVotes || 0})
@@ -400,7 +400,7 @@ export default function Participant({ user, session }) {
                             className={`h-9 rounded-full px-4 text-xs font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 ${
                               hasIncorrectVote
                                 ? 'bg-[#e08ad4] text-[#3f2abe]'
-                                : 'bg-white text-[#3f2abe]'
+                                : 'bg-[#e6f2fa] text-[#3f2abe]'
                             }`}
                           >
                             No es correcto ({answer.isIncorrectVotes || 0})
@@ -414,7 +414,7 @@ export default function Participant({ user, session }) {
 
                 {myPendingAnswers.length > 0 && (
                   <div className="mt-3 rounded-2xl bg-[#e6f2fa] p-3">
-                    <p className="text-xs font-bold text-[#716274]">Tienes respuestas pendientes de revisión:</p>
+                    <p className="text-xs font-bold text-[#7162d8]">Tienes respuestas pendientes de revisión:</p>
                     <div className="mt-2 flex flex-col gap-2">
                       {myPendingAnswers.map((answer) => (
                         <p key={answer.id} className="text-sm font-medium text-[#3f2abe] break-words">
@@ -427,7 +427,7 @@ export default function Participant({ user, session }) {
 
                 <form
                   onSubmit={(event) => handleSubmitAnswer(event, question.id)}
-                  className="mt-4 rounded-3xl bg-[#f8fbfe] p-3 flex items-center gap-2"
+                  className="mt-4 rounded-3xl bg-[#e6f2fa] p-3 flex items-center gap-2"
                 >
                   <input
                     type="text"
@@ -435,13 +435,13 @@ export default function Participant({ user, session }) {
                     value={answerDrafts[question.id] || ''}
                     onChange={(event) => handleAnswerDraftChange(question.id, event.target.value)}
                     placeholder="Responder a esta pregunta"
-                    className="h-11 w-full rounded-full bg-white px-4 text-sm font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none"
+                    className="h-11 w-full rounded-full bg-[#e6f2fa] px-4 text-sm font-medium text-[#3f2abe] placeholder:text-[#7162d8] outline-none"
                     disabled={sendingAnswerQuestionId === question.id}
                   />
                   <button
                     type="submit"
                     disabled={sendingAnswerQuestionId === question.id || !(answerDrafts[question.id] || '').trim()}
-                    className="h-11 shrink-0 rounded-full bg-white px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+                    className="h-11 shrink-0 rounded-full bg-[#e6f2fa] px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
                   >
                     Responder
                   </button>
@@ -453,7 +453,7 @@ export default function Participant({ user, session }) {
                     onClick={() => handleToggleVote(question)}
                     className={`h-12 rounded-full px-5 text-sm md:text-base font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 inline-flex items-center gap-2 ${
                       hasVoted
-                        ? 'bg-[#39d3b4] text-[#3f2abe]'
+                        ? 'bg-[#39d3b5] text-[#3f2abe]'
                         : 'bg-[#e6f2fa] text-[#3f2abe]'
                     }`}
                   >
@@ -469,16 +469,16 @@ export default function Participant({ user, session }) {
         </section>
 
         <div className="flex flex-wrap gap-3">
-          <Link to="/" className="h-11 inline-flex items-center justify-center rounded-full bg-white px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95">
+          <Link to="/" className="h-11 inline-flex items-center justify-center rounded-full bg-[#e6f2fa] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95">
             Volver
           </Link>
         </div>
       </section>
 
-      <div className="fixed bottom-0 left-0 right-0 z-30 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] bg-[#f8fbfe] md:static md:p-0">
+      <div className="fixed bottom-0 left-0 right-0 z-30 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] bg-[#e6f2fa] md:static md:p-0">
         <form
           onSubmit={handleSubmitQuestion}
-          className="mx-auto max-w-3xl rounded-[2rem] bg-white p-3 md:p-4 shadow-lg flex items-center gap-2"
+          className="mx-auto max-w-3xl rounded-[2rem] bg-[#e6f2fa] p-3 md:p-4 shadow-lg flex items-center gap-2"
         >
           <div className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#e6f2fa] text-[#3f2abe]">
             <MessageSquare size={18} />
@@ -489,7 +489,7 @@ export default function Participant({ user, session }) {
             value={questionText}
             onChange={(event) => setQuestionText(event.target.value)}
             placeholder={cooldownSeconds > 0 ? `Espera ${cooldownSeconds}s...` : 'Escribe tu pregunta'}
-            className="h-12 md:h-14 w-full rounded-full bg-[#f8fbfe] px-5 text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none"
+            className="h-12 md:h-14 w-full rounded-full bg-[#e6f2fa] px-5 text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#7162d8] outline-none"
             disabled={sendingQuestion || cooldownSeconds > 0 || !session?.isAcceptingQuestions}
           />
           <button
@@ -500,7 +500,7 @@ export default function Participant({ user, session }) {
               !questionText.trim() ||
               !session?.isAcceptingQuestions
             }
-            className="h-12 md:h-14 shrink-0 rounded-full bg-[#0a79e8] px-5 text-sm md:text-base font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60 inline-flex items-center gap-2"
+            className="h-12 md:h-14 shrink-0 rounded-full bg-[#0a79e8] px-5 text-sm md:text-base font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60 inline-flex items-center gap-2"
           >
             <SendHorizontal size={16} />
             Enviar

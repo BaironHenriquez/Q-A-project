@@ -85,7 +85,7 @@ export default function App() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#3f2abe]">
-        <Loader2 className="animate-spin text-white" size={48} />
+        <Loader2 className="animate-spin text-[#e6f2fa]" size={48} />
       </div>
     )
   }
@@ -95,7 +95,7 @@ export default function App() {
       <button
         type="button"
         onClick={toggleTheme}
-        className="theme-toggle fixed right-4 top-4 z-50 inline-flex h-11 items-center gap-2 rounded-full border border-[#64a2cc] bg-white px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+        className="theme-toggle fixed right-4 top-4 z-50 inline-flex h-11 items-center gap-2 rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
         aria-label="Cambiar tema"
       >
         {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
