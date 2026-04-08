@@ -112,6 +112,9 @@ export default function Moderator({
     navigate('/')
   }
 
+  const presentationUrl =
+    typeof window !== 'undefined' ? `${window.location.origin}/presentacion` : '/presentacion'
+
   const handleAnswerDraftChange = (questionId, value) => {
     setAnswerDrafts((previous) => ({
       ...previous,
@@ -179,12 +182,14 @@ export default function Moderator({
               >
                 {session?.isAcceptingQuestions ? 'Pausar recepción' : 'Reanudar recepción'}
               </button>
-              <Link
-                to="/presentacion"
+              <a
+                href={presentationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="h-12 inline-flex items-center justify-center rounded-full bg-[#0a79e8] px-6 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
               >
                 Abrir presentación
-              </Link>
+              </a>
               <Link
                 to="/"
                 className="h-12 inline-flex items-center justify-center rounded-full bg-white px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"

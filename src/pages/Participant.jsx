@@ -3,9 +3,23 @@ import { MessageSquare, SendHorizontal, Sparkles, ThumbsUp } from 'lucide-react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useQuestions } from '../hooks/useQuestions'
 
+const PARTICIPANT_ID_KEY = 'qna_participant_id'
+
+const getOrCreateParticipantId = () => {
+  if (typeof window === 'undefined') return ''
+
+  const current = localStorage.getItem(PARTICIPANT_ID_KEY)
+  if (current) return current
+
+  const generated = `guest-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
+  localStorage.setItem(PARTICIPANT_ID_KEY, generated)
+  return generated
+}
+
 export default function Participant({ user, session }) {
   const [searchParams] = useSearchParams()
   const sidFromUrl = (searchParams.get('sid') || '').trim()
+  const [participantId] = useState(getOrCreateParticipantId)
 
   const [sessionCode, setSessionCode] = useState('')
   const [sessionCodeError, setSessionCodeError] = useState('')
@@ -24,6 +38,7 @@ export default function Participant({ user, session }) {
   const [answerDrafts, setAnswerDrafts] = useState({})
   const [sendingAnswerQuestionId, setSendingAnswerQuestionId] = useState('')
   const [answerError, setAnswerError] = useState('')
+  const actorId = user?.uid || participantId || ''
 
   const {
     sortedQuestions,
@@ -58,6 +73,10 @@ export default function Participant({ user, session }) {
     if (!questionText.trim()) return
     if (cooldownSeconds > 0) return
     if (!session?.isAcceptingQuestions) return
+    if (!actorId) {
+      setQuestionError('No se pudo identificar tu usuario para enviar la pregunta.')
+      return
+    }
 
     setSendingQuestion(true)
     setQuestionError('')
@@ -65,7 +84,7 @@ export default function Participant({ user, session }) {
     try {
       await createQuestion({
         author: myName,
-        userId: user?.uid,
+        userId: actorId,
         content: questionText,
       })
       setQuestionText('')
@@ -108,6 +127,10 @@ export default function Participant({ user, session }) {
     const answerText = (answerDrafts[questionId] || '').trim()
     if (!answerText) return
     if (sendingAnswerQuestionId === questionId) return
+    if (!actorId) {
+      setAnswerError('No se pudo identificar tu usuario para responder.')
+      return
+    }
 
     setSendingAnswerQuestionId(questionId)
     setAnswerError('')
@@ -116,7 +139,7 @@ export default function Participant({ user, session }) {
       await addAnswer({
         questionId,
         author: myName,
-        userId: user?.uid,
+        userId: actorId,
         content: answerText,
         isModerator: false,
       })
@@ -133,11 +156,16 @@ export default function Participant({ user, session }) {
   }
 
   const handleVoteAnswerCorrectness = async ({ questionId, answerId, voteType }) => {
+    if (!actorId) {
+      setAnswerError('No se pudo identificar tu usuario para votar esta respuesta.')
+      return
+    }
+
     try {
       await voteAnswerCorrectness({
         questionId,
         answerId,
-        userId: user?.uid,
+        userId: actorId,
         voteType,
       })
     } catch (error) {
@@ -146,10 +174,15 @@ export default function Participant({ user, session }) {
   }
 
   const handleToggleVote = async (question) => {
+    if (!actorId) {
+      setQuestionError('No se pudo identificar tu usuario para registrar el +1.')
+      return
+    }
+
     try {
       await toggleVote({
         questionId: question.id,
-        userId: user?.uid,
+        userId: actorId,
       })
     } catch (error) {
       setQuestionError(error.message || 'No se pudo registrar tu voto.')
@@ -252,7 +285,7 @@ export default function Participant({ user, session }) {
           </p>
           <div className="mt-4 rounded-3xl bg-[#e6f2fa] p-4 md:p-5 text-sm md:text-base">
             <p className="font-bold text-[#3f2abe]">Hola, {myName}</p>
-              <p className="mt-1 font-medium text-[#716274] break-words">UID: {user?.uid || 'anónimo'}</p>
+              <p className="mt-1 font-medium text-[#716274] break-words">UID: {actorId || 'anónimo'}</p>
             <p className="mt-1 font-medium text-[#716274]">Preguntas visibles: {visibleQuestions.length}</p>
             <p className="mt-1 font-medium text-[#716274]">
               Las respuestas de participantes pasan por moderación antes de mostrarse.
@@ -273,7 +306,15 @@ export default function Participant({ user, session }) {
           )}
         </article>
 
-        <div className="flex flex-col gap-3">
+        <section className="rounded-[2rem] bg-[#e6f2fa] p-3 md:p-4 shadow-sm">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h2 className="text-lg md:text-xl font-bold text-[#3f2abe]">Preguntas publicadas</h2>
+            <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-[#3f2abe]">
+              {visibleQuestions.length}
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-3">
           {loadingQuestions && (
             <p className="text-sm md:text-base font-medium text-[#716274]">Actualizando preguntas...</p>
           )}
@@ -286,21 +327,24 @@ export default function Participant({ user, session }) {
             </article>
           )}
 
-          {visibleQuestions.map((question) => {
+          {visibleQuestions.map((question, index) => {
             const hasVoted = Array.isArray(question.upvotedBy)
-              ? question.upvotedBy.includes(user?.uid)
+              ? question.upvotedBy.includes(actorId)
               : false
             const approvedAnswers = Array.isArray(question.answers)
               ? question.answers.filter((answer) => answer.status === 'approved')
               : []
             const myPendingAnswers = Array.isArray(question.answers)
               ? question.answers.filter(
-                  (answer) => answer.status === 'pending' && answer.userId === user?.uid,
+                  (answer) => answer.status === 'pending' && answer.userId === actorId,
                 )
               : []
 
             return (
-              <article key={question.id} className="rounded-[2rem] bg-white p-5 md:p-6 shadow-sm">
+              <article key={question.id} className="rounded-[2rem] border border-[#d2e5f3] bg-white p-5 md:p-6 shadow-sm">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-[#716274]">
+                  Pregunta {index + 1}
+                </p>
                 <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-[#716274]">
                   <span className="rounded-full bg-[#e6f2fa] px-3 py-1">
                     {question.status || 'pending'}
@@ -318,8 +362,8 @@ export default function Participant({ user, session }) {
                       const incorrectVoters = Array.isArray(answer.isIncorrectVotedBy)
                         ? answer.isIncorrectVotedBy
                         : []
-                      const hasCorrectVote = correctVoters.includes(user?.uid)
-                      const hasIncorrectVote = incorrectVoters.includes(user?.uid)
+                      const hasCorrectVote = correctVoters.includes(actorId)
+                      const hasIncorrectVote = incorrectVoters.includes(actorId)
 
                       return (
                       <div key={answer.id} className="rounded-2xl bg-gray-50 p-3">
@@ -421,7 +465,8 @@ export default function Participant({ user, session }) {
               </article>
             )
           })}
-        </div>
+          </div>
+        </section>
 
         <div className="flex flex-wrap gap-3">
           <Link to="/" className="h-11 inline-flex items-center justify-center rounded-full bg-white px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95">

@@ -6,7 +6,11 @@ const STORAGE_KEY = 'qna_moderator_authenticated'
 
 const getInitialModeratorAuth = () => {
   if (typeof window === 'undefined') return false
-  return sessionStorage.getItem(STORAGE_KEY) === 'true'
+
+  return (
+    sessionStorage.getItem(STORAGE_KEY) === 'true' ||
+    localStorage.getItem(STORAGE_KEY) === 'true'
+  )
 }
 
 export function useModeratorAuth() {
@@ -25,12 +29,14 @@ export function useModeratorAuth() {
     if (!isValid) return false
 
     sessionStorage.setItem(STORAGE_KEY, 'true')
+    localStorage.setItem(STORAGE_KEY, 'true')
     setIsModeratorAuthenticated(true)
     return true
   }
 
   const logoutModerator = () => {
     sessionStorage.removeItem(STORAGE_KEY)
+    localStorage.removeItem(STORAGE_KEY)
     setIsModeratorAuthenticated(false)
   }
 

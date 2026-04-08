@@ -23,13 +23,14 @@ const buildQuestionDocRef = (sessionId, questionId) =>
 const createId = () =>
   `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
 
+const normalizeVoters = (value) => {
+  const list = Array.isArray(value) ? value : []
+  return [...new Set(list.map((item) => String(item || '').trim()).filter(Boolean))]
+}
+
 const normalizeAnswerVotes = (answer) => {
-  const correctVoters = Array.isArray(answer.isCorrectVotedBy)
-    ? answer.isCorrectVotedBy
-    : []
-  const incorrectVoters = Array.isArray(answer.isIncorrectVotedBy)
-    ? answer.isIncorrectVotedBy
-    : []
+  const correctVoters = normalizeVoters(answer.isCorrectVotedBy)
+  const incorrectVoters = normalizeVoters(answer.isIncorrectVotedBy)
 
   return {
     ...answer,
@@ -41,8 +42,7 @@ const normalizeAnswerVotes = (answer) => {
 }
 
 const normalizeQuestionVotes = (question) => {
-  const voters = Array.isArray(question.upvotedBy) ? question.upvotedBy : []
-  const uniqueVoters = [...new Set(voters.filter(Boolean))]
+  const uniqueVoters = normalizeVoters(question.upvotedBy)
 
   return {
     ...question,
@@ -135,22 +135,27 @@ export function useQuestions(sessionId) {
 
   const toggleVote = useCallback(
     async ({ questionId, userId }) => {
-      if (!sessionId || !questionId || !userId) return
+      if (!sessionId) throw new Error('No existe una sesión activa para votar')
+      if (!questionId) throw new Error('La pregunta no es válida')
+
+      const actorId = String(userId || '').trim()
+      if (!actorId) throw new Error('No se pudo identificar al usuario para votar')
 
       const qRef = buildQuestionDocRef(sessionId, questionId)
 
       await runTransaction(db, async (transaction) => {
         const qSnap = await transaction.get(qRef)
-        if (!qSnap.exists()) return
+        if (!qSnap.exists()) {
+          throw new Error('La pregunta ya no existe')
+        }
 
         const data = qSnap.data()
-        const currentVoters = Array.isArray(data.upvotedBy) ? data.upvotedBy : []
-        const uniqueVoters = [...new Set(currentVoters.filter(Boolean))]
-        const hasVoted = uniqueVoters.includes(userId)
+        const uniqueVoters = normalizeVoters(data.upvotedBy)
+        const hasVoted = uniqueVoters.includes(actorId)
 
         const nextVoters = hasVoted
-          ? uniqueVoters.filter((uid) => uid !== userId)
-          : [...uniqueVoters, userId]
+          ? uniqueVoters.filter((uid) => uid !== actorId)
+          : [...uniqueVoters, actorId]
 
         transaction.update(qRef, {
           upvotedBy: nextVoters,
@@ -245,51 +250,70 @@ export function useQuestions(sessionId) {
 
   const voteAnswerCorrectness = useCallback(
     async ({ questionId, answerId, userId, voteType }) => {
-      if (!sessionId || !questionId || !answerId || !userId) return
-      if (voteType !== 'correct' && voteType !== 'incorrect') return
+      if (!sessionId) throw new Error('No existe una sesión activa para votar')
+      if (!questionId || !answerId) throw new Error('La respuesta no es válida')
+
+      const actorId = String(userId || '').trim()
+      if (!actorId) throw new Error('No se pudo identificar al usuario para votar')
+
+      if (voteType !== 'correct' && voteType !== 'incorrect') {
+        throw new Error('Tipo de voto inválido')
+      }
 
       const qRef = buildQuestionDocRef(sessionId, questionId)
-      const qSnap = await getDoc(qRef)
-      if (!qSnap.exists()) return
 
-      const updatedAnswers = (qSnap.data().answers || []).map((rawAnswer) => {
-        const answer = normalizeAnswerVotes(rawAnswer)
-        if (answer.id !== answerId || answer.status !== 'approved') return answer
+      await runTransaction(db, async (transaction) => {
+        const qSnap = await transaction.get(qRef)
+        if (!qSnap.exists()) {
+          throw new Error('La pregunta ya no existe')
+        }
 
-        let correctVoters = [...answer.isCorrectVotedBy]
-        let incorrectVoters = [...answer.isIncorrectVotedBy]
+        let voteApplied = false
+        const updatedAnswers = (qSnap.data().answers || []).map((rawAnswer) => {
+          const answer = normalizeAnswerVotes(rawAnswer)
+          if (answer.id !== answerId || answer.status !== 'approved') return answer
 
-        const hasCorrectVote = correctVoters.includes(userId)
-        const hasIncorrectVote = incorrectVoters.includes(userId)
+          voteApplied = true
 
-        if (voteType === 'correct') {
-          if (hasCorrectVote) {
-            correctVoters = correctVoters.filter((uid) => uid !== userId)
-          } else {
-            correctVoters.push(userId)
-            incorrectVoters = incorrectVoters.filter((uid) => uid !== userId)
+          let correctVoters = [...answer.isCorrectVotedBy]
+          let incorrectVoters = [...answer.isIncorrectVotedBy]
+
+          const hasCorrectVote = correctVoters.includes(actorId)
+          const hasIncorrectVote = incorrectVoters.includes(actorId)
+
+          if (voteType === 'correct') {
+            if (hasCorrectVote) {
+              correctVoters = correctVoters.filter((uid) => uid !== actorId)
+            } else {
+              correctVoters = normalizeVoters([...correctVoters, actorId])
+              incorrectVoters = incorrectVoters.filter((uid) => uid !== actorId)
+            }
           }
-        }
 
-        if (voteType === 'incorrect') {
-          if (hasIncorrectVote) {
-            incorrectVoters = incorrectVoters.filter((uid) => uid !== userId)
-          } else {
-            incorrectVoters.push(userId)
-            correctVoters = correctVoters.filter((uid) => uid !== userId)
+          if (voteType === 'incorrect') {
+            if (hasIncorrectVote) {
+              incorrectVoters = incorrectVoters.filter((uid) => uid !== actorId)
+            } else {
+              incorrectVoters = normalizeVoters([...incorrectVoters, actorId])
+              correctVoters = correctVoters.filter((uid) => uid !== actorId)
+            }
           }
+
+          return {
+            ...answer,
+            isCorrectVotedBy: correctVoters,
+            isIncorrectVotedBy: incorrectVoters,
+            isCorrectVotes: correctVoters.length,
+            isIncorrectVotes: incorrectVoters.length,
+          }
+        })
+
+        if (!voteApplied) {
+          throw new Error('La respuesta no está disponible para votar')
         }
 
-        return {
-          ...answer,
-          isCorrectVotedBy: correctVoters,
-          isIncorrectVotedBy: incorrectVoters,
-          isCorrectVotes: correctVoters.length,
-          isIncorrectVotes: incorrectVoters.length,
-        }
+        transaction.update(qRef, { answers: updatedAnswers })
       })
-
-      await updateDoc(qRef, { answers: updatedAnswers })
     },
     [sessionId],
   )
