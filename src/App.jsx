@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
+import { Moon, Sun } from 'lucide-react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { useAuth } from './hooks/useAuth'
@@ -7,6 +9,17 @@ import Home from './pages/Home'
 import Moderator from './pages/Moderator'
 import Participant from './pages/Participant'
 import Presentation from './pages/Presentation'
+
+const getInitialTheme = () => {
+  if (typeof window === 'undefined') return 'light'
+
+  const savedTheme = localStorage.getItem('qna_theme')
+  if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light'
+}
 
 function ProtectedRoute({ session, loading, user, requireModerator = false, children }) {
   if (loading) {
@@ -30,12 +43,22 @@ function ProtectedRoute({ session, loading, user, requireModerator = false, chil
 
 export default function App() {
   const { user, loading: authLoading } = useAuth()
+  const [theme, setTheme] = useState(getInitialTheme)
   const {
     session,
     loading: sessionLoading,
     createSession,
     toggleSessionStatus,
   } = useSession()
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('qna_theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme((previous) => (previous === 'light' ? 'dark' : 'light'))
+  }
 
   if (authLoading) {
     return (
@@ -47,6 +70,15 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <button
+        type="button"
+        onClick={toggleTheme}
+        className="theme-toggle fixed right-4 top-4 z-50 inline-flex h-11 items-center gap-2 rounded-full border border-[#64a2cc] bg-white px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+        aria-label="Cambiar tema"
+      >
+        {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+        {theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
+      </button>
       <Routes>
         <Route
           path="/"
