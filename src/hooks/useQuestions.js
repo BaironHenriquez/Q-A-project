@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
-  addDoc,
   arrayUnion,
   collection,
   doc,
-  getDoc,
   onSnapshot,
   runTransaction,
   updateDoc,
@@ -19,6 +17,9 @@ const buildQuestionsCollectionRef = (sessionId) =>
 
 const buildQuestionDocRef = (sessionId, questionId) =>
   doc(db, 'artifacts', appId, 'public', 'data', 'sessions', sessionId, 'questions', questionId)
+
+const buildActiveSessionRef = () =>
+  doc(db, 'artifacts', appId, 'public', 'data', 'session_meta', 'active')
 
 const createId = () =>
   `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
@@ -79,7 +80,10 @@ export function useQuestions(sessionId) {
     return () => unsubscribe()
   }, [sessionId])
 
-  const activeQuestions = useMemo(() => (sessionId ? questions : []), [questions, sessionId])
+  const activeQuestions = useMemo(
+    () => (snapshotMeta.sessionId === sessionId ? questions : []),
+    [questions, sessionId, snapshotMeta.sessionId],
+  )
 
   const loadingQuestions = useMemo(
     () => Boolean(sessionId) && (snapshotMeta.sessionId !== sessionId || !snapshotMeta.loaded),
@@ -116,18 +120,37 @@ export function useQuestions(sessionId) {
         throw new Error(`La pregunta supera el límite de ${MAX_QUESTION} caracteres`)
       }
 
-      await addDoc(buildQuestionsCollectionRef(sessionId), {
-        author: author || 'Anónimo',
-        userId: userId || 'unknown',
-        content: text,
-        status: 'pending',
-        upvotes: 0,
-        upvotedBy: [],
-        isPinned: false,
-        isProjected: false,
-        isHidden: false,
-        createdAt: Date.now(),
-        answers: [],
+      await runTransaction(db, async (transaction) => {
+        const activeSessionRef = buildActiveSessionRef()
+        const activeSessionSnap = await transaction.get(activeSessionRef)
+
+        if (!activeSessionSnap.exists()) {
+          throw new Error('No hay una sesión activa en este momento.')
+        }
+
+        const activeSessionData = activeSessionSnap.data()
+        if (String(activeSessionData.sessionId || '') !== String(sessionId)) {
+          throw new Error('La sesión activa cambió. Actualiza e inténtalo de nuevo.')
+        }
+
+        if (!activeSessionData.isAcceptingQuestions) {
+          throw new Error('La moderación pausó temporalmente la recepción de preguntas.')
+        }
+
+        const newQuestionRef = doc(buildQuestionsCollectionRef(sessionId))
+        transaction.set(newQuestionRef, {
+          author: author || 'Anónimo',
+          userId: userId || 'unknown',
+          content: text,
+          status: 'pending',
+          upvotes: 0,
+          upvotedBy: [],
+          isPinned: false,
+          isProjected: false,
+          isHidden: false,
+          createdAt: Date.now(),
+          answers: [],
+        })
       })
     },
     [sessionId],
@@ -232,18 +255,27 @@ export function useQuestions(sessionId) {
       if (!sessionId || !questionId || !answerId) return
 
       const qRef = buildQuestionDocRef(sessionId, questionId)
-      const qSnap = await getDoc(qRef)
-      if (!qSnap.exists()) return
 
-      const updatedAnswers = (qSnap.data().answers || []).map((ans) => {
-        if (ans.id !== answerId) return ans
-        return {
-          ...normalizeAnswerVotes(ans),
-          status: nextStatus,
-        }
+      await runTransaction(db, async (transaction) => {
+        const qSnap = await transaction.get(qRef)
+        if (!qSnap.exists()) return
+
+        let hasTargetAnswer = false
+        const updatedAnswers = (qSnap.data().answers || []).map((rawAnswer) => {
+          const answer = normalizeAnswerVotes(rawAnswer)
+          if (answer.id !== answerId) return answer
+
+          hasTargetAnswer = true
+          return {
+            ...answer,
+            status: nextStatus,
+          }
+        })
+
+        if (!hasTargetAnswer) return
+
+        transaction.update(qRef, { answers: updatedAnswers })
       })
-
-      await updateDoc(qRef, { answers: updatedAnswers })
     },
     [sessionId],
   )

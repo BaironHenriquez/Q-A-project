@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { MessageSquare } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { Link } from 'react-router-dom'
@@ -8,13 +9,29 @@ export default function Presentation({ session }) {
     session?.sessionId || '',
   )}`
   const { approvedQuestions } = useQuestions(session?.sessionId)
+  const featuredQuestions = useMemo(
+    () =>
+      [...approvedQuestions]
+        .sort((left, right) => {
+          if (Boolean(right.isPinned) !== Boolean(left.isPinned)) {
+            return Number(Boolean(right.isPinned)) - Number(Boolean(left.isPinned))
+          }
+
+          const voteDiff = (right.upvotes || 0) - (left.upvotes || 0)
+          if (voteDiff !== 0) return voteDiff
+
+          return (right.createdAt || 0) - (left.createdAt || 0)
+        })
+        .slice(0, 10),
+    [approvedQuestions],
+  )
 
   return (
-    <main className="min-h-screen bg-[#e6f2fa] text-[#3f2abe] font-sans p-4 md:p-6 lg:p-8">
+    <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-6 lg:p-8">
       <section className="grid min-h-[calc(100vh-2rem)] w-full grid-cols-1 gap-5 md:grid-cols-[380px_minmax(0,1fr)] lg:gap-6">
-        <aside className="rounded-[2rem] bg-[#e6f2fa] p-6 md:p-7 lg:p-8 shadow-md">
+        <aside className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-md md:p-7 lg:p-8">
           <h2 className="text-2xl md:text-3xl font-bold">Acceso audiencia</h2>
-          <p className="mt-2 text-sm md:text-base font-medium text-[#7162d8]">
+          <p className="mt-2 text-sm md:text-base font-medium text-[#3f2abe]">
             Escanea y entra directo a la vista de participante.
           </p>
           <div className="mt-5 inline-flex rounded-3xl bg-[#e6f2fa] p-4 lg:p-5 shadow-sm">
@@ -26,18 +43,18 @@ export default function Presentation({ session }) {
               level="H"
             />
           </div>
-          <p className="mt-3 break-words text-sm md:text-base font-bold text-[#0a79e8]">{joinUrl}</p>
+          <p className="mt-3 break-words text-sm md:text-base font-bold text-[#8b0368]">{joinUrl}</p>
           <Link
             to="/moderador"
-            className="mt-5 h-11 md:h-12 inline-flex items-center justify-center rounded-full bg-[#e6f2fa] px-5 md:px-6 text-sm md:text-base font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+            className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-[#3f2abe] px-5 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 md:h-12 md:px-6 md:text-base"
           >
             Volver a moderador
           </Link>
         </aside>
 
-        <article className="rounded-[2rem] bg-[#e6f2fa] p-6 md:p-8 lg:p-10 shadow-md flex min-h-0 flex-col">
+        <article className="flex min-h-0 flex-col rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-md md:p-8 lg:p-10">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">Presentación en vivo</h1>
-          <p className="mt-2 text-base md:text-lg font-medium text-[#7162d8] break-words">
+          <p className="mt-2 text-base md:text-lg font-medium text-[#3f2abe] break-words">
             Sesión: {session?.title || 'Sin título'}
           </p>
 
@@ -50,25 +67,25 @@ export default function Presentation({ session }) {
           <div className="mt-6 flex-1 overflow-y-auto pr-1">
             {!approvedQuestions.length && (
               <div className="rounded-3xl bg-[#e6f2fa] p-10 lg:p-14 text-center">
-                <MessageSquare size={44} className="mx-auto text-[#7162d8]" />
+                <MessageSquare size={44} className="mx-auto text-[#3f2abe]" />
                 <p className="mt-3 text-lg md:text-xl lg:text-2xl font-bold text-[#3f2abe]">
                   Aún no hay preguntas destacadas
                 </p>
-                <p className="mt-1 text-sm md:text-base font-medium text-[#7162d8]">
+                <p className="mt-1 text-sm md:text-base font-medium text-[#3f2abe]">
                   La audiencia está calentando motores.
                 </p>
               </div>
             )}
 
-            {!!approvedQuestions.length && (
+            {!!featuredQuestions.length && (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-5">
-                {approvedQuestions.slice(0, 10).map((question) => {
+                {featuredQuestions.map((question) => {
                   const approvedAnswers = Array.isArray(question.answers)
                     ? question.answers.filter((answer) => answer.status === 'approved')
                     : []
 
                   return (
-                    <article key={question.id} className="rounded-3xl bg-[#e6f2fa] p-5 md:p-6 shadow-sm">
+                    <article key={question.id} className="rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-sm md:p-6">
                       {question.isPinned && (
                         <span className="inline-flex rounded-full bg-[#e08ad4] px-3 py-1 text-xs font-bold text-[#3f2abe]">
                           Fijada
@@ -78,21 +95,21 @@ export default function Presentation({ session }) {
                         {question.content}
                       </p>
                       <div className="mt-3 flex items-center justify-between gap-3">
-                        <p className="text-sm md:text-base font-medium text-[#7162d8] break-words">
+                        <p className="text-sm md:text-base font-medium text-[#3f2abe] break-words">
                           {question.author || 'Anónimo'}
                         </p>
-                        <p className="text-sm md:text-base font-bold text-[#0a79e8]">
+                        <p className="text-sm md:text-base font-bold text-[#8b0368]">
                           {question.upvotes || 0} votos
                         </p>
                       </div>
 
                       {approvedAnswers.length > 0 && (
                         <div className="mt-4 rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-3">
-                          <p className="text-xs font-bold text-[#7162d8]">Respuestas aprobadas</p>
+                          <p className="text-xs font-bold text-[#3f2abe]">Respuestas aprobadas</p>
                           <div className="mt-2 flex flex-col gap-2">
                             {approvedAnswers.map((answer) => (
                               <div key={answer.id} className="rounded-xl bg-[#e6f2fa] p-3">
-                                <p className="text-xs font-bold text-[#7162d8] break-words">
+                                <p className="text-xs font-bold text-[#3f2abe] break-words">
                                   {answer.author || 'Anónimo'}
                                 </p>
                                 <p className="mt-1 text-sm font-medium text-[#3f2abe] break-words">

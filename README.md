@@ -1,48 +1,123 @@
 # Q&A Live para Eventos (React + Firebase + Vercel)
 
-Plataforma de preguntas y respuestas en tiempo real con 4 vistas:
+Aplicación web de preguntas y respuestas en tiempo real con cuatro vistas principales: inicio, moderación, presentación y participación.
 
-1. Home: creacion de sesion del moderador e ingreso del participante.
-2. Moderador: aprobacion, rechazo, edicion, fijado, ocultado, proyeccion y acciones en lote.
-3. Presentacion: vista para proyector con QR permanente y top 10 aprobadas.
-4. Participante: interfaz movil para preguntar, reaccionar y responder en hilos.
+## Estado actual del flujo
+
+1. Inicio (/):
+	- Login de moderador.
+	- Ingreso de participante con ID de sesión.
+	- Creación de sesión activa.
+	- Entrada a sesión activa.
+	- Borrado de sesión activa con confirmación en pantalla.
+
+2. Moderador (/moderador):
+	- Pausar y reanudar recepción de preguntas.
+	- Abrir presentación en pestaña nueva.
+	- Aprobar o rechazar preguntas pendientes.
+	- Acciones avanzadas por pregunta: editar, fijar/desfijar, ocultar/mostrar.
+	- Aprobar o rechazar respuestas pendientes.
+	- Responder como moderador en preguntas aprobadas.
+
+3. Presentación (/presentacion):
+	- QR y URL para ingreso de participantes.
+	- Top 10 de preguntas aprobadas ordenadas por: fijadas, votos, recencia.
+	- Visualización de respuestas aprobadas.
+	- Aviso visible cuando la sesión está pausada.
+
+4. Participante (/participante):
+	- Acceso por QR o ID de sesión activa.
+	- Registro de nombre para participar.
+	- Envío de preguntas (si la sesión está abierta).
+	- Voto +1 con comportamiento toggle.
+	- Respuestas por pregunta y votos de correcto/no correcto en respuestas aprobadas.
 
 ## Stack
 
 - Frontend: React + Vite.
 - Backend: Firebase Firestore + Firebase Auth.
-- Deploy: Vercel (frontend estatico).
+- Estilos: Tailwind CSS + CSS global.
+- Deploy: Vercel.
 
-## Estructura de la app
+## Estructura actual del proyecto
 
 ```txt
 src/
-├─ App.jsx                 # Router principal y protección de rutas
-├─ main.jsx                # Punto de entrada React
+├─ App.jsx
+├─ main.jsx
+├─ index.css
+├─ assets/
+│  ├─ hero.png
+│  ├─ react.svg
+│  └─ vite.svg
 ├─ pages/
-│  ├─ Home.jsx             # Login moderador y creación/gestión de sesión activa
-│  ├─ Moderator.jsx        # Moderación de preguntas en vivo
-│  ├─ Presentation.jsx     # Vista de proyección con QR y preguntas destacadas
-│  └─ Participant.jsx      # Vista móvil para participantes
+│  ├─ Home.jsx
+│  ├─ Moderator.jsx
+│  ├─ Presentation.jsx
+│  └─ Participant.jsx
 ├─ hooks/
-│  ├─ useAuth.js           # Autenticación (anónima/custom token en Firebase)
-│  ├─ useModeratorAuth.js  # Estado de acceso del moderador
-│  ├─ useSession.js        # Sesión activa (crear, leer, cerrar)
-│  └─ useQuestions.js      # CRUD y reacciones de preguntas/respuestas
+│  ├─ useAuth.js
+│  ├─ useModeratorAuth.js
+│  ├─ useSession.js
+│  └─ useQuestions.js
 └─ services/
-   └─ firebase.js          # Inicialización de Firebase (Auth + Firestore)
+	└─ firebase.js
 ```
 
-### Rutas de interfaz
+## Rutas
 
-- `/`: Home (ingreso moderador y control de sesión).
-- `/moderador`: panel del moderador (protegida).
-- `/presentacion`: vista para proyección (protegida).
-- `/participante`: vista de participantes (protegida por sesión activa).
+- /: Inicio.
+- /moderador: Panel de moderación.
+- /presentacion: Vista de proyección.
+- /participante: Vista de usuarios participantes.
+
+## Lógica de datos implementada
+
+### Sesión activa
+
+- Documento: artifacts/{appId}/public/data/session_meta/active.
+- La creación de sesión se realiza con transacción para evitar dobles creaciones concurrentes.
+- El borrado de sesión elimina primero la data histórica de preguntas de la sesión y luego borra el puntero activo.
+
+### Preguntas y respuestas
+
+- Colección: artifacts/{appId}/public/data/sessions/{sessionId}/questions/{questionId}.
+- La creación de pregunta valida de forma transaccional:
+  - que exista sesión activa,
+  - que coincida con sessionId actual,
+  - que la sesión esté aceptando preguntas.
+- Votos de preguntas y votos de respuestas usan transacciones para consistencia.
+- Moderación de respuestas se actualiza con transacción para no perder votos concurrentes.
+
+### Estructura de una pregunta
+
+- author
+- userId
+- content
+- status: pending | approved | rejected
+- upvotes
+- upvotedBy[]
+- isPinned
+- isHidden
+- createdAt
+- answers[]
+
+### Estructura de una respuesta
+
+- id
+- author
+- userId
+- content
+- status: pending | approved | rejected
+- createdAt
+- isCorrectVotes
+- isIncorrectVotes
+- isCorrectVotedBy[]
+- isIncorrectVotedBy[]
 
 ## Variables de entorno
 
-Crea tu archivo `.env.local`:
+Crear .env.local:
 
 ```bash
 VITE_FIREBASE_API_KEY=...
@@ -52,30 +127,8 @@ VITE_FIREBASE_STORAGE_BUCKET=...
 VITE_FIREBASE_MESSAGING_SENDER_ID=...
 VITE_FIREBASE_APP_ID=...
 VITE_APP_ID=q-a-live
-# Opcional: token custom para autenticacion en vez de anonima
 VITE_FIREBASE_AUTH_TOKEN=
 ```
-
-## Reglas tecnicas implementadas
-
-- Rutas de documentos con segmentos pares.
-- Autenticacion previa obligatoria para lectura y escritura.
-- Consultas simples sin filtros complejos (se lee la coleccion completa y se procesa en cliente).
-
-### Estructura de datos Firestore
-
-- Documento de sesion activa:
-	- `artifacts/{appId}/public/data/session_meta/active`
-- Documento de sesion:
-	- `artifacts/{appId}/public/data/sessions/{sessionId}`
-- Coleccion de preguntas:
-	- `artifacts/{appId}/public/data/sessions/{sessionId}/questions/{questionId}`
-
-Cada pregunta guarda:
-
-- `status`: `pending | approved | rejected`
-- `voteCount` y `votesByUid`
-- `replies[]` con `authorName`, `authorUid`, `isModerator`, `status`, `createdAt`
 
 ## Desarrollo local
 
@@ -84,33 +137,19 @@ npm install
 npm run dev
 ```
 
-## Build de produccion
+## Verificación
 
 ```bash
+npm run lint
 npm run build
-npm run preview
 ```
 
-## Deploy en Vercel
+## Producción en Vercel
 
-1. Importa el repositorio en Vercel.
-2. Framework preset: Vite.
-3. Agrega las mismas variables `VITE_*` en Project Settings > Environment Variables.
-4. Deploy.
+1. Repositorio conectado a Vercel.
+2. Branch main configurada para producción.
+3. Cada push a main dispara un deploy de producción.
 
-## Seguridad recomendada en Firebase
+## Nota de seguridad
 
-Activa Firebase Authentication (Anonymous o Custom Token) y configura reglas de Firestore para exigir usuario autenticado en lectura/escritura.
-
-Ejemplo base (ajusta a tu politica):
-
-```txt
-rules_version = '2';
-service cloud.firestore {
-	match /databases/{database}/documents {
-		match /artifacts/{appId}/public/data/{document=**} {
-			allow read, write: if request.auth != null;
-		}
-	}
-}
-```
+La autenticación de moderador actual es de tipo cliente (credenciales locales). Para uso en producción real, mover la validación a backend y reforzar reglas de Firestore por rol.
