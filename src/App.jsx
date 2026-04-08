@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react'
 import { Loader2 } from 'lucide-react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
@@ -92,6 +93,7 @@ export default function App() {
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <Analytics />
     </BrowserRouter>
   )
 }
