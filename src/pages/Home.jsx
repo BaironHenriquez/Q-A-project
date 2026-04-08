@@ -122,7 +122,7 @@ export default function Home({
   if (!isModeratorAuthenticated) {
     return (
       <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-8">
-        <section className="mx-auto max-w-md">
+        <section className="mx-auto w-full max-w-lg">
           <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 md:p-9 shadow-md">
             <p className="text-sm font-extrabold text-[#8b0368]">Q&A en tiempo real</p>
             <h1 className="mt-2 text-3xl font-extrabold tracking-tight leading-tight">Ingreso moderador</h1>
@@ -221,7 +221,7 @@ export default function Home({
 
   return (
     <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-8">
-      <section className="mx-auto max-w-4xl flex flex-col gap-6">
+      <section className="mx-auto w-full max-w-[1100px] flex flex-col gap-6 lg:gap-7">
         <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 md:p-9 shadow-md">
           <p className="text-sm font-extrabold text-[#8b0368]">Q&A en tiempo real</p>
           <h1 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
@@ -235,15 +235,15 @@ export default function Home({
             <button
               type="button"
               onClick={handleLogout}
-              className="h-10 inline-flex items-center justify-center rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+              className="h-11 inline-flex items-center justify-center rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
             >
               Cerrar sesión de moderador
             </button>
           </div>
 
-          <form onSubmit={handleCreate} className="mt-6 flex flex-col md:flex-row gap-4">
+          <form onSubmit={handleCreate} className="mt-6 flex flex-col gap-4 md:flex-row md:items-end">
             <div className="w-full flex flex-col gap-1">
-              <label htmlFor="session-title" className="text-[11px] font-extrabold uppercase tracking-wide text-[#3f2abe]">
+              <label htmlFor="session-title" className="text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">
                 Título de la sesión
               </label>
               <input
@@ -262,7 +262,7 @@ export default function Home({
             <button
               type="submit"
               disabled={creating || hasActiveSession}
-              className="h-12 rounded-full bg-[#3f2abe] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+              className="h-12 rounded-full bg-[#3f2abe] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60 md:self-end"
             >
               {creating ? 'Creando...' : 'Crear sesión'}
             </button>
@@ -293,7 +293,7 @@ export default function Home({
                 ID: {session.sessionId}
               </p>
               <p className="mt-1 text-sm font-semibold text-[#3f2abe]">Acceso de moderador verificado.</p>
-              <div className="mt-4">
+              <div className="mt-4 flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={goToActiveSession}
@@ -306,7 +306,7 @@ export default function Home({
                   type="button"
                   onClick={requestDeleteActiveSession}
                   disabled={deleting}
-                  className="ml-2 mt-2 sm:mt-0 h-11 inline-flex items-center justify-center gap-2 rounded-full bg-[#8b0368] px-5 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+                  className="h-11 inline-flex items-center justify-center gap-2 rounded-full bg-[#8b0368] px-5 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
                 >
                   <Trash2 size={15} />
                   Borrar sesión activa
@@ -324,7 +324,7 @@ export default function Home({
                       type="button"
                       onClick={cancelDeleteActiveSession}
                       disabled={deleting}
-                      className="h-10 rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+                      className="h-11 rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
                     >
                       Cancelar
                     </button>
@@ -332,7 +332,7 @@ export default function Home({
                       type="button"
                       onClick={handleDeleteActiveSession}
                       disabled={deleting}
-                      className="h-10 rounded-full bg-[#8b0368] px-4 text-xs font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+                      className="h-11 rounded-full bg-[#8b0368] px-4 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
                     >
                       {deleting ? 'Borrando...' : 'Sí, borrar definitivamente'}
                     </button>
@@ -343,7 +343,7 @@ export default function Home({
           )}
         </article>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 shadow-sm">
             <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#8b0368]">
               <PlusCircle size={20} />

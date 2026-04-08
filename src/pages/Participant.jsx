@@ -327,7 +327,7 @@ export default function Participant({ user, session }) {
 
   return (
     <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-8 pb-[calc(11rem+env(safe-area-inset-bottom))] md:pb-8 relative">
-      <section className="mx-auto max-w-3xl flex flex-col gap-5 md:gap-6">
+      <section className="mx-auto w-full max-w-4xl flex flex-col gap-5 md:gap-6">
         <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-md md:p-7">
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Participante</h1>
           <p className="mt-2 text-sm md:text-base font-semibold text-[#3f2abe] break-words">
@@ -417,7 +417,7 @@ export default function Participant({ user, session }) {
 
             return (
               <article key={question.id} className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-5 md:p-6 shadow-sm">
-                <p className="text-[11px] font-extrabold uppercase tracking-wider text-[#3f2abe]">
+                <p className="text-xs font-extrabold uppercase tracking-wider text-[#3f2abe]">
                   Pregunta {index + 1}
                 </p>
                 <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-[#3f2abe]">
@@ -455,7 +455,7 @@ export default function Participant({ user, session }) {
                                 voteType: 'correct',
                               })
                             }
-                            className={`h-9 rounded-full border border-[#64a2cc] px-4 text-xs font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 ${
+                            className={`h-11 rounded-full border border-[#64a2cc] px-4 text-sm font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 ${
                               hasCorrectVote
                                 ? 'bg-[#39d3b5] text-[#3f2abe]'
                                 : 'bg-[#e6f2fa] text-[#3f2abe]'
@@ -472,7 +472,7 @@ export default function Participant({ user, session }) {
                                 voteType: 'incorrect',
                               })
                             }
-                            className={`h-9 rounded-full border border-[#64a2cc] px-4 text-xs font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 ${
+                            className={`h-11 rounded-full border border-[#64a2cc] px-4 text-sm font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 ${
                               hasIncorrectVote
                                 ? 'bg-[#e08ad4] text-[#3f2abe]'
                                 : 'bg-[#e6f2fa] text-[#3f2abe]'
@@ -502,7 +502,7 @@ export default function Participant({ user, session }) {
 
                 <form
                   onSubmit={(event) => handleSubmitAnswer(event, question.id)}
-                  className="mt-4 rounded-3xl bg-[#e6f2fa] p-4 flex items-center gap-2"
+                  className="mt-4 rounded-3xl bg-[#e6f2fa] p-4 flex flex-col gap-2 sm:flex-row sm:items-center"
                 >
                   <label htmlFor={`answer-${question.id}`} className="sr-only">
                     Responder a la pregunta {index + 1}
@@ -520,7 +520,7 @@ export default function Participant({ user, session }) {
                   <button
                     type="submit"
                     disabled={sendingAnswerQuestionId === question.id || !(answerDrafts[question.id] || '').trim()}
-                    className="h-11 shrink-0 rounded-full bg-[#3f2abe] px-4 text-xs font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+                    className="h-11 shrink-0 rounded-full bg-[#3f2abe] px-4 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
                   >
                     Responder
                   </button>
@@ -557,12 +557,12 @@ export default function Participant({ user, session }) {
       <div className="fixed bottom-0 left-0 right-0 z-30 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] bg-[#e6f2fa] md:static md:p-0">
         <form
           onSubmit={handleSubmitQuestion}
-          className="mx-auto max-w-3xl rounded-[2rem] bg-[#e6f2fa] p-4 md:p-5 shadow-lg flex items-center gap-2"
+          className="mx-auto max-w-4xl rounded-[2rem] bg-[#e6f2fa] p-4 md:p-5 shadow-lg flex flex-col gap-2 sm:flex-row sm:items-center"
         >
           <label htmlFor="participant-question-input" className="sr-only">
             Escribe tu pregunta
           </label>
-          <div className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#e6f2fa] text-[#3f2abe]">
+          <div className="hidden sm:inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#e6f2fa] text-[#3f2abe]">
             <MessageSquare size={18} />
           </div>
           <input

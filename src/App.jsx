@@ -87,6 +87,9 @@ export default function App() {
   const toggleTheme = () => {
     setTheme((previous) => (previous === 'light' ? 'dark' : 'light'))
   }
+  const themeToggleText = theme === 'dark' ? 'Modo claro' : 'Modo oscuro'
+  const themeToggleAriaLabel =
+    theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'
 
   if (authLoading) {
     return (
@@ -104,11 +107,15 @@ export default function App() {
       <button
         type="button"
         onClick={toggleTheme}
-        className="theme-toggle fixed right-4 top-4 z-50 inline-flex h-12 items-center gap-2 rounded-full border border-[#64a2cc] bg-[#3f2abe] px-5 text-xs font-extrabold tracking-tight text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
-        aria-label="Cambiar tema"
+        className="theme-toggle fixed right-3 z-50 inline-flex h-11 items-center gap-2 rounded-full border border-[#64a2cc] bg-[#3f2abe] px-3 text-xs font-extrabold tracking-tight text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 sm:right-4 sm:h-12 sm:px-5"
+        style={{ top: 'calc(0.75rem + env(safe-area-inset-top))' }}
+        aria-label={themeToggleAriaLabel}
       >
         {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-        {theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
+        <span className="hidden sm:inline">{themeToggleText}</span>
+        <span className="sm:hidden" aria-hidden="true">
+          {theme === 'dark' ? 'Claro' : 'Oscuro'}
+        </span>
       </button>
       <Suspense fallback={<RouteLoader />}>
         <Routes>
