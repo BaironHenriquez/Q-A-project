@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom'
 import { useQuestions } from '../hooks/useQuestions'
 
 export default function Presentation({ session }) {
-  const joinUrl = `${window.location.origin}/participante`
+  const joinUrl = `${window.location.origin}/participante?sid=${encodeURIComponent(
+    session?.sessionId || '',
+  )}`
   const { approvedQuestions } = useQuestions(session?.sessionId)
 
   return (

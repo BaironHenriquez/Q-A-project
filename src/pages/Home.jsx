@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BadgeCheck, QrCode, UsersRound } from 'lucide-react'
+import { BadgeCheck, LogIn, PlusCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 export default function Home({ user, session, createSession }) {
@@ -31,17 +31,7 @@ export default function Home({ user, session, createSession }) {
     setCreateError('No se pudo crear la sesion. Intenta de nuevo.')
   }
 
-  const goToParticipant = () => {
-    if (!hasActiveSession) {
-      setCreateError('Primero crea una sesion para habilitar la vista de participante.')
-      return
-    }
-
-    setCreateError('')
-    navigate('/participante')
-  }
-
-  const goToModerator = () => {
+  const goToActiveSession = () => {
     if (!hasActiveSession) {
       setCreateError('Primero crea una sesion para habilitar la moderacion.')
       return
@@ -56,31 +46,16 @@ export default function Home({ user, session, createSession }) {
     navigate('/moderador')
   }
 
-  const goToPresentation = () => {
-    if (!hasActiveSession) {
-      setCreateError('Primero crea una sesion para habilitar la presentacion.')
-      return
-    }
-
-    if (!isSessionModerator) {
-      setCreateError('Solo el moderador creador puede abrir la presentacion.')
-      return
-    }
-
-    setCreateError('')
-    navigate('/presentacion')
-  }
-
   return (
     <main className="min-h-screen bg-[#f8fbfe] text-[#3f2abe] font-sans p-4 md:p-8">
-      <section className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-[1.25fr_0.95fr] gap-5 items-start">
+      <section className="mx-auto max-w-4xl flex flex-col gap-5">
         <article className="rounded-[2rem] bg-white p-6 md:p-8 shadow-md">
           <p className="text-sm font-bold text-[#0a79e8]">Q&A en tiempo real</p>
           <h1 className="mt-2 text-3xl md:text-4xl font-bold leading-tight">
-            Crea una sesion y habilita la sala en segundos
+            Centro de control para moderacion
           </h1>
-          <p className="mt-3 text-base font-medium text-[#716274] max-w-3xl break-words">
-            Flujo listo para moderador, presentacion y participante con acceso por QR.
+          <p className="mt-3 text-base font-medium text-[#716274] break-words">
+            Esta vista es solo para moderador. Participantes entran unicamente por QR o con el ID de sesion activa.
           </p>
 
           <form onSubmit={handleCreate} className="mt-6 flex flex-col md:flex-row gap-3">
@@ -121,65 +96,47 @@ export default function Home({ user, session, createSession }) {
               <p className="mt-1 text-sm font-medium break-words text-[#716274]">
                 Moderador actual: {session.moderatorId || 'sin asignar'}
               </p>
-              <div className="mt-4 flex flex-col sm:flex-row gap-2">
+              <div className="mt-4">
                 <button
                   type="button"
-                  onClick={goToModerator}
+                  onClick={goToActiveSession}
                   className="h-11 inline-flex items-center justify-center rounded-full bg-[#0a79e8] px-5 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                 >
-                  Abrir moderador
-                </button>
-                <button
-                  type="button"
-                  onClick={goToPresentation}
-                  className="h-11 inline-flex items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
-                >
-                  Abrir presentacion
-                </button>
-                <button
-                  type="button"
-                  onClick={goToParticipant}
-                  className="h-11 inline-flex items-center justify-center rounded-full bg-[#39d3b4] px-5 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
-                >
-                  Abrir participante
+                  Ingresar a sesion activa
                 </button>
               </div>
             </div>
           )}
         </article>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <article className="rounded-[2rem] bg-white p-6 shadow-sm">
             <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#0a79e8]">
-              <UsersRound size={20} />
+              <PlusCircle size={20} />
             </div>
-            <h2 className="mt-3 text-xl font-bold">Panel moderador</h2>
+            <h2 className="mt-3 text-xl font-bold">Crear sesion</h2>
             <p className="mt-2 text-sm font-medium text-[#716274]">
-              Prioriza preguntas, aprueba o rechaza y controla el ritmo de la sala.
+              Inicia una nueva sesion para habilitar preguntas, moderacion y presentacion.
             </p>
-            <button
-              type="button"
-              onClick={goToModerator}
-              className="mt-5 h-11 inline-flex items-center justify-center rounded-full bg-[#0a79e8] px-6 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
-            >
-              Ir a moderador
-            </button>
+            <p className="mt-5 text-xs font-bold text-[#716274]">
+              Usa el formulario superior para crearla.
+            </p>
           </article>
 
           <article className="rounded-[2rem] bg-white p-6 shadow-sm">
             <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#3f2abe]">
-              <QrCode size={20} />
+              <LogIn size={20} />
             </div>
-            <h2 className="mt-3 text-xl font-bold">Acceso audiencia</h2>
+            <h2 className="mt-3 text-xl font-bold">Ingresar a sesion activa</h2>
             <p className="mt-2 text-sm font-medium text-[#716274]">
-              Entra por QR o enlace directo para votar y enviar preguntas en vivo.
+              Retoma la sesion que ya esta creada, solo si eres el moderador propietario.
             </p>
             <button
               type="button"
-              onClick={goToParticipant}
-              className="mt-5 h-11 inline-flex items-center justify-center rounded-full bg-[#39d3b4] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+              onClick={goToActiveSession}
+              className="mt-5 h-11 inline-flex items-center justify-center rounded-full bg-[#0a79e8] px-6 text-sm font-bold text-white shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
             >
-              Ir a participante
+              Entrar ahora
             </button>
           </article>
         </div>

@@ -1,9 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MessageSquare, SendHorizontal, Sparkles, ThumbsUp } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useQuestions } from '../hooks/useQuestions'
 
 export default function Participant({ user, session }) {
+  const [searchParams] = useSearchParams()
+  const sidFromUrl = (searchParams.get('sid') || '').trim()
+
+  const [sessionCode, setSessionCode] = useState('')
+  const [sessionCodeError, setSessionCodeError] = useState('')
+  const [hasSessionAccess, setHasSessionAccess] = useState(false)
+
   const [myName, setMyName] = useState(
     () => localStorage.getItem('qna_user_name') || '',
   )
@@ -27,8 +34,18 @@ export default function Participant({ user, session }) {
     addAnswer,
     voteAnswerCorrectness,
   } = useQuestions(
-    isNameSet ? session?.sessionId : null,
+    isNameSet && hasSessionAccess ? session?.sessionId : null,
   )
+
+  useEffect(() => {
+    if (!session?.sessionId) return
+    if (!sidFromUrl) return
+
+    if (sidFromUrl === session.sessionId) {
+      setHasSessionAccess(true)
+      setSessionCodeError('')
+    }
+  }, [session?.sessionId, sidFromUrl])
 
   const visibleQuestions = sortedQuestions.filter(
     (question) => question.status === 'approved' && !question.isHidden,
@@ -58,6 +75,24 @@ export default function Participant({ user, session }) {
     } finally {
       setSendingQuestion(false)
     }
+  }
+
+  const handleUnlockSession = (event) => {
+    event.preventDefault()
+
+    const code = sessionCode.trim()
+    if (!code) {
+      setSessionCodeError('Ingresa el ID de la sesion activa.')
+      return
+    }
+
+    if (code !== session?.sessionId) {
+      setSessionCodeError('El ID no coincide con la sesion activa.')
+      return
+    }
+
+    setSessionCodeError('')
+    setHasSessionAccess(true)
   }
 
   const handleAnswerDraftChange = (questionId, value) => {
@@ -124,6 +159,49 @@ export default function Participant({ user, session }) {
     } catch (error) {
       setQuestionError(error.message || 'No se pudo registrar tu voto.')
     }
+  }
+
+  if (!hasSessionAccess) {
+    return (
+      <div className="min-h-screen bg-[#f8fbfe] font-sans px-4 py-6 md:py-10 flex items-center justify-center">
+        <div className="w-full max-w-md p-6 md:p-8 rounded-[2rem] bg-white shadow-lg text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#3f2abe] mb-2 break-words">
+            Ingresar a sesion activa
+          </h2>
+          <p className="text-sm md:text-base font-medium mb-6 text-[#716274]">
+            Accede con QR o escribe el ID de la sesion activa.
+          </p>
+
+          {sidFromUrl && sidFromUrl !== session?.sessionId && (
+            <p className="mb-4 text-sm font-bold text-[#8b0368] break-words">
+              El codigo QR no corresponde a la sesion activa.
+            </p>
+          )}
+
+          <form onSubmit={handleUnlockSession}>
+            <input
+              type="text"
+              required
+              maxLength={40}
+              value={sessionCode}
+              onChange={(event) => setSessionCode(event.target.value)}
+              placeholder="ID de sesion"
+              className="h-12 md:h-14 w-full rounded-full bg-[#f8fbfe] px-5 text-center text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#716274] outline-none mb-4"
+            />
+            <button
+              type="submit"
+              className="h-12 md:h-14 w-full rounded-full text-sm md:text-base font-bold text-white bg-[#0a79e8] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+            >
+              Validar sesion
+            </button>
+          </form>
+
+          {sessionCodeError && (
+            <p className="mt-4 text-sm font-bold text-[#8b0368] break-words">{sessionCodeError}</p>
+          )}
+        </div>
+      </div>
+    )
   }
 
   if (!isNameSet) {
