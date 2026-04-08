@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore'
+import { deleteDoc, doc, getDoc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore'
 import { appId, db } from '../services/firebase'
 
 export function useSession() {
@@ -14,7 +14,12 @@ export function useSession() {
       sessionRef,
       (docSnap) => {
         if (docSnap.exists()) {
-          setSession({ id: docSnap.id, ...docSnap.data() })
+          const data = docSnap.data()
+          setSession({
+            id: docSnap.id,
+            ...data,
+            moderatorId: data.moderatorId || data.moderatorUid || null,
+          })
         } else {
           setSession(null)
         }
@@ -30,24 +35,54 @@ export function useSession() {
     return () => unsubscribe()
   }, [])
 
-  const createSession = async (title, moderatorId) => {
+  const createSession = async (title) => {
     try {
-      const sessionId = Math.random().toString(36).substring(2, 10)
       const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'session_meta', 'active')
+
+      const existingSession = await getDoc(sessionRef)
+      if (existingSession.exists()) {
+        return {
+          ok: false,
+          message: 'Ya existe una sesion activa. Debes borrarla antes de crear una nueva.',
+        }
+      }
+
+      const sessionId = Math.random().toString(36).substring(2, 10)
 
       await setDoc(sessionRef, {
         sessionId,
         title,
         isAcceptingQuestions: true,
         createdAt: Date.now(),
-        moderatorId,
+        moderatorId: 'mod',
+        moderatorUid: 'mod',
       })
 
-      sessionStorage.setItem('qna_role', 'moderator')
-      return true
+      return { ok: true }
     } catch (err) {
       console.error('Error creando sesion:', err)
-      return false
+      return {
+        ok: false,
+        message: 'No se pudo crear la sesion. Intenta de nuevo.',
+      }
+    }
+  }
+
+  const deleteSession = async () => {
+    if (!session) {
+      return { ok: false, message: 'No hay una sesion activa para borrar.' }
+    }
+
+    try {
+      const sessionRef = doc(db, 'artifacts', appId, 'public', 'data', 'session_meta', 'active')
+      await deleteDoc(sessionRef)
+      return { ok: true }
+    } catch (err) {
+      console.error('Error borrando sesion activa:', err)
+      return {
+        ok: false,
+        message: 'No se pudo borrar la sesion activa. Intenta de nuevo.',
+      }
     }
   }
 
@@ -69,6 +104,7 @@ export function useSession() {
     loading,
     error,
     createSession,
+    deleteSession,
     toggleSessionStatus,
   }
 }

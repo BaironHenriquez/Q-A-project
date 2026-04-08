@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom'
 import { useQuestions } from '../hooks/useQuestions'
 
 export default function Presentation({ session }) {
-  const joinUrl = `${window.location.origin}/participante`
+  const joinUrl = `${window.location.origin}/participante?sid=${encodeURIComponent(
+    session?.sessionId || '',
+  )}`
   const { approvedQuestions } = useQuestions(session?.sessionId)
 
   return (
@@ -29,21 +31,21 @@ export default function Presentation({ session }) {
             to="/moderador"
             className="mt-5 h-11 md:h-12 inline-flex items-center justify-center rounded-full bg-white px-5 md:px-6 text-sm md:text-base font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
           >
-            Volver a Moderador
+            Volver a moderador
           </Link>
         </aside>
 
         <article className="rounded-[2rem] bg-white p-6 md:p-8 lg:p-10 shadow-md">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">Presentacion en vivo</h1>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">Presentación en vivo</h1>
           <p className="mt-2 text-base md:text-lg font-medium text-[#716274] break-words">
-            Sesion: {session?.title || 'Sin titulo'}
+            Sesión: {session?.title || 'Sin título'}
           </p>
 
           {!approvedQuestions.length && (
             <div className="mt-8 rounded-3xl bg-[#e6f2fa] p-10 lg:p-14 text-center">
               <MessageSquare size={44} className="mx-auto text-[#716274]" />
-              <p className="mt-3 text-lg md:text-xl lg:text-2xl font-bold text-[#3f2abe]">Aun no hay preguntas destacadas</p>
-              <p className="mt-1 text-sm md:text-base font-medium text-[#716274]">La audiencia esta calentando motores.</p>
+              <p className="mt-3 text-lg md:text-xl lg:text-2xl font-bold text-[#3f2abe]">Aún no hay preguntas destacadas</p>
+              <p className="mt-1 text-sm md:text-base font-medium text-[#716274]">La audiencia está calentando motores.</p>
             </div>
           )}
 
@@ -58,7 +60,7 @@ export default function Presentation({ session }) {
                 <p className="mt-2 text-lg md:text-xl font-bold text-[#3f2abe] break-words">{question.content}</p>
                 <div className="mt-3 flex items-center justify-between gap-3">
                   <p className="text-sm md:text-base font-medium text-[#716274] break-words">
-                    {question.author || 'Anonimo'}
+                    {question.author || 'Anónimo'}
                   </p>
                   <p className="text-sm md:text-base font-bold text-[#0a79e8]">{question.upvotes || 0} votos</p>
                 </div>
