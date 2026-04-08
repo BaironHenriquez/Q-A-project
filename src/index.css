@@ -55,10 +55,12 @@ body {
 
 [data-theme='dark'] .bg-\[\#64a2cc\] {
   background-color: var(--brand-violet) !important;
+  color: var(--brand-white) !important;
 }
 
 [data-theme='dark'] .bg-\[\#e6f2fa\] {
   background-color: var(--brand-white) !important;
+  color: var(--brand-violet) !important;
 }
 
 [data-theme='dark'] .bg-\[\#3f2abe\] {
@@ -85,17 +87,16 @@ body {
   color: color-mix(in srgb, var(--brand-violet) 72%, var(--brand-white) 28%) !important;
 }
 
-[data-theme='dark'] .bg-\[\#64a2cc\].text-\[\#3f2abe\] {
-  color: var(--brand-white) !important;
-}
-
-[data-theme='dark'] .bg-\[\#e6f2fa\].text-\[\#3f2abe\],
-[data-theme='dark'] .bg-\[\#e6f2fa\] .text-\[\#3f2abe\] {
-  color: var(--brand-violet) !important;
-}
-
 [data-theme='dark'] .bg-\[\#e6f2fa\] .text-\[\#8b0368\] {
   color: var(--brand-purple) !important;
+}
+
+.bg-\[\#e6f2fa\].shadow-sm,
+.bg-\[\#e6f2fa\].shadow-md,
+.bg-\[\#e6f2fa\].shadow-lg {
+  box-shadow:
+    0 16px 28px color-mix(in srgb, var(--brand-violet) 10%, transparent),
+    0 1px 0 color-mix(in srgb, var(--brand-blue) 22%, transparent) inset;
 }
 
 [data-theme='dark'] .bg-\[\#e6f2fa\].shadow-sm,
