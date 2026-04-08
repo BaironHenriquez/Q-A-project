@@ -14,7 +14,12 @@ export function useSession() {
       sessionRef,
       (docSnap) => {
         if (docSnap.exists()) {
-          setSession({ id: docSnap.id, ...docSnap.data() })
+          const data = docSnap.data()
+          setSession({
+            id: docSnap.id,
+            ...data,
+            moderatorId: data.moderatorId || data.moderatorUid || null,
+          })
         } else {
           setSession(null)
         }
@@ -41,6 +46,7 @@ export function useSession() {
         isAcceptingQuestions: true,
         createdAt: Date.now(),
         moderatorId,
+        moderatorUid: moderatorId,
       })
 
       sessionStorage.setItem('qna_role', 'moderator')
