@@ -183,8 +183,8 @@ export default function Moderator({
             </span>
           </div>
 
-          <div className="mt-6 grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
-            <div className="rounded-3xl bg-[#e6f2fa] p-5 md:p-6">
+          <div className="mt-6 flex flex-wrap items-start gap-5">
+            <div className="w-full min-w-[300px] flex-[2_1_640px] rounded-3xl bg-[#e6f2fa] p-5 md:p-6">
               <p className="text-xl font-extrabold break-words">{session?.title || 'Sesión sin título'}</p>
               <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words">
                 ID: {session?.sessionId || 'sin id'}
@@ -195,11 +195,11 @@ export default function Moderator({
 
               <div className="mt-5 rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-4">
                 <p className="px-1 text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">Acciones del moderador</p>
-                <div className="mt-3 flex flex-nowrap gap-2 overflow-x-auto pb-1">
+                <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={toggleSessionStatus}
-                    className={`h-12 shrink-0 rounded-full px-6 text-sm font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 ${
+                    className={`h-12 rounded-full px-6 text-sm font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 ${
                       session?.isAcceptingQuestions
                         ? 'bg-[#39d3b5] text-[#3f2abe]'
                         : 'bg-[#8b0368] text-[#e6f2fa]'
@@ -211,20 +211,20 @@ export default function Moderator({
                     href={presentationUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="h-12 shrink-0 inline-flex items-center justify-center rounded-full bg-[#3f2abe] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                    className="h-12 inline-flex items-center justify-center rounded-full bg-[#3f2abe] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                   >
                     Abrir presentación
                   </a>
                   <Link
                     to="/"
-                    className="h-12 shrink-0 inline-flex items-center justify-center rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                    className="h-12 inline-flex items-center justify-center rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                   >
                     Volver al inicio
                   </Link>
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className="h-12 shrink-0 inline-flex items-center justify-center rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                    className="h-12 inline-flex items-center justify-center rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                   >
                     Cerrar sesión de moderador
                   </button>
@@ -232,7 +232,7 @@ export default function Moderator({
                     type="button"
                     onClick={requestDeleteSession}
                     disabled={deletingSession}
-                    className="h-12 shrink-0 inline-flex items-center justify-center rounded-full bg-[#8b0368] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+                    className="h-12 inline-flex items-center justify-center rounded-full bg-[#8b0368] px-6 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
                   >
                     Borrar sesión activa
                   </button>
@@ -276,7 +276,7 @@ export default function Moderator({
               )}
             </div>
 
-            <aside className="rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-sm md:p-6">
+            <aside className="w-full min-w-[300px] flex-[1_1_320px] rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-sm md:p-6">
               <p className="text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">Resumen en vivo</p>
               <h2 className="mt-2 text-2xl font-extrabold tracking-tight break-words text-[#3f2abe]">
                 {session?.title || 'Sesión sin título'}
@@ -311,7 +311,7 @@ export default function Moderator({
           </div>
         </article>
 
-        <section className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+        <section className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-6">
           <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-sm">
             <div className="flex items-center gap-2">
               <ClipboardList size={18} className="text-[#8b0368]" />

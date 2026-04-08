@@ -28,8 +28,8 @@ export default function Presentation({ session }) {
 
   return (
     <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-4 md:p-6 lg:p-8">
-      <section className="mx-auto grid min-h-[calc(100vh-2rem)] w-full max-w-[1180px] grid-cols-1 gap-6 md:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:gap-7 xl:grid-cols-[minmax(0,370px)_minmax(0,1fr)]">
-        <aside className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-md sm:p-7 md:p-8 lg:p-9">
+      <section className="mx-auto flex min-h-[calc(100vh-2rem)] w-full max-w-[1280px] flex-wrap items-start gap-6 lg:gap-7">
+        <aside className="w-full rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-md sm:p-7 md:w-[320px] md:flex-none md:p-8 xl:w-[350px] lg:p-9">
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">Acceso audiencia</h2>
           <p className="mt-2 text-sm md:text-base font-semibold text-[#3f2abe] leading-relaxed">
             Escanea y entra directo a la vista de participante.
@@ -57,7 +57,7 @@ export default function Presentation({ session }) {
           </Link>
         </aside>
 
-        <article className="flex min-h-0 flex-col rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-md md:p-9 lg:p-11">
+        <article className="min-w-[300px] flex-1 rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-md md:p-9 lg:p-11">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight break-words">
             {session?.title || 'Sesión sin título'}
           </h1>
@@ -83,7 +83,7 @@ export default function Presentation({ session }) {
             )}
 
             {!!featuredQuestions.length && (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-5">
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 lg:gap-5">
                 {featuredQuestions.map((question) => {
                   const approvedAnswers = Array.isArray(question.answers)
                     ? question.answers.filter((answer) => answer.status === 'approved')
