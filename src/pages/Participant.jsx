@@ -440,11 +440,6 @@ export default function Participant({ user, session }) {
             const approvedAnswers = Array.isArray(question.answers)
               ? question.answers.filter((answer) => answer.status === 'approved')
               : []
-            const myPendingAnswers = Array.isArray(question.answers)
-              ? question.answers.filter(
-                  (answer) => answer.status === 'pending' && answer.userId === actorId,
-                )
-              : []
 
             return (
               <article key={question.id} className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-5 md:p-6 shadow-sm">
@@ -517,19 +512,6 @@ export default function Participant({ user, session }) {
                       </div>
                       )
                     })}
-                  </div>
-                )}
-
-                {myPendingAnswers.length > 0 && (
-                  <div className="mt-3 rounded-2xl bg-[#e6f2fa] p-3">
-                    <p className="text-xs font-bold text-[#3f2abe]">Tienes respuestas pendientes de revisión:</p>
-                    <div className="mt-2 flex flex-col gap-2">
-                      {myPendingAnswers.map((answer) => (
-                        <p key={answer.id} className="text-sm font-medium text-[#3f2abe] break-words">
-                          {answer.content}
-                        </p>
-                      ))}
-                    </div>
                   </div>
                 )}
 
