@@ -82,23 +82,41 @@ export default function Presentation({ session }) {
             )}
 
             {!!featuredQuestions.length && (
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-5">
-                {featuredQuestions.map((question) => {
+              <div className="grid grid-cols-1 gap-4 xl:grid-cols-2 xl:gap-5 2xl:grid-cols-3">
+                {featuredQuestions.map((question, index) => {
                   const approvedAnswers = Array.isArray(question.answers)
-                    ? question.answers.filter((answer) => answer.status === 'approved')
+                    ? question.answers
+                        .filter((answer) => answer.status === 'approved')
+                        .sort((left, right) => (right.createdAt || 0) - (left.createdAt || 0))
                     : []
+                  const latestApprovedAnswer = approvedAnswers[0]
+                  const hiddenAnswersCount = Math.max(0, approvedAnswers.length - 1)
+                  const isFocusCard = index === 0
 
                   return (
                     <article
                       key={question.id}
-                      className="surface-base live-enter rounded-3xl p-6 shadow-sm md:p-7"
+                      className={`surface-base live-enter rounded-3xl shadow-sm ${
+                        isFocusCard
+                          ? 'p-6 md:p-7 xl:col-span-2 2xl:col-span-3'
+                          : 'p-5 md:p-6'
+                      }`}
                     >
+                      {isFocusCard && (
+                        <span className="inline-flex rounded-full bg-[#39d3b5] px-3 py-1 text-xs font-extrabold text-[#3f2abe]">
+                          En foco
+                        </span>
+                      )}
                       {question.isPinned && (
-                        <span className="inline-flex rounded-full bg-[#e08ad4] px-3 py-1 text-xs font-bold text-[#3f2abe]">
+                        <span className="ml-2 inline-flex rounded-full bg-[#e08ad4] px-3 py-1 text-xs font-bold text-[#3f2abe]">
                           Fijada
                         </span>
                       )}
-                      <p className="mt-2 text-lg md:text-xl font-extrabold tracking-tight text-[#3f2abe] break-words">
+                      <p
+                        className={`mt-2 font-extrabold tracking-tight text-[#3f2abe] break-words ${
+                          isFocusCard ? 'text-xl md:text-2xl' : 'text-lg md:text-xl clamp-2'
+                        }`}
+                      >
                         {question.content}
                       </p>
                       <div className="mt-3 flex items-center justify-between gap-3">
@@ -110,23 +128,28 @@ export default function Presentation({ session }) {
                         </p>
                       </div>
 
-                      {approvedAnswers.length > 0 && (
+                      {Boolean(latestApprovedAnswer) && (
                         <div className="mt-5 border-t border-[#64a2cc] pt-4">
-                          <p className="text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">Respuestas</p>
+                          <p className="text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">
+                            Última respuesta aprobada
+                          </p>
                           <div className="mt-3 flex flex-col gap-2">
-                            {approvedAnswers.map((answer) => (
-                              <div
-                                key={answer.id}
-                                className="surface-raised live-enter rounded-2xl p-4"
-                              >
-                                <p className="text-xs font-bold text-[#3f2abe] break-words">
-                                  {answer.author || 'Anónimo'}
-                                </p>
-                                <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words">
-                                  {answer.content}
-                                </p>
-                              </div>
-                            ))}
+                            <div
+                              key={latestApprovedAnswer.id}
+                              className="surface-raised live-enter rounded-2xl p-4"
+                            >
+                              <p className="text-xs font-bold text-[#3f2abe] break-words">
+                                {latestApprovedAnswer.author || 'Anónimo'}
+                              </p>
+                              <p className={`mt-1 text-sm font-semibold text-[#3f2abe] break-words ${isFocusCard ? 'clamp-3' : 'clamp-2'}`}>
+                                {latestApprovedAnswer.content}
+                              </p>
+                            </div>
+                            {hiddenAnswersCount > 0 && (
+                              <p className="text-xs font-bold text-[#3f2abe]">
+                                +{hiddenAnswersCount} respuesta{hiddenAnswersCount > 1 ? 's' : ''} aprobada{hiddenAnswersCount > 1 ? 's' : ''}
+                              </p>
+                            )}
                           </div>
                         </div>
                       )}

@@ -275,6 +275,21 @@ body {
   animation: liveFadeIn 0.22s ease-out;
 }
 
+.clamp-2,
+.clamp-3 {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+}
+
+.clamp-2 {
+  -webkit-line-clamp: 2;
+}
+
+.clamp-3 {
+  -webkit-line-clamp: 3;
+}
+
 [data-theme='dark'] ::-webkit-scrollbar-track {
   background: var(--neutral-900);
 }
