@@ -24,6 +24,8 @@ export default function Presentation({ session }) {
         }),
     [approvedQuestions],
   )
+  const focusQuestion = featuredQuestions[0] || null
+  const secondaryQuestions = featuredQuestions.slice(1)
 
   return (
     <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6">
@@ -82,65 +84,48 @@ export default function Presentation({ session }) {
             )}
 
             {!!featuredQuestions.length && (
-              <div className="grid grid-cols-1 gap-4 xl:grid-cols-2 xl:gap-5 2xl:grid-cols-3">
-                {featuredQuestions.map((question, index) => {
-                  const approvedAnswers = Array.isArray(question.answers)
-                    ? question.answers
+              <div>
+                {Boolean(focusQuestion) && (() => {
+                  const approvedAnswers = Array.isArray(focusQuestion.answers)
+                    ? focusQuestion.answers
                         .filter((answer) => answer.status === 'approved')
                         .sort((left, right) => (right.createdAt || 0) - (left.createdAt || 0))
                     : []
                   const latestApprovedAnswer = approvedAnswers[0]
                   const hiddenAnswersCount = Math.max(0, approvedAnswers.length - 1)
                   const answersLabel = approvedAnswers.length > 1 ? 'Respuestas' : 'Respuesta'
-                  const isFocusCard = index === 0
 
                   return (
-                    <article
-                      key={question.id}
-                      className={`surface-base live-enter rounded-3xl shadow-sm ${
-                        isFocusCard
-                          ? 'p-6 md:p-7 xl:col-span-2 2xl:col-span-3'
-                          : 'p-5 md:p-6'
-                      }`}
-                    >
-                      {isFocusCard && (
-                        <span className="inline-flex rounded-full bg-[#39d3b5] px-3 py-1 text-xs font-extrabold text-[#3f2abe]">
-                          En foco
-                        </span>
-                      )}
-                      {question.isPinned && (
+                    <article className="surface-base live-enter rounded-3xl p-5 shadow-sm md:p-6">
+                      <span className="inline-flex rounded-full bg-[#39d3b5] px-3 py-1 text-xs font-extrabold text-[#3f2abe]">
+                        En foco
+                      </span>
+                      {focusQuestion.isPinned && (
                         <span className="ml-2 inline-flex rounded-full bg-[#e08ad4] px-3 py-1 text-xs font-bold text-[#3f2abe]">
                           Fijada
                         </span>
                       )}
-                      <p
-                        className={`mt-2 font-extrabold tracking-tight text-[#3f2abe] break-words ${
-                          isFocusCard ? 'text-xl md:text-2xl' : 'text-lg md:text-xl clamp-2'
-                        }`}
-                      >
-                        <span className="font-black">{question.author || 'Anónimo'}:</span>{' '}
-                        {question.content}
+                      <p className="mt-2 text-xl md:text-2xl font-extrabold tracking-tight text-[#3f2abe] break-words">
+                        <span className="font-black">{focusQuestion.author || 'Anónimo'}:</span>{' '}
+                        {focusQuestion.content}
                       </p>
-                      <div className="mt-3 flex items-center justify-end gap-3">
+                      <div className="mt-2 flex items-center justify-end">
                         <p className="text-sm md:text-base font-bold text-[#8b0368]">
-                          {question.upvotes || 0} votos
+                          {focusQuestion.upvotes || 0} votos
                         </p>
                       </div>
 
                       {Boolean(latestApprovedAnswer) && (
-                        <div className="mt-5 border-t border-[#64a2cc] pt-4">
+                        <div className="mt-4 border-t border-[#64a2cc] pt-3">
                           <p className="text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">
                             {answersLabel}
                           </p>
-                          <div className="mt-3 flex flex-col gap-2">
-                            <div
-                              key={latestApprovedAnswer.id}
-                              className="surface-raised live-enter rounded-2xl p-4"
-                            >
+                          <div className="mt-2 flex flex-col gap-2">
+                            <div className="surface-raised live-enter rounded-2xl p-3">
                               <p className="text-xs font-bold text-[#3f2abe] break-words">
                                 {latestApprovedAnswer.author || 'Anónimo'}
                               </p>
-                              <p className={`mt-1 text-sm font-semibold text-[#3f2abe] break-words ${isFocusCard ? 'clamp-3' : 'clamp-2'}`}>
+                              <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words clamp-3">
                                 {latestApprovedAnswer.content}
                               </p>
                             </div>
@@ -152,9 +137,83 @@ export default function Presentation({ session }) {
                           </div>
                         </div>
                       )}
+
+                      {!latestApprovedAnswer && (
+                        <p className="mt-3 text-xs font-bold text-[#3f2abe]">
+                          Sin respuestas aprobadas aún.
+                        </p>
+                      )}
                     </article>
                   )
-                })}
+                })()}
+
+                {!!secondaryQuestions.length && (
+                  <div className="mt-4 columns-1 gap-4 xl:columns-2 xl:gap-5 2xl:columns-3">
+                    {secondaryQuestions.map((question) => {
+                  const approvedAnswers = Array.isArray(question.answers)
+                    ? question.answers
+                        .filter((answer) => answer.status === 'approved')
+                        .sort((left, right) => (right.createdAt || 0) - (left.createdAt || 0))
+                    : []
+                  const latestApprovedAnswer = approvedAnswers[0]
+                  const hiddenAnswersCount = Math.max(0, approvedAnswers.length - 1)
+                  const answersLabel = approvedAnswers.length > 1 ? 'Respuestas' : 'Respuesta'
+
+                  return (
+                    <article
+                      key={question.id}
+                      className="surface-base live-enter mb-4 break-inside-avoid rounded-3xl p-4 shadow-sm md:p-5"
+                    >
+                      {question.isPinned && (
+                        <span className="inline-flex rounded-full bg-[#e08ad4] px-3 py-1 text-xs font-bold text-[#3f2abe]">
+                          Fijada
+                        </span>
+                      )}
+                      <p
+                        className="mt-2 text-lg md:text-xl font-extrabold tracking-tight text-[#3f2abe] break-words clamp-2"
+                      >
+                        <span className="font-black">{question.author || 'Anónimo'}:</span>{' '}
+                        {question.content}
+                      </p>
+                      <div className="mt-2 flex items-center justify-end gap-3">
+                        <p className="text-sm md:text-base font-bold text-[#8b0368]">
+                          {question.upvotes || 0} votos
+                        </p>
+                      </div>
+
+                      {Boolean(latestApprovedAnswer) && (
+                        <div className="mt-3 border-t border-[#64a2cc] pt-3">
+                          <p className="text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">
+                            {answersLabel}
+                          </p>
+                          <div className="mt-2 flex flex-col gap-2">
+                            <div className="surface-raised live-enter rounded-2xl p-3">
+                              <p className="text-xs font-bold text-[#3f2abe] break-words">
+                                {latestApprovedAnswer.author || 'Anónimo'}
+                              </p>
+                              <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words clamp-2">
+                                {latestApprovedAnswer.content}
+                              </p>
+                            </div>
+                            {hiddenAnswersCount > 0 && (
+                              <p className="text-xs font-bold text-[#3f2abe]">
+                                +{hiddenAnswersCount} respuesta{hiddenAnswersCount > 1 ? 's' : ''} aprobada{hiddenAnswersCount > 1 ? 's' : ''}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {!latestApprovedAnswer && (
+                        <p className="mt-3 text-xs font-bold text-[#3f2abe]">
+                          Sin respuestas aprobadas aún.
+                        </p>
+                      )}
+                    </article>
+                  )
+                    })}
+                  </div>
+                )}
               </div>
             )}
           </div>
