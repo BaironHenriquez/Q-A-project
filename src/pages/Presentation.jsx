@@ -91,6 +91,7 @@ export default function Presentation({ session }) {
                     : []
                   const latestApprovedAnswer = approvedAnswers[0]
                   const hiddenAnswersCount = Math.max(0, approvedAnswers.length - 1)
+                  const answersLabel = approvedAnswers.length > 1 ? 'Respuestas' : 'Respuesta'
                   const isFocusCard = index === 0
 
                   return (
@@ -117,12 +118,10 @@ export default function Presentation({ session }) {
                           isFocusCard ? 'text-xl md:text-2xl' : 'text-lg md:text-xl clamp-2'
                         }`}
                       >
+                        <span className="font-black">{question.author || 'Anónimo'}:</span>{' '}
                         {question.content}
                       </p>
-                      <div className="mt-3 flex items-center justify-between gap-3">
-                        <p className="text-sm md:text-base font-semibold text-[#3f2abe] break-words">
-                          {question.author || 'Anónimo'}
-                        </p>
+                      <div className="mt-3 flex items-center justify-end gap-3">
                         <p className="text-sm md:text-base font-bold text-[#8b0368]">
                           {question.upvotes || 0} votos
                         </p>
@@ -131,7 +130,7 @@ export default function Presentation({ session }) {
                       {Boolean(latestApprovedAnswer) && (
                         <div className="mt-5 border-t border-[#64a2cc] pt-4">
                           <p className="text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">
-                            Última respuesta aprobada
+                            {answersLabel}
                           </p>
                           <div className="mt-3 flex flex-col gap-2">
                             <div

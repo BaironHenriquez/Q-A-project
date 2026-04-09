@@ -45,6 +45,7 @@ export default function Participant({ user, session }) {
   const [cooldownUntil, setCooldownUntil] = useState(0)
   const [cooldownNow, setCooldownNow] = useState(() => Date.now())
   const [answerDrafts, setAnswerDrafts] = useState({})
+  const [expandedAnswerQuestionId, setExpandedAnswerQuestionId] = useState('')
   const [sendingAnswerQuestionId, setSendingAnswerQuestionId] = useState('')
   const [answerError, setAnswerError] = useState('')
   const [answerSuccess, setAnswerSuccess] = useState('')
@@ -469,16 +470,31 @@ export default function Participant({ user, session }) {
                 key={question.id}
                 className="surface-base live-enter rounded-[2rem] p-5 shadow-sm md:p-6"
               >
-                <p className="text-xs font-extrabold uppercase tracking-wider text-[#3f2abe]">
-                  Pregunta {index + 1}
-                </p>
-                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-[#3f2abe]">
-                  <span className="surface-raised rounded-full px-3 py-1">
-                    {question.status || 'pending'}
-                  </span>
-                    <span>{question.author || 'Anónimo'}</span>
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xs font-extrabold uppercase tracking-wider text-[#3f2abe]">
+                    Pregunta {index + 1}
+                  </p>
+                  <div className="inline-flex items-center gap-2">
+                    <p className="text-sm font-extrabold text-[#8b0368]">{question.upvotes || 0}</p>
+                    <button
+                      type="button"
+                      onClick={() => handleToggleVote(question)}
+                      className={`h-9 rounded-full border border-[#64a2cc] px-3 text-xs font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 inline-flex items-center gap-2 ${
+                        hasVoted
+                          ? 'bg-[#39d3b5] text-[#3f2abe]'
+                          : 'bg-[#e6f2fa] text-[#3f2abe]'
+                      }`}
+                    >
+                      <ThumbsUp size={14} />
+                      {hasVoted ? 'Me resto' : 'Me sumo'}
+                    </button>
+                  </div>
                 </div>
-                <p className="mt-3 text-base md:text-lg font-semibold text-[#3f2abe] break-words">{question.content}</p>
+
+                <p className="mt-3 text-base md:text-lg font-semibold text-[#3f2abe] break-words">
+                  <span className="font-extrabold">{question.author || 'Anónimo'}:</span>{' '}
+                  {question.content}
+                </p>
 
                 {approvedAnswers.length > 0 && (
                   <div className="mt-3 border-l-4 border-[#64a2cc] pl-3 flex flex-col gap-2">
@@ -544,47 +560,47 @@ export default function Participant({ user, session }) {
                   </div>
                 )}
 
-                <form
-                  onSubmit={(event) => handleSubmitAnswer(event, question.id)}
-                  className="surface-raised mt-4 rounded-3xl p-4 shadow-sm flex flex-col gap-2 sm:flex-row sm:items-center"
-                >
-                  <label htmlFor={`answer-${question.id}`} className="sr-only">
-                    Escribe tu respuesta para la pregunta {index + 1}
-                  </label>
-                  <input
-                    id={`answer-${question.id}`}
-                    type="text"
-                    maxLength={250}
-                    value={answerDrafts[question.id] || ''}
-                    onChange={(event) => handleAnswerDraftChange(question.id, event.target.value)}
-                    placeholder="Escribe tu respuesta"
-                    className="h-11 w-full rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-medium text-[#3f2abe] placeholder:text-[#3f2abe] outline-none"
-                    disabled={sendingAnswerQuestionId === question.id}
-                  />
-                  <button
-                    type="submit"
-                    disabled={sendingAnswerQuestionId === question.id || !(answerDrafts[question.id] || '').trim()}
-                    className="h-11 shrink-0 rounded-full bg-[#3f2abe] px-4 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
-                  >
-                    Responder
-                  </button>
-                </form>
-
-                <div className="mt-4 flex items-center justify-between gap-3">
+                <div className="mt-4">
                   <button
                     type="button"
-                    onClick={() => handleToggleVote(question)}
-                    className={`h-12 rounded-full border border-[#64a2cc] px-5 text-sm md:text-base font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 inline-flex items-center gap-2 ${
-                      hasVoted
-                        ? 'bg-[#39d3b5] text-[#3f2abe]'
-                        : 'bg-[#e6f2fa] text-[#3f2abe]'
-                    }`}
+                    onClick={() =>
+                      setExpandedAnswerQuestionId((previous) =>
+                        previous === question.id ? '' : question.id,
+                      )
+                    }
+                    className="h-10 rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                   >
-                    <ThumbsUp size={16} />
-                    {hasVoted ? '-1 me resto' : '+1 me sumo'}
+                    {expandedAnswerQuestionId === question.id ? 'Cerrar respuesta' : 'Responder'}
                   </button>
-                  <p className="text-sm md:text-base font-bold text-[#8b0368]">{question.upvotes || 0}</p>
                 </div>
+
+                {expandedAnswerQuestionId === question.id && (
+                  <form
+                    onSubmit={(event) => handleSubmitAnswer(event, question.id)}
+                    className="surface-raised mt-3 rounded-3xl p-4 shadow-sm flex flex-col gap-2 sm:flex-row sm:items-center"
+                  >
+                    <label htmlFor={`answer-${question.id}`} className="sr-only">
+                      Escribe tu respuesta para la pregunta {index + 1}
+                    </label>
+                    <input
+                      id={`answer-${question.id}`}
+                      type="text"
+                      maxLength={250}
+                      value={answerDrafts[question.id] || ''}
+                      onChange={(event) => handleAnswerDraftChange(question.id, event.target.value)}
+                      placeholder="Escribe tu respuesta"
+                      className="h-11 w-full rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-medium text-[#3f2abe] placeholder:text-[#3f2abe] outline-none"
+                      disabled={sendingAnswerQuestionId === question.id}
+                    />
+                    <button
+                      type="submit"
+                      disabled={sendingAnswerQuestionId === question.id || !(answerDrafts[question.id] || '').trim()}
+                      className="h-11 shrink-0 rounded-full bg-[#3f2abe] px-4 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
+                    >
+                      Responder
+                    </button>
+                  </form>
+                )}
               </article>
             )
           })}
