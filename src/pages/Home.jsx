@@ -177,7 +177,7 @@ export default function Home({
               </p>
             )}
 
-            <div className="mt-6 border-t border-[#e6f2fa] pt-6">
+            <div className="mt-6 border-t border-[#64a2cc] pt-6">
               <h2 className="text-xl font-extrabold tracking-tight">Ingreso usuario</h2>
               <p className="mt-2 text-sm font-semibold text-[#3f2abe]">
                 Si eres participante, escribe el ID de la sesión para unirte.
@@ -235,7 +235,7 @@ export default function Home({
             <button
               type="button"
               onClick={handleLogout}
-              className="h-11 inline-flex items-center justify-center rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+              className="surface-raised h-11 inline-flex items-center justify-center rounded-full px-4 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
             >
               Cerrar sesión de moderador
             </button>
@@ -345,7 +345,7 @@ export default function Home({
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-6">
           <article className="surface-base rounded-[2rem] p-7 shadow-sm">
-            <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#8b0368]">
+            <div className="surface-raised inline-flex rounded-2xl p-3 text-[#8b0368]">
               <PlusCircle size={20} />
             </div>
             <h2 className="mt-3 text-xl font-extrabold tracking-tight">Crear sesión</h2>
@@ -358,7 +358,7 @@ export default function Home({
           </article>
 
           <article className="surface-base rounded-[2rem] p-7 shadow-sm">
-            <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#3f2abe]">
+            <div className="surface-raised inline-flex rounded-2xl p-3 text-[#3f2abe]">
               <LogIn size={20} />
             </div>
             <h2 className="mt-3 text-xl font-extrabold tracking-tight">Ingresar a sesión activa</h2>

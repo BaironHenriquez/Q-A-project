@@ -281,7 +281,7 @@ export default function Participant({ user, session }) {
   if (!hasSessionAccess) {
     return (
       <div className="min-h-screen bg-[#64a2cc] font-sans px-3 py-4 md:px-4 md:py-6 lg:px-6 lg:py-8 flex items-center justify-center">
-        <div className="w-full rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 text-center shadow-lg md:p-9">
+        <div className="surface-base w-full rounded-[2rem] p-7 text-center shadow-lg md:p-9">
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#3f2abe] mb-2 break-words">
             Ingresar a sesión activa
           </h2>
@@ -331,7 +331,7 @@ export default function Participant({ user, session }) {
   if (!isNameSet) {
     return (
       <div className="min-h-screen bg-[#64a2cc] font-sans px-3 py-4 md:px-4 md:py-6 lg:px-6 lg:py-8 flex items-center justify-center">
-        <div className="w-full rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 text-center shadow-lg md:p-9">
+        <div className="surface-base w-full rounded-[2rem] p-7 text-center shadow-lg md:p-9">
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#3f2abe] mb-2 break-words">
             {session?.title || 'Sesión activa'}
           </h2>
@@ -437,7 +437,7 @@ export default function Participant({ user, session }) {
         <section className="surface-base rounded-[2rem] p-4 shadow-md md:p-5">
           <div className="mb-3 flex items-center justify-between gap-3">
             <h2 className="text-lg md:text-xl font-extrabold tracking-tight text-[#3f2abe]">Preguntas publicadas</h2>
-            <span className="rounded-full bg-[#e6f2fa] px-3 py-1.5 text-xs font-extrabold text-[#3f2abe]">
+            <span className="surface-raised rounded-full px-3 py-1.5 text-xs font-extrabold text-[#3f2abe]">
               {visibleQuestions.length}
             </span>
           </div>
@@ -487,7 +487,7 @@ export default function Participant({ user, session }) {
                       className={`h-10 w-[130px] rounded-full border border-[#64a2cc] px-3 text-xs font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 inline-flex items-center justify-center gap-2 ${
                         hasVoted
                           ? 'bg-[#39d3b5] text-[#3f2abe]'
-                          : 'bg-[#e6f2fa] text-[#3f2abe]'
+                          : 'surface-raised text-[#3f2abe]'
                       }`}
                     >
                       <ThumbsUp size={14} />
@@ -497,7 +497,7 @@ export default function Participant({ user, session }) {
                     <button
                       type="button"
                       onClick={() => setExpandedAnswerQuestionId(question.id)}
-                      className="h-10 w-[130px] rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-3 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                      className="surface-raised h-10 w-[130px] rounded-full px-3 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
                     >
                       Responder
                     </button>

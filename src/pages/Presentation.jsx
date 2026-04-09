@@ -30,13 +30,13 @@ export default function Presentation({ session }) {
   return (
     <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6">
       <section className="mx-auto flex min-h-[calc(100vh-1.5rem)] w-full flex-wrap items-start gap-6 lg:gap-7">
-        <aside className="w-full rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-md sm:p-7 md:w-[320px] md:flex-none md:p-8 xl:w-[350px] lg:p-9">
+        <aside className="surface-base w-full rounded-[2rem] p-5 shadow-md sm:p-7 md:w-[320px] md:flex-none md:p-8 lg:p-9 xl:w-[350px]">
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">Acceso audiencia</h2>
           <p className="mt-2 text-sm md:text-base font-semibold text-[#3f2abe] leading-relaxed">
             Escanea y entra directo a la vista de participante.
           </p>
           <div className="mt-5 flex w-full justify-center">
-            <div className="inline-flex w-full max-w-[320px] justify-center rounded-3xl bg-[#e6f2fa] p-3 shadow-sm sm:p-4 lg:p-5">
+            <div className="surface-raised inline-flex w-full max-w-[320px] justify-center rounded-3xl p-3 shadow-sm sm:p-4 lg:p-5">
               <QRCodeSVG
                 value={joinUrl}
                 size={300}
@@ -47,7 +47,7 @@ export default function Presentation({ session }) {
               />
             </div>
           </div>
-          <p className="mt-4 rounded-2xl bg-[#e6f2fa] px-4 py-3 break-words text-sm md:text-base font-bold text-[#8b0368]">
+          <p className="surface-raised mt-4 rounded-2xl break-words px-4 py-3 text-sm font-bold text-[#8b0368] md:text-base">
             {joinUrl}
           </p>
           <Link
@@ -58,7 +58,7 @@ export default function Presentation({ session }) {
           </Link>
         </aside>
 
-        <article className="min-w-[300px] flex-1 rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-md md:p-9 lg:p-11">
+        <article className="surface-base min-w-[300px] flex-1 rounded-[2rem] p-6 shadow-md md:p-9 lg:p-11">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight break-words">
             {session?.title || 'Sesión sin título'}
           </h1>
@@ -72,7 +72,7 @@ export default function Presentation({ session }) {
 
           <div className="mt-6 flex-1 overflow-y-auto pr-1">
             {!approvedQuestions.length && (
-              <div className="rounded-3xl bg-[#e6f2fa] p-8 text-center shadow-sm md:p-11 lg:p-16">
+              <div className="surface-raised rounded-3xl p-8 text-center shadow-sm md:p-11 lg:p-16">
                 <MessageSquare size={44} className="mx-auto text-[#3f2abe]" />
                 <p className="mt-3 text-lg md:text-xl lg:text-2xl font-extrabold text-[#3f2abe]">
                   Aún no hay preguntas destacadas

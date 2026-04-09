@@ -179,7 +179,7 @@ export default function Moderator({
   return (
     <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6">
       <section className="mx-auto w-full flex flex-col gap-6 lg:gap-7">
-        <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 md:p-9 shadow-md">
+        <article className="surface-base rounded-[2rem] p-6 shadow-md md:p-9">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h1 className="text-3xl md:text-[2.2rem] font-extrabold tracking-tight">Panel moderador</h1>
@@ -322,7 +322,7 @@ export default function Moderator({
         </article>
 
         <section className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-6">
-          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-sm">
+          <article className="surface-base rounded-[2rem] p-6 shadow-sm">
             <div className="flex items-center gap-2">
               <ClipboardList size={18} className="text-[#8b0368]" />
               <h2 className="text-xl font-extrabold tracking-tight">Preguntas pendientes ({pendingQuestions.length})</h2>
@@ -333,7 +333,7 @@ export default function Moderator({
             )}
 
             {!loadingQuestions && !pendingQuestions.length && !questionsError && (
-              <div className="mt-8 rounded-3xl bg-[#e6f2fa] p-8 text-center">
+              <div className="surface-raised mt-8 rounded-3xl p-8 text-center">
                 <MessageSquare size={34} className="mx-auto text-[#3f2abe]" />
                 <p className="mt-3 text-base font-bold text-[#3f2abe]">Tu bandeja está limpia</p>
                 <p className="mt-1 text-sm font-medium text-[#3f2abe]">La audiencia está pensando...</p>
@@ -454,11 +454,11 @@ export default function Moderator({
             </div>
           </article>
 
-          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-sm">
+          <article className="surface-base rounded-[2rem] p-6 shadow-sm">
             <h2 className="text-xl font-extrabold tracking-tight">Respuestas pendientes ({pendingAnswersQueue.length})</h2>
 
             {!pendingAnswersQueue.length && (
-              <div className="mt-4 rounded-3xl bg-[#e6f2fa] p-6 text-center">
+              <div className="surface-raised mt-4 rounded-3xl p-6 text-center">
                 <MessageSquare size={30} className="mx-auto text-[#3f2abe]" />
                 <p className="mt-2 text-sm font-medium text-[#3f2abe]">No hay respuestas en revisión.</p>
               </div>
@@ -515,7 +515,7 @@ export default function Moderator({
             )}
             <div className="mt-3 flex flex-col gap-2">
               {!presentationQuestions.length && (
-                <div className="rounded-3xl bg-[#e6f2fa] p-5 text-center">
+                <div className="surface-raised rounded-3xl p-5 text-center">
                   <p className="text-sm font-medium text-[#3f2abe]">Aún no hay preguntas aprobadas.</p>
                 </div>
               )}
