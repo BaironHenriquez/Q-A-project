@@ -58,6 +58,19 @@ export default function Moderator({
     [sortedQuestions],
   )
 
+  const presentationQuestions = useMemo(
+    () => sortedQuestions.filter((question) => question.status === 'approved'),
+    [sortedQuestions],
+  )
+  const visiblePresentationQuestions = useMemo(
+    () => presentationQuestions.filter((question) => !question.isHidden),
+    [presentationQuestions],
+  )
+  const hiddenPresentationQuestions = useMemo(
+    () => presentationQuestions.filter((question) => question.isHidden),
+    [presentationQuestions],
+  )
+
   const formatTime = (timestamp) => {
     if (!timestamp) return 'Sin hora'
     return new Date(timestamp).toLocaleTimeString([], {
@@ -432,27 +445,10 @@ export default function Moderator({
                             <PenSquare size={14} />
                             Editar
                           </button>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              updateQuestionFields(question.id, { isPinned: !question.isPinned })
-                            }
-                            className="h-11 inline-flex items-center gap-2 rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
-                          >
-                            <Pin size={14} />
-                            {question.isPinned ? 'Desfijar' : 'Fijar'}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              updateQuestionFields(question.id, { isHidden: !question.isHidden })
-                            }
-                            className="h-11 inline-flex items-center gap-2 rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
-                          >
-                            <EyeOff size={14} />
-                            {question.isHidden ? 'Mostrar' : 'Ocultar'}
-                          </button>
                         </div>
+                        <p className="mt-2 px-1 text-xs font-semibold text-[#3f2abe]">
+                          Fijar y ocultar se habilitan cuando la pregunta está aprobada para presentación.
+                        </p>
                       </div>
                     </div>
                   </article>
@@ -514,24 +510,52 @@ export default function Moderator({
               ))}
             </div>
 
-            <h3 className="mt-6 text-lg font-bold">Preguntas aprobadas ({approvedQuestions.length})</h3>
+            <h3 className="mt-6 text-lg font-bold">Preguntas para presentación ({presentationQuestions.length})</h3>
             {answerError && (
               <p role="alert" className="mt-2 text-sm font-bold text-[#8b0368] break-words">
                 {answerError}
               </p>
             )}
             <div className="mt-3 flex flex-col gap-2">
-              {!approvedQuestions.length && (
+              {!presentationQuestions.length && (
                 <div className="rounded-3xl bg-[#e6f2fa] p-5 text-center">
                   <p className="text-sm font-medium text-[#3f2abe]">Aún no hay preguntas aprobadas.</p>
                 </div>
               )}
-              {approvedQuestions.slice(0, 8).map((question) => (
+              {visiblePresentationQuestions.map((question) => (
                 <article key={question.id} className="rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-sm">
                   <p className="text-sm font-bold text-[#3f2abe] break-words">{question.content}</p>
                   <p className="mt-1 text-xs font-medium text-[#3f2abe] break-words">
                     {question.author || 'Anónimo'}
                   </p>
+
+                  <div className="mt-3 rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-3">
+                    <p className="text-[11px] font-extrabold uppercase tracking-wide text-[#3f2abe]">
+                      Visibilidad en presentación
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateQuestionFields(question.id, { isPinned: !question.isPinned })
+                        }
+                        className="h-11 inline-flex items-center gap-2 rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                      >
+                        <Pin size={14} />
+                        {question.isPinned ? 'Desfijar' : 'Fijar'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateQuestionFields(question.id, { isHidden: true })
+                        }
+                        className="h-11 inline-flex items-center gap-2 rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                      >
+                        <EyeOff size={14} />
+                        Ocultar
+                      </button>
+                    </div>
+                  </div>
 
                   {Array.isArray(question.answers) && question.answers.length > 0 && (
                     <div className="mt-3 border-l-4 border-[#64a2cc] pl-3 flex flex-col gap-2">
@@ -577,6 +601,34 @@ export default function Moderator({
                   </form>
                 </article>
               ))}
+
+              {!!hiddenPresentationQuestions.length && (
+                <div className="mt-3 rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-4">
+                  <p className="text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">
+                    Ocultas en presentación ({hiddenPresentationQuestions.length})
+                  </p>
+                  <div className="mt-3 flex flex-col gap-2">
+                    {hiddenPresentationQuestions.map((question) => (
+                      <div
+                        key={question.id}
+                        className="rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-3"
+                      >
+                        <p className="text-sm font-semibold text-[#3f2abe] break-words">
+                          {question.content}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => updateQuestionFields(question.id, { isHidden: false })}
+                          className="mt-2 h-10 inline-flex items-center gap-2 rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                        >
+                          <EyeOff size={13} />
+                          Mostrar en presentación
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </article>
         </section>

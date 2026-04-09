@@ -16,6 +16,13 @@ const getOrCreateParticipantId = () => {
   return generated
 }
 
+const normalizeAnswerAuthor = (author) => {
+  const value = String(author || '').trim()
+  if (!value) return 'Participante'
+  if (value.toLowerCase() === 'respondedor') return 'Responder'
+  return value
+}
+
 export default function Participant({ user, session }) {
   const [searchParams] = useSearchParams()
   const sidFromUrl = (searchParams.get('sid') || '').trim()
@@ -441,8 +448,10 @@ export default function Participant({ user, session }) {
                       const hasIncorrectVote = incorrectVoters.includes(actorId)
 
                       return (
-                      <div key={answer.id} className="rounded-2xl bg-[#e6f2fa] p-3">
-                        <p className="text-xs md:text-sm font-bold text-[#3f2abe] break-words">{answer.author}</p>
+                      <div key={answer.id} className="rounded-2xl border border-[#64a2cc] bg-[#d9ecf8] p-3">
+                        <p className="text-xs md:text-sm font-bold text-[#3f2abe] break-words">
+                          {normalizeAnswerAuthor(answer.author)}
+                        </p>
                         <p className="mt-1 text-sm md:text-base font-medium text-[#3f2abe] break-words">{answer.content}</p>
 
                         <div className="mt-3 flex flex-wrap gap-2">
@@ -502,10 +511,10 @@ export default function Participant({ user, session }) {
 
                 <form
                   onSubmit={(event) => handleSubmitAnswer(event, question.id)}
-                  className="mt-4 rounded-3xl bg-[#e6f2fa] p-4 flex flex-col gap-2 sm:flex-row sm:items-center"
+                  className="mt-4 rounded-3xl border border-[#64a2cc] bg-[#d9ecf8] p-4 shadow-sm flex flex-col gap-2 sm:flex-row sm:items-center"
                 >
                   <label htmlFor={`answer-${question.id}`} className="sr-only">
-                    Responder a la pregunta {index + 1}
+                    Escribe tu respuesta para la pregunta {index + 1}
                   </label>
                   <input
                     id={`answer-${question.id}`}
@@ -513,8 +522,8 @@ export default function Participant({ user, session }) {
                     maxLength={250}
                     value={answerDrafts[question.id] || ''}
                     onChange={(event) => handleAnswerDraftChange(question.id, event.target.value)}
-                    placeholder="Responder a esta pregunta"
-                    className="h-11 w-full rounded-full bg-[#e6f2fa] px-4 text-sm font-medium text-[#3f2abe] placeholder:text-[#3f2abe] outline-none"
+                    placeholder="Escribe tu respuesta"
+                    className="h-11 w-full rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-medium text-[#3f2abe] placeholder:text-[#3f2abe] outline-none"
                     disabled={sendingAnswerQuestionId === question.id}
                   />
                   <button
@@ -586,7 +595,7 @@ export default function Participant({ user, session }) {
             className="h-12 md:h-14 shrink-0 rounded-full bg-[#3f2abe] px-5 text-sm md:text-base font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60 inline-flex items-center gap-2"
           >
             <SendHorizontal size={16} />
-            Enviar
+            Enviar pregunta
           </button>
         </form>
       </div>

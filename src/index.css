@@ -72,6 +72,11 @@ body {
   color: var(--neutral-100) !important;
 }
 
+[data-theme='dark'] .bg-\[\#d9ecf8\] {
+  background-color: var(--neutral-850) !important;
+  color: var(--neutral-100) !important;
+}
+
 [data-theme='dark'] .bg-\[\#e6f2fa\] .bg-\[\#e6f2fa\] {
   background-color: var(--neutral-850) !important;
 }
@@ -141,6 +146,22 @@ body {
 [data-theme='dark'] .bg-\[\#e6f2fa\].shadow-sm,
 [data-theme='dark'] .bg-\[\#e6f2fa\].shadow-md,
 [data-theme='dark'] .bg-\[\#e6f2fa\].shadow-lg {
+  box-shadow:
+    0 24px 40px color-mix(in srgb, var(--neutral-950) 55%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--neutral-600) 75%, transparent) inset;
+}
+
+.bg-\[\#d9ecf8\].shadow-sm,
+.bg-\[\#d9ecf8\].shadow-md,
+.bg-\[\#d9ecf8\].shadow-lg {
+  box-shadow:
+    0 16px 28px color-mix(in srgb, var(--brand-violet) 10%, transparent),
+    0 1px 0 color-mix(in srgb, var(--brand-blue) 22%, transparent) inset;
+}
+
+[data-theme='dark'] .bg-\[\#d9ecf8\].shadow-sm,
+[data-theme='dark'] .bg-\[\#d9ecf8\].shadow-md,
+[data-theme='dark'] .bg-\[\#d9ecf8\].shadow-lg {
   box-shadow:
     0 24px 40px color-mix(in srgb, var(--neutral-950) 55%, transparent),
     0 0 0 1px color-mix(in srgb, var(--neutral-600) 75%, transparent) inset;
