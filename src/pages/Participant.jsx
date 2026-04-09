@@ -48,6 +48,7 @@ export default function Participant({ user, session }) {
   const [sendingAnswerQuestionId, setSendingAnswerQuestionId] = useState('')
   const [answerError, setAnswerError] = useState('')
   const [answerSuccess, setAnswerSuccess] = useState('')
+  const [isComposerCompact, setIsComposerCompact] = useState(false)
   const actorId = user?.uid || participantId || ''
   const hasSessionAccess = Boolean(
     session?.sessionId && authorizedSessionId === session.sessionId,
@@ -108,6 +109,28 @@ export default function Participant({ user, session }) {
 
     return () => window.clearInterval(intervalId)
   }, [cooldownUntil])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined
+
+    const handleViewportBehavior = () => {
+      if (window.innerWidth < 1024) {
+        setIsComposerCompact(false)
+        return
+      }
+
+      setIsComposerCompact(window.scrollY > 220)
+    }
+
+    handleViewportBehavior()
+    window.addEventListener('scroll', handleViewportBehavior, { passive: true })
+    window.addEventListener('resize', handleViewportBehavior)
+
+    return () => {
+      window.removeEventListener('scroll', handleViewportBehavior)
+      window.removeEventListener('resize', handleViewportBehavior)
+    }
+  }, [])
 
   const visibleQuestions = sortedQuestions.filter(
     (question) => question.status === 'approved' && !question.isHidden,
@@ -346,21 +369,21 @@ export default function Participant({ user, session }) {
   return (
     <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6 pb-[calc(11rem+env(safe-area-inset-bottom))] relative">
       <section className="mx-auto w-full flex flex-col gap-5 md:gap-6">
-        <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-md md:p-7">
+        <article className="surface-base rounded-[2rem] p-6 shadow-md md:p-7">
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight break-words">
             {myName || 'Participante'}
           </h1>
           <p className="mt-2 text-sm md:text-base font-semibold text-[#3f2abe] break-words">
               {session?.title || 'Sesión activa'}
           </p>
-          <div className="mt-4 rounded-3xl bg-[#e6f2fa] p-5 md:p-6 text-sm md:text-base">
+          <div className="surface-raised mt-4 rounded-3xl p-5 text-sm md:p-6 md:text-base">
             <p className="font-semibold text-[#3f2abe]">Envía preguntas y respuestas breves para no interrumpir la charla.</p>
             <p className="mt-1 font-semibold text-[#3f2abe]">Preguntas visibles: {visibleQuestions.length}</p>
           </div>
 
           <p
             role="alert"
-            className="mt-3 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368] break-words"
+            className="alert-warning mt-3 break-words text-sm"
           >
             Tus preguntas y respuestas pasan por moderación antes de mostrarse.
           </p>
@@ -369,7 +392,7 @@ export default function Participant({ user, session }) {
             <p
               role="status"
               aria-live="polite"
-              className="mt-2 rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#3f2abe] break-words"
+              className="alert-info mt-2 break-words text-sm"
             >
               Puedes enviar otra pregunta en {cooldownSeconds}s.
             </p>
@@ -379,7 +402,7 @@ export default function Participant({ user, session }) {
             <p
               role="status"
               aria-live="polite"
-              className="mt-3 rounded-2xl bg-[#39d3b5] px-4 py-3 text-sm font-bold text-[#3f2abe] break-words"
+              className="alert-success mt-3 break-words text-sm"
             >
               {questionSuccess}
             </p>
@@ -389,30 +412,30 @@ export default function Participant({ user, session }) {
             <p
               role="status"
               aria-live="polite"
-              className="mt-2 rounded-2xl bg-[#39d3b5] px-4 py-3 text-sm font-bold text-[#3f2abe] break-words"
+              className="alert-success mt-2 break-words text-sm"
             >
               {answerSuccess}
             </p>
           )}
 
           {(questionError || questionsError) && (
-            <p role="alert" className="mt-3 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368] break-words">
+            <p role="alert" className="alert-critical mt-3 break-words text-sm">
               {questionError || questionsError}
             </p>
           )}
           {answerError && (
-            <p role="alert" className="mt-2 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368] break-words">
+            <p role="alert" className="alert-critical mt-2 break-words text-sm">
               {answerError}
             </p>
           )}
           {!session?.isAcceptingQuestions && (
-            <p className="mt-2 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368]">
+            <p className="alert-critical mt-2 text-sm">
               El moderador pausó temporalmente el envío de nuevas preguntas.
             </p>
           )}
         </article>
 
-        <section className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-4 shadow-md md:p-5">
+        <section className="surface-base rounded-[2rem] p-4 shadow-md md:p-5">
           <div className="mb-3 flex items-center justify-between gap-3">
             <h2 className="text-lg md:text-xl font-extrabold tracking-tight text-[#3f2abe]">Preguntas publicadas</h2>
             <span className="rounded-full bg-[#e6f2fa] px-3 py-1.5 text-xs font-extrabold text-[#3f2abe]">
@@ -426,7 +449,7 @@ export default function Participant({ user, session }) {
           )}
 
           {!loadingQuestions && visibleQuestions.length === 0 && (
-            <article className="rounded-[2rem] bg-[#e6f2fa] p-9 md:p-11 shadow-md text-center">
+            <article className="surface-raised rounded-[2rem] p-9 text-center shadow-md md:p-11">
               <Sparkles size={36} className="mx-auto text-[#3f2abe]" />
               <p className="mt-3 text-lg md:text-xl font-extrabold text-[#3f2abe]">Sin preguntas publicadas por ahora</p>
                 <p className="mt-1 text-sm md:text-base font-semibold text-[#3f2abe]">Cuando moderación apruebe preguntas, aparecerán aquí.</p>
@@ -442,12 +465,15 @@ export default function Participant({ user, session }) {
               : []
 
             return (
-              <article key={question.id} className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-5 md:p-6 shadow-sm">
+              <article
+                key={question.id}
+                className="surface-base live-enter rounded-[2rem] p-5 shadow-sm md:p-6"
+              >
                 <p className="text-xs font-extrabold uppercase tracking-wider text-[#3f2abe]">
                   Pregunta {index + 1}
                 </p>
                 <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-[#3f2abe]">
-                  <span className="rounded-full bg-[#e6f2fa] px-3 py-1">
+                  <span className="surface-raised rounded-full px-3 py-1">
                     {question.status || 'pending'}
                   </span>
                     <span>{question.author || 'Anónimo'}</span>
@@ -467,7 +493,10 @@ export default function Participant({ user, session }) {
                       const hasIncorrectVote = incorrectVoters.includes(actorId)
 
                       return (
-                      <div key={answer.id} className="rounded-2xl border border-[#64a2cc] bg-[#d9ecf8] p-3">
+                      <div
+                        key={answer.id}
+                        className="surface-raised live-enter rounded-2xl p-3"
+                      >
                         <p className="text-xs md:text-sm font-bold text-[#3f2abe] break-words">
                           {normalizeAnswerAuthor(answer.author)}
                         </p>
@@ -517,7 +546,7 @@ export default function Participant({ user, session }) {
 
                 <form
                   onSubmit={(event) => handleSubmitAnswer(event, question.id)}
-                  className="mt-4 rounded-3xl border border-[#64a2cc] bg-[#d9ecf8] p-4 shadow-sm flex flex-col gap-2 sm:flex-row sm:items-center"
+                  className="surface-raised mt-4 rounded-3xl p-4 shadow-sm flex flex-col gap-2 sm:flex-row sm:items-center"
                 >
                   <label htmlFor={`answer-${question.id}`} className="sr-only">
                     Escribe tu respuesta para la pregunta {index + 1}
@@ -569,17 +598,19 @@ export default function Participant({ user, session }) {
         </div>
       </section>
 
-      <div className="fixed bottom-0 left-0 right-0 z-30 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] bg-[#e6f2fa]">
+      <div className="surface-overlay fixed bottom-0 left-0 right-0 z-30 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <form
           onSubmit={handleSubmitQuestion}
-          className="mx-auto w-full max-w-[1200px] rounded-[2rem] bg-[#e6f2fa] p-4 md:p-5 shadow-lg flex flex-col gap-2 sm:flex-row sm:items-center"
+          className={`surface-base mx-auto flex w-full max-w-[1200px] flex-col gap-2 rounded-[2rem] shadow-lg transition-all duration-200 sm:flex-row sm:items-center ${isComposerCompact ? 'p-3 md:p-3' : 'p-4 md:p-5'}`}
         >
           <label htmlFor="participant-question-input" className="sr-only">
             Escribe tu pregunta
           </label>
-          <div className="hidden sm:inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#e6f2fa] text-[#3f2abe]">
-            <MessageSquare size={18} />
-          </div>
+          {!isComposerCompact && (
+            <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#e6f2fa] text-[#3f2abe] sm:inline-flex">
+              <MessageSquare size={18} />
+            </div>
+          )}
           <input
             id="participant-question-input"
             type="text"

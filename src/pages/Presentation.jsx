@@ -63,7 +63,7 @@ export default function Presentation({ session }) {
           <p className="mt-2 text-base md:text-lg font-semibold text-[#3f2abe] break-words">Presentación en vivo</p>
 
           {!session?.isAcceptingQuestions && (
-            <div className="mt-4 rounded-2xl border border-[#8b0368] bg-[#8b0368] px-4 py-3 text-sm md:text-base font-bold text-[#e6f2fa]">
+            <div className="alert-critical mt-4 text-sm md:text-base">
               El moderador pausó temporalmente la recepción de nuevas preguntas.
             </div>
           )}
@@ -89,7 +89,10 @@ export default function Presentation({ session }) {
                     : []
 
                   return (
-                    <article key={question.id} className="rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-sm md:p-7">
+                    <article
+                      key={question.id}
+                      className="surface-base live-enter rounded-3xl p-6 shadow-sm md:p-7"
+                    >
                       {question.isPinned && (
                         <span className="inline-flex rounded-full bg-[#e08ad4] px-3 py-1 text-xs font-bold text-[#3f2abe]">
                           Fijada
@@ -114,7 +117,7 @@ export default function Presentation({ session }) {
                             {approvedAnswers.map((answer) => (
                               <div
                                 key={answer.id}
-                                className="rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-4"
+                                className="surface-raised live-enter rounded-2xl p-4"
                               >
                                 <p className="text-xs font-bold text-[#3f2abe] break-words">
                                   {answer.author || 'Anónimo'}

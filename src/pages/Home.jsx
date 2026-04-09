@@ -123,7 +123,7 @@ export default function Home({
     return (
       <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6">
         <section className="mx-auto w-full">
-          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 md:p-9 shadow-md">
+          <article className="surface-base rounded-[2rem] p-7 shadow-md md:p-9">
             <p className="text-sm font-extrabold text-[#8b0368]">Q&A en tiempo real</p>
             <h1 className="mt-2 text-3xl font-extrabold tracking-tight leading-tight">Ingreso moderador</h1>
             <p className="mt-3 text-sm font-semibold text-[#3f2abe]">
@@ -172,7 +172,7 @@ export default function Home({
             </form>
 
             {loginError && (
-              <p role="alert" className="mt-3 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368] break-words">
+              <p role="alert" className="alert-critical mt-3 break-words text-sm">
                 {loginError}
               </p>
             )}
@@ -208,7 +208,7 @@ export default function Home({
               </form>
 
               {participantError && (
-                <p role="alert" className="mt-3 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368] break-words">
+                <p role="alert" className="alert-critical mt-3 break-words text-sm">
                   {participantError}
                 </p>
               )}
@@ -222,7 +222,7 @@ export default function Home({
   return (
     <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6">
       <section className="mx-auto w-full flex flex-col gap-6 lg:gap-7">
-        <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 md:p-9 shadow-md">
+        <article className="surface-base rounded-[2rem] p-7 shadow-md md:p-9">
           <p className="text-sm font-extrabold text-[#8b0368]">Q&A en tiempo real</p>
           <h1 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
             Centro de control para moderación
@@ -275,13 +275,13 @@ export default function Home({
           )}
 
           {createError && (
-            <p role="alert" className="mt-3 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368] break-words">
+            <p role="alert" className="alert-critical mt-3 break-words text-sm">
               {createError}
             </p>
           )}
 
           {session && (
-            <div className="mt-5 rounded-3xl bg-[#e6f2fa] p-6 shadow-sm">
+            <div className="surface-raised mt-5 rounded-3xl p-6 shadow-sm">
               <div className="flex items-center gap-2 text-[#8b0368]">
                 <BadgeCheck size={18} />
                 <p className="text-sm font-bold">Sesión activa</p>
@@ -314,7 +314,7 @@ export default function Home({
               </div>
 
               {confirmDeleteOpen && (
-                <div className="mt-4 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] p-4">
+                <div className="surface-base mt-4 rounded-2xl p-4">
                   <p className="text-sm font-bold text-[#8b0368]">Confirmar borrado de sesión activa</p>
                   <p className="mt-1 text-xs font-semibold text-[#3f2abe]">
                     Esta acción elimina preguntas y respuestas de la sesión y no se puede deshacer.
@@ -344,7 +344,7 @@ export default function Home({
         </article>
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-6">
-          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 shadow-sm">
+          <article className="surface-base rounded-[2rem] p-7 shadow-sm">
             <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#8b0368]">
               <PlusCircle size={20} />
             </div>
@@ -357,7 +357,7 @@ export default function Home({
             </p>
           </article>
 
-          <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-7 shadow-sm">
+          <article className="surface-base rounded-[2rem] p-7 shadow-sm">
             <div className="inline-flex rounded-2xl bg-[#e6f2fa] p-3 text-[#3f2abe]">
               <LogIn size={20} />
             </div>

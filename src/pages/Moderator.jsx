@@ -197,7 +197,7 @@ export default function Moderator({
           </div>
 
           <div className="mt-6 flex flex-wrap items-start gap-5">
-            <div className="w-full min-w-[300px] flex-[2_1_640px] rounded-3xl bg-[#e6f2fa] p-5 md:p-6">
+            <div className="surface-raised w-full min-w-[300px] flex-[2_1_640px] rounded-3xl p-5 md:p-6">
               <p className="text-xl font-extrabold break-words">{session?.title || 'Sesión sin título'}</p>
               <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words">
                 ID: {session?.sessionId || 'sin id'}
@@ -206,7 +206,7 @@ export default function Moderator({
                 Estado: {session?.isAcceptingQuestions ? 'Aceptando preguntas' : 'Pausada'}
               </p>
 
-              <div className="mt-5 rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-4">
+              <div className="surface-base mt-5 rounded-2xl p-4">
                 <p className="px-1 text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">Acciones del moderador</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
@@ -256,7 +256,7 @@ export default function Moderator({
               </div>
 
               {confirmDeleteOpen && (
-                <div className="mt-4 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] p-4">
+                <div className="surface-base mt-4 rounded-2xl p-4">
                   <p className="text-sm font-bold text-[#8b0368]">Confirmar borrado de sesión activa</p>
                   <p className="mt-1 text-sm font-semibold text-[#3f2abe]">
                     Esta acción elimina preguntas y respuestas de la sesión y no se puede deshacer.
@@ -283,13 +283,13 @@ export default function Moderator({
               )}
 
               {sessionActionError && (
-                <p role="alert" className="mt-3 text-sm font-bold text-[#8b0368] break-words">
+                <p role="alert" className="alert-critical mt-3 break-words text-sm">
                   {sessionActionError}
                 </p>
               )}
             </div>
 
-            <aside className="w-full min-w-[300px] flex-[1_1_320px] rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-sm md:p-6">
+            <aside className="surface-base w-full min-w-[300px] flex-[1_1_320px] rounded-3xl p-5 shadow-sm md:p-6">
               <p className="text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">Resumen en vivo</p>
               <h2 className="mt-2 text-2xl font-extrabold tracking-tight break-words text-[#3f2abe]">
                 {session?.title || 'Sesión sin título'}
@@ -297,19 +297,19 @@ export default function Moderator({
               <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words">ID: {session?.sessionId || 'sin id'}</p>
 
               <div className="mt-4 grid grid-cols-2 gap-3">
-                <div className="rounded-2xl bg-[#e6f2fa] p-4">
+                <div className="surface-raised rounded-2xl p-4">
                   <p className="text-xs font-bold text-[#3f2abe]">Pendientes</p>
                   <p className="mt-1 text-2xl font-extrabold text-[#3f2abe]">{pendingQuestions.length}</p>
                 </div>
-                <div className="rounded-2xl bg-[#e6f2fa] p-4">
+                <div className="surface-raised rounded-2xl p-4">
                   <p className="text-xs font-bold text-[#3f2abe]">Respuestas en revisión</p>
                   <p className="mt-1 text-2xl font-extrabold text-[#3f2abe]">{pendingAnswersQueue.length}</p>
                 </div>
-                <div className="rounded-2xl bg-[#e6f2fa] p-4">
+                <div className="surface-raised rounded-2xl p-4">
                   <p className="text-xs font-bold text-[#3f2abe]">Aprobadas</p>
                   <p className="mt-1 text-2xl font-extrabold text-[#3f2abe]">{approvedQuestions.length}</p>
                 </div>
-                <div className="rounded-2xl bg-[#e6f2fa] p-4">
+                <div className="surface-raised rounded-2xl p-4">
                   <p className="text-xs font-bold text-[#3f2abe]">Estado</p>
                   <p className="mt-1 text-sm font-extrabold text-[#3f2abe]">
                     {session?.isAcceptingQuestions ? 'Recibiendo' : 'Pausada'}
@@ -354,7 +354,7 @@ export default function Moderator({
                 const isEditing = editingQuestionId === question.id
 
                 return (
-                  <article key={question.id} className="rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-sm">
+                  <article key={question.id} className="surface-base rounded-3xl p-5 shadow-sm">
                     <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-[#3f2abe]">
                       <span className="inline-flex items-center gap-1">
                         <UserRound size={14} />
@@ -432,7 +432,7 @@ export default function Moderator({
                         </button>
                       </div>
 
-                      <div className="rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-3">
+                      <div className="surface-raised rounded-2xl p-3">
                         <p className="px-1 text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">
                           Acciones avanzadas
                         </p>
@@ -469,7 +469,7 @@ export default function Moderator({
 
             <div className="mt-4 flex flex-col gap-3">
               {pendingAnswersQueue.map((answer) => (
-                <article key={answer.id} className="rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-4 shadow-sm">
+                <article key={answer.id} className="surface-base rounded-3xl p-4 shadow-sm">
                   <p className="text-xs font-medium text-[#3f2abe] break-words">
                     Pregunta: {answer.questionContent}
                   </p>
@@ -523,13 +523,13 @@ export default function Moderator({
                 </div>
               )}
               {visiblePresentationQuestions.map((question) => (
-                <article key={question.id} className="rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-5 shadow-sm">
+                <article key={question.id} className="surface-base rounded-3xl p-5 shadow-sm">
                   <p className="text-sm font-bold text-[#3f2abe] break-words">{question.content}</p>
                   <p className="mt-1 text-xs font-medium text-[#3f2abe] break-words">
                     {question.author || 'Anónimo'}
                   </p>
 
-                  <div className="mt-3 rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-3">
+                  <div className="surface-raised mt-3 rounded-2xl p-3">
                     <p className="text-[11px] font-extrabold uppercase tracking-wide text-[#3f2abe]">
                       Visibilidad en presentación
                     </p>
@@ -562,7 +562,7 @@ export default function Moderator({
                       {question.answers
                         .filter((answer) => answer.status === 'approved')
                         .map((answer) => (
-                          <div key={answer.id} className="rounded-2xl bg-[#e6f2fa] p-3">
+                          <div key={answer.id} className="surface-raised rounded-2xl p-3">
                             <p className="text-xs font-bold text-[#3f2abe] break-words">{answer.author}</p>
                             <p className="mt-1 text-sm font-medium text-[#3f2abe] break-words">{answer.content}</p>
                           </div>
@@ -603,7 +603,7 @@ export default function Moderator({
               ))}
 
               {!!hiddenPresentationQuestions.length && (
-                <div className="mt-3 rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-4">
+                <div className="surface-base mt-3 rounded-3xl p-4">
                   <p className="text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">
                     Ocultas en presentación ({hiddenPresentationQuestions.length})
                   </p>
@@ -611,7 +611,7 @@ export default function Moderator({
                     {hiddenPresentationQuestions.map((question) => (
                       <div
                         key={question.id}
-                        className="rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-3"
+                        className="surface-raised rounded-2xl p-3"
                       >
                         <p className="text-sm font-semibold text-[#3f2abe] break-words">
                           {question.content}
