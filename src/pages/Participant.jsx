@@ -51,6 +51,7 @@ export default function Participant({ user, session }) {
   const [answerSuccess, setAnswerSuccess] = useState('')
   const [isComposerCompact, setIsComposerCompact] = useState(false)
   const actorId = user?.uid || participantId || ''
+  const isSessionOpen = session?.isAcceptingQuestions !== false
   const hasSessionAccess = Boolean(
     session?.sessionId && authorizedSessionId === session.sessionId,
   )
@@ -112,6 +113,12 @@ export default function Participant({ user, session }) {
   }, [cooldownUntil])
 
   useEffect(() => {
+    if (cooldownUntil > 0 && cooldownNow >= cooldownUntil) {
+      setCooldownUntil(0)
+    }
+  }, [cooldownNow, cooldownUntil])
+
+  useEffect(() => {
     if (typeof window === 'undefined') return undefined
 
     const handleViewportBehavior = () => {
@@ -143,7 +150,7 @@ export default function Participant({ user, session }) {
     event.preventDefault()
     if (!questionText.trim()) return
     if (cooldownSeconds > 0) return
-    if (!session?.isAcceptingQuestions) {
+    if (!isSessionOpen) {
       setQuestionError('La sesión está pausada. Espera a que moderación reanude preguntas.')
       setQuestionSuccess('')
       return
@@ -420,7 +427,7 @@ export default function Participant({ user, session }) {
               {answerError}
             </p>
           )}
-          {!session?.isAcceptingQuestions && (
+          {!isSessionOpen && (
             <p className="alert-critical mt-2 text-sm">
               El moderador pausó temporalmente el envío de nuevas preguntas.
             </p>
@@ -634,7 +641,7 @@ export default function Participant({ user, session }) {
             onChange={(event) => setQuestionText(event.target.value)}
             placeholder={cooldownSeconds > 0 ? `Espera ${cooldownSeconds}s...` : 'Escribe tu pregunta'}
             className="h-12 md:h-14 w-full rounded-full bg-[#e6f2fa] px-5 text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#3f2abe] outline-none"
-            disabled={sendingQuestion || cooldownSeconds > 0 || !session?.isAcceptingQuestions}
+            disabled={sendingQuestion || cooldownSeconds > 0 || !isSessionOpen}
           />
           <button
             type="submit"
@@ -642,7 +649,7 @@ export default function Participant({ user, session }) {
               sendingQuestion ||
               cooldownSeconds > 0 ||
               !questionText.trim() ||
-              !session?.isAcceptingQuestions
+              !isSessionOpen
             }
             className="h-12 md:h-14 shrink-0 rounded-full bg-[#3f2abe] px-5 text-sm md:text-base font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60 inline-flex items-center gap-2"
           >
