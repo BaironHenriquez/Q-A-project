@@ -275,6 +275,32 @@ body {
   animation: liveFadeIn 0.22s ease-out;
 }
 
+@keyframes snackbarFadeCenter {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  12% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  82% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+}
+
+.snackbar-center {
+  animation: snackbarFadeCenter 4s ease forwards;
+}
+
 .clamp-2,
 .clamp-3 {
   display: -webkit-box;

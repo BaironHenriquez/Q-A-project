@@ -86,7 +86,7 @@ export default function Participant({ user, session }) {
 
     const timeoutId = window.setTimeout(() => {
       setQuestionSuccess('')
-    }, 5000)
+    }, 4000)
 
     return () => window.clearTimeout(timeoutId)
   }, [questionSuccess])
@@ -400,16 +400,6 @@ export default function Participant({ user, session }) {
             </p>
           )}
 
-          {questionSuccess && (
-            <p
-              role="status"
-              aria-live="polite"
-              className="alert-success mt-3 break-words text-sm"
-            >
-              {questionSuccess}
-            </p>
-          )}
-
           {answerSuccess && (
             <p
               role="status"
@@ -471,16 +461,23 @@ export default function Participant({ user, session }) {
                 key={question.id}
                 className="surface-base live-enter rounded-[2rem] p-5 shadow-sm md:p-6"
               >
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-xs font-extrabold uppercase tracking-wider text-[#3f2abe]">
-                    Pregunta {index + 1}
-                  </p>
-                  <div className="inline-flex items-center gap-2">
-                    <p className="text-sm font-extrabold text-[#8b0368]">{question.upvotes || 0}</p>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-extrabold uppercase tracking-wider text-[#3f2abe]">
+                      Pregunta {index + 1}
+                    </p>
+                    <p className="mt-2 text-base md:text-lg font-semibold text-[#3f2abe] break-words">
+                      <span className="font-extrabold">{question.author || 'Anónimo'}:</span>{' '}
+                      {question.content}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col items-end gap-2">
+                    <p className="text-xs font-extrabold text-[#8b0368]">{question.upvotes || 0} votos</p>
                     <button
                       type="button"
                       onClick={() => handleToggleVote(question)}
-                      className={`h-9 rounded-full border border-[#64a2cc] px-3 text-xs font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 inline-flex items-center gap-2 ${
+                      className={`h-10 w-[130px] rounded-full border border-[#64a2cc] px-3 text-xs font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 inline-flex items-center justify-center gap-2 ${
                         hasVoted
                           ? 'bg-[#39d3b5] text-[#3f2abe]'
                           : 'bg-[#e6f2fa] text-[#3f2abe]'
@@ -489,13 +486,16 @@ export default function Participant({ user, session }) {
                       <ThumbsUp size={14} />
                       {hasVoted ? 'Me resto' : 'Me sumo'}
                     </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setExpandedAnswerQuestionId(question.id)}
+                      className="h-10 w-[130px] rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-3 text-xs font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                    >
+                      Responder
+                    </button>
                   </div>
                 </div>
-
-                <p className="mt-3 text-base md:text-lg font-semibold text-[#3f2abe] break-words">
-                  <span className="font-extrabold">{question.author || 'Anónimo'}:</span>{' '}
-                  {question.content}
-                </p>
 
                 {approvedAnswers.length > 0 && (
                   <div className="mt-3 border-l-4 border-[#64a2cc] pl-3 flex flex-col gap-2">
@@ -561,18 +561,6 @@ export default function Participant({ user, session }) {
                   </div>
                 )}
 
-                {expandedAnswerQuestionId !== question.id && (
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      onClick={() => setExpandedAnswerQuestionId(question.id)}
-                      className="h-10 rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
-                    >
-                      Responder
-                    </button>
-                  </div>
-                )}
-
                 {expandedAnswerQuestionId === question.id && (
                   <form
                     onSubmit={(event) => handleSubmitAnswer(event, question.id)}
@@ -612,6 +600,18 @@ export default function Participant({ user, session }) {
           </Link>
         </div>
       </section>
+
+      {questionSuccess && (
+        <div className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center p-4">
+          <p
+            role="status"
+            aria-live="polite"
+            className="snackbar-center alert-success max-w-[560px] break-words text-sm md:text-base"
+          >
+            {questionSuccess}
+          </p>
+        </div>
+      )}
 
       <div className="surface-overlay fixed bottom-0 left-0 right-0 z-30 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <form

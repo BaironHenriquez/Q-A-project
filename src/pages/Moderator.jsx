@@ -317,9 +317,6 @@ export default function Moderator({
                 </div>
               </div>
 
-              <p className="mt-4 text-sm font-semibold leading-relaxed text-[#3f2abe]">
-                Prioriza aprobación rápida de preguntas clave y fija las más votadas para la presentación.
-              </p>
             </aside>
           </div>
         </article>
