@@ -641,15 +641,14 @@ export default function Participant({ user, session }) {
             onChange={(event) => setQuestionText(event.target.value)}
             placeholder={cooldownSeconds > 0 ? `Espera ${cooldownSeconds}s...` : 'Escribe tu pregunta'}
             className="h-12 md:h-14 w-full rounded-full bg-[#e6f2fa] px-5 text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#3f2abe] outline-none"
-            disabled={sendingQuestion || cooldownSeconds > 0 || !isSessionOpen}
+            disabled={sendingQuestion || cooldownSeconds > 0}
           />
           <button
             type="submit"
             disabled={
               sendingQuestion ||
               cooldownSeconds > 0 ||
-              !questionText.trim() ||
-              !isSessionOpen
+              !questionText.trim()
             }
             className="h-12 md:h-14 shrink-0 rounded-full bg-[#3f2abe] px-5 text-sm md:text-base font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60 inline-flex items-center gap-2"
           >
