@@ -83,17 +83,14 @@ export default function Presentation({ session }) {
             )}
 
             {!!featuredQuestions.length && (
-              <div className="flex snap-x snap-proximity gap-4 overflow-x-auto pb-2 lg:gap-5">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-5">
                 {featuredQuestions.map((question) => {
                   const approvedAnswers = Array.isArray(question.answers)
                     ? question.answers.filter((answer) => answer.status === 'approved')
                     : []
 
                   return (
-                    <article
-                      key={question.id}
-                      className="min-w-[280px] max-w-[360px] flex-shrink-0 snap-start rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-sm md:min-w-[320px] md:p-7"
-                    >
+                    <article key={question.id} className="rounded-3xl border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-sm md:p-7">
                       {question.isPinned && (
                         <span className="inline-flex rounded-full bg-[#e08ad4] px-3 py-1 text-xs font-bold text-[#3f2abe]">
                           Fijada
@@ -114,22 +111,20 @@ export default function Presentation({ session }) {
                       {approvedAnswers.length > 0 && (
                         <div className="mt-5 border-t border-[#64a2cc] pt-4">
                           <p className="text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">Respuestas</p>
-                          <div className="mt-3 overflow-x-auto pb-2">
-                            <div className="flex min-w-max gap-3">
-                              {approvedAnswers.map((answer) => (
-                                <div
-                                  key={answer.id}
-                                  className="min-w-[210px] max-w-[260px] flex-shrink-0 rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-4"
-                                >
-                                  <p className="text-xs font-bold text-[#3f2abe] break-words">
-                                    {answer.author || 'Anónimo'}
-                                  </p>
-                                  <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words">
-                                    {answer.content}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
+                          <div className="mt-3 flex flex-col gap-2">
+                            {approvedAnswers.map((answer) => (
+                              <div
+                                key={answer.id}
+                                className="rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] p-4"
+                              >
+                                <p className="text-xs font-bold text-[#3f2abe] break-words">
+                                  {answer.author || 'Anónimo'}
+                                </p>
+                                <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words">
+                                  {answer.content}
+                                </p>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       )}
