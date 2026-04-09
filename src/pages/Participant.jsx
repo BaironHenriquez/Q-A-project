@@ -379,10 +379,10 @@ export default function Participant({ user, session }) {
     <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6 pb-[calc(11rem+env(safe-area-inset-bottom))] relative">
       <section className="mx-auto w-full flex flex-col gap-5 md:gap-6">
         <article className="surface-base rounded-[2rem] p-6 shadow-md md:p-7">
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight break-words">
+          <h1 className="type-page-title break-words">
             {myName || 'Participante'}
           </h1>
-          <p className="mt-2 text-sm md:text-base font-semibold text-[#3f2abe] break-words">
+          <p className="type-page-subtitle mt-2 text-[#3f2abe] break-words">
               {session?.title || 'Sesión activa'}
           </p>
           <div className="surface-raised mt-4 rounded-3xl p-5 text-sm md:p-6 md:text-base">
@@ -436,7 +436,7 @@ export default function Participant({ user, session }) {
 
         <section className="surface-base rounded-[2rem] p-4 shadow-md md:p-5">
           <div className="mb-3 flex items-center justify-between gap-3">
-            <h2 className="text-lg md:text-xl font-extrabold tracking-tight text-[#3f2abe]">Preguntas publicadas</h2>
+            <h2 className="type-section-title text-[#3f2abe]">Preguntas publicadas</h2>
             <span className="surface-raised rounded-full px-3 py-1.5 text-xs font-extrabold text-[#3f2abe]">
               {visibleQuestions.length}
             </span>
@@ -470,17 +470,17 @@ export default function Participant({ user, session }) {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs font-extrabold uppercase tracking-wider text-[#3f2abe]">
+                    <p className="type-label-caps text-[#3f2abe]">
                       Pregunta {index + 1}
                     </p>
-                    <p className="mt-2 text-base md:text-lg font-semibold text-[#3f2abe] break-words">
+                      <p className="type-card-title mt-2 text-[#3f2abe] break-words">
                       <span className="font-extrabold">{question.author || 'Anónimo'}:</span>{' '}
                       {question.content}
                     </p>
                   </div>
 
                   <div className="flex flex-col items-end gap-2">
-                    <p className="text-xs font-extrabold text-[#8b0368]">{question.upvotes || 0} votos</p>
+                    <p className="type-meta text-[#8b0368]">{question.upvotes || 0} votos</p>
                     <button
                       type="button"
                       onClick={() => handleToggleVote(question)}

@@ -59,10 +59,10 @@ export default function Presentation({ session }) {
         </aside>
 
         <article className="surface-base min-w-[300px] flex-1 rounded-[2rem] p-6 shadow-md md:p-9 lg:p-11">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight break-words">
+          <h1 className="type-page-title break-words">
             {session?.title || 'Sesión sin título'}
           </h1>
-          <p className="mt-2 text-base md:text-lg font-semibold text-[#3f2abe] break-words">Presentación en vivo</p>
+          <p className="type-page-subtitle mt-2 text-[#3f2abe] break-words">Presentación en vivo</p>
 
           {!session?.isAcceptingQuestions && (
             <div className="alert-critical mt-4 text-sm md:text-base">
@@ -105,12 +105,12 @@ export default function Presentation({ session }) {
                           Fijada
                         </span>
                       )}
-                      <p className="mt-2 text-xl md:text-2xl font-extrabold tracking-tight text-[#3f2abe] break-words">
+                      <p className="type-card-title mt-2 text-[#3f2abe] break-words md:text-2xl">
                         <span className="font-black">{focusQuestion.author || 'Anónimo'}:</span>{' '}
                         {focusQuestion.content}
                       </p>
                       <div className="mt-2 flex items-center justify-end">
-                        <p className="text-sm md:text-base font-bold text-[#8b0368]">
+                        <p className="type-meta text-[#8b0368]">
                           {focusQuestion.upvotes || 0} votos
                         </p>
                       </div>
@@ -169,14 +169,12 @@ export default function Presentation({ session }) {
                           Fijada
                         </span>
                       )}
-                      <p
-                        className="mt-2 text-lg md:text-xl font-extrabold tracking-tight text-[#3f2abe] break-words clamp-2"
-                      >
+                      <p className="type-card-title mt-2 text-[#3f2abe] break-words clamp-2">
                         <span className="font-black">{question.author || 'Anónimo'}:</span>{' '}
                         {question.content}
                       </p>
                       <div className="mt-2 flex items-center justify-end gap-3">
-                        <p className="text-sm md:text-base font-bold text-[#8b0368]">
+                        <p className="type-meta text-[#8b0368]">
                           {question.upvotes || 0} votos
                         </p>
                       </div>

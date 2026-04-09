@@ -182,8 +182,8 @@ export default function Moderator({
         <article className="surface-base rounded-[2rem] p-6 shadow-md md:p-9">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h1 className="text-3xl md:text-[2.2rem] font-extrabold tracking-tight">Panel moderador</h1>
-              <p className="mt-2 text-sm font-semibold text-[#3f2abe]">Moderador autenticado.</p>
+              <h1 className="type-page-title">Panel moderador</h1>
+              <p className="type-page-subtitle mt-2 text-[#3f2abe]">Moderador autenticado.</p>
             </div>
             <span
               className={`inline-flex items-center rounded-full px-4 py-2 text-xs font-extrabold uppercase tracking-wide ${
@@ -198,11 +198,11 @@ export default function Moderator({
 
           <div className="mt-6 flex flex-wrap items-start gap-5">
             <div className="surface-raised w-full min-w-[300px] flex-[2_1_640px] rounded-3xl p-5 md:p-6">
-              <p className="text-xl font-extrabold break-words">{session?.title || 'Sesión sin título'}</p>
-              <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words">
+              <p className="type-card-title break-words">{session?.title || 'Sesión sin título'}</p>
+              <p className="type-meta mt-1 text-[#3f2abe] break-words">
                 ID: {session?.sessionId || 'sin id'}
               </p>
-              <p className="mt-2 text-sm font-semibold text-[#3f2abe]">
+              <p className="type-meta mt-2 text-[#3f2abe]">
                 Estado: {session?.isAcceptingQuestions ? 'Aceptando preguntas' : 'Pausada'}
               </p>
 
@@ -291,10 +291,10 @@ export default function Moderator({
 
             <aside className="surface-base w-full min-w-[300px] flex-[1_1_320px] rounded-3xl p-5 shadow-sm md:p-6">
               <p className="text-xs font-extrabold uppercase tracking-wide text-[#3f2abe]">Resumen en vivo</p>
-              <h2 className="mt-2 text-2xl font-extrabold tracking-tight break-words text-[#3f2abe]">
+              <h2 className="type-section-title mt-2 break-words text-[#3f2abe]">
                 {session?.title || 'Sesión sin título'}
               </h2>
-              <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words">ID: {session?.sessionId || 'sin id'}</p>
+              <p className="type-meta mt-1 text-[#3f2abe] break-words">ID: {session?.sessionId || 'sin id'}</p>
 
               <div className="mt-4 grid grid-cols-2 gap-3">
                 <div className="surface-raised rounded-2xl p-4">
@@ -325,7 +325,7 @@ export default function Moderator({
           <article className="surface-base rounded-[2rem] p-6 shadow-sm">
             <div className="flex items-center gap-2">
               <ClipboardList size={18} className="text-[#8b0368]" />
-              <h2 className="text-xl font-extrabold tracking-tight">Preguntas pendientes ({pendingQuestions.length})</h2>
+              <h2 className="type-section-title">Preguntas pendientes ({pendingQuestions.length})</h2>
             </div>
 
             {loadingQuestions && (
@@ -455,7 +455,7 @@ export default function Moderator({
           </article>
 
           <article className="surface-base rounded-[2rem] p-6 shadow-sm">
-            <h2 className="text-xl font-extrabold tracking-tight">Respuestas pendientes ({pendingAnswersQueue.length})</h2>
+            <h2 className="type-section-title">Respuestas pendientes ({pendingAnswersQueue.length})</h2>
 
             {!pendingAnswersQueue.length && (
               <div className="surface-raised mt-4 rounded-3xl p-6 text-center">

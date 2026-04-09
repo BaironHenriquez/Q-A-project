@@ -125,8 +125,8 @@ export default function Home({
         <section className="mx-auto w-full">
           <article className="surface-base rounded-[2rem] p-7 shadow-md md:p-9">
             <p className="text-sm font-extrabold text-[#8b0368]">Q&A en tiempo real</p>
-            <h1 className="mt-2 text-3xl font-extrabold tracking-tight leading-tight">Ingreso moderador</h1>
-            <p className="mt-3 text-sm font-semibold text-[#3f2abe]">
+            <h1 className="type-page-title mt-2">Ingreso moderador</h1>
+            <p className="type-page-subtitle mt-3 text-[#3f2abe]">
               Solo el moderador puede crear, ingresar o borrar la sesión activa.
             </p>
 
@@ -178,8 +178,8 @@ export default function Home({
             )}
 
             <div className="mt-6 border-t border-[#64a2cc] pt-6">
-              <h2 className="text-xl font-extrabold tracking-tight">Ingreso usuario</h2>
-              <p className="mt-2 text-sm font-semibold text-[#3f2abe]">
+              <h2 className="type-section-title">Ingreso usuario</h2>
+              <p className="type-page-subtitle mt-2 text-[#3f2abe]">
                 Si eres participante, escribe el ID de la sesión para unirte.
               </p>
 
@@ -224,10 +224,10 @@ export default function Home({
       <section className="mx-auto w-full flex flex-col gap-6 lg:gap-7">
         <article className="surface-base rounded-[2rem] p-7 shadow-md md:p-9">
           <p className="text-sm font-extrabold text-[#8b0368]">Q&A en tiempo real</p>
-          <h1 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
+          <h1 className="type-page-title mt-2">
             Centro de control para moderación
           </h1>
-          <p className="mt-3 text-base font-semibold text-[#3f2abe] break-words leading-relaxed">
+          <p className="type-page-subtitle mt-3 text-[#3f2abe] break-words">
             Esta vista es solo para moderador. Participantes entran únicamente por QR o con el ID de sesión activa.
           </p>
 
@@ -286,13 +286,13 @@ export default function Home({
                 <BadgeCheck size={18} />
                 <p className="text-sm font-bold">Sesión activa</p>
               </div>
-              <p className="mt-2 text-xl font-extrabold break-words text-[#3f2abe]">
+              <p className="type-card-title mt-2 break-words text-[#3f2abe]">
                 {session.title || 'Sin título'}
               </p>
-              <p className="mt-1 text-sm font-semibold break-words text-[#3f2abe]">
+              <p className="type-meta mt-1 break-words text-[#3f2abe]">
                 ID: {session.sessionId}
               </p>
-              <p className="mt-1 text-sm font-semibold text-[#3f2abe]">Acceso de moderador verificado.</p>
+              <p className="type-meta mt-1 text-[#3f2abe]">Acceso de moderador verificado.</p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <button
                   type="button"
@@ -348,11 +348,11 @@ export default function Home({
             <div className="surface-raised inline-flex rounded-2xl p-3 text-[#8b0368]">
               <PlusCircle size={20} />
             </div>
-            <h2 className="mt-3 text-xl font-extrabold tracking-tight">Crear sesión</h2>
-            <p className="mt-2 text-sm font-semibold text-[#3f2abe]">
+            <h2 className="type-section-title mt-3">Crear sesión</h2>
+            <p className="type-page-subtitle mt-2 text-[#3f2abe]">
               Inicia una nueva sesión para habilitar preguntas, moderación y presentación.
             </p>
-            <p className="mt-5 text-xs font-semibold text-[#3f2abe]">
+            <p className="type-meta mt-5 text-[#3f2abe]">
               Usa el formulario superior para crearla.
             </p>
           </article>
@@ -361,8 +361,8 @@ export default function Home({
             <div className="surface-raised inline-flex rounded-2xl p-3 text-[#3f2abe]">
               <LogIn size={20} />
             </div>
-            <h2 className="mt-3 text-xl font-extrabold tracking-tight">Ingresar a sesión activa</h2>
-            <p className="mt-2 text-sm font-semibold text-[#3f2abe]">
+            <h2 className="type-section-title mt-3">Ingresar a sesión activa</h2>
+            <p className="type-page-subtitle mt-2 text-[#3f2abe]">
               Retoma la sesión que ya está creada para administrar preguntas en vivo.
             </p>
             <button
