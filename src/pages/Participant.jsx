@@ -227,6 +227,7 @@ export default function Participant({ user, session }) {
         ...previous,
         [questionId]: '',
       }))
+      setExpandedAnswerQuestionId('')
       setAnswerSuccess('Tu respuesta se envió y quedará visible cuando moderación la apruebe.')
     } catch (error) {
       setAnswerError(error.message || 'No se pudo enviar tu respuesta.')
@@ -560,19 +561,17 @@ export default function Participant({ user, session }) {
                   </div>
                 )}
 
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setExpandedAnswerQuestionId((previous) =>
-                        previous === question.id ? '' : question.id,
-                      )
-                    }
-                    className="h-10 rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
-                  >
-                    {expandedAnswerQuestionId === question.id ? 'Cerrar respuesta' : 'Responder'}
-                  </button>
-                </div>
+                {expandedAnswerQuestionId !== question.id && (
+                  <div className="mt-4">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedAnswerQuestionId(question.id)}
+                      className="h-10 rounded-full border border-[#64a2cc] bg-[#e6f2fa] px-4 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+                    >
+                      Responder
+                    </button>
+                  </div>
+                )}
 
                 {expandedAnswerQuestionId === question.id && (
                   <form
