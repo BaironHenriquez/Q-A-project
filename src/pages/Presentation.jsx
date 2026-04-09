@@ -21,8 +21,7 @@ export default function Presentation({ session }) {
           if (voteDiff !== 0) return voteDiff
 
           return (right.createdAt || 0) - (left.createdAt || 0)
-        })
-        .slice(0, 10),
+        }),
     [approvedQuestions],
   )
 

@@ -43,6 +43,7 @@ export default function Participant({ user, session }) {
   const [questionError, setQuestionError] = useState('')
   const [questionSuccess, setQuestionSuccess] = useState('')
   const [cooldownUntil, setCooldownUntil] = useState(0)
+  const [cooldownNow, setCooldownNow] = useState(() => Date.now())
   const [answerDrafts, setAnswerDrafts] = useState({})
   const [sendingAnswerQuestionId, setSendingAnswerQuestionId] = useState('')
   const [answerError, setAnswerError] = useState('')
@@ -98,11 +99,21 @@ export default function Participant({ user, session }) {
     return () => window.clearTimeout(timeoutId)
   }, [answerSuccess])
 
+  useEffect(() => {
+    if (cooldownUntil <= Date.now()) return undefined
+
+    const intervalId = window.setInterval(() => {
+      setCooldownNow(Date.now())
+    }, 1000)
+
+    return () => window.clearInterval(intervalId)
+  }, [cooldownUntil])
+
   const visibleQuestions = sortedQuestions.filter(
     (question) => question.status === 'approved' && !question.isHidden,
   )
 
-  const cooldownSeconds = Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000))
+  const cooldownSeconds = Math.max(0, Math.ceil((cooldownUntil - cooldownNow) / 1000))
 
   const handleSubmitQuestion = async (event) => {
     event.preventDefault()
@@ -333,23 +344,36 @@ export default function Participant({ user, session }) {
   }
 
   return (
-    <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6 pb-[calc(11rem+env(safe-area-inset-bottom))] md:pb-8 relative">
+    <main className="min-h-screen bg-[#64a2cc] text-[#3f2abe] font-sans p-3 md:p-4 lg:p-6 pb-[calc(11rem+env(safe-area-inset-bottom))] relative">
       <section className="mx-auto w-full flex flex-col gap-5 md:gap-6">
         <article className="rounded-[2rem] border border-[#64a2cc] bg-[#e6f2fa] p-6 shadow-md md:p-7">
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Participante</h1>
+          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight break-words">
+            {myName || 'Participante'}
+          </h1>
           <p className="mt-2 text-sm md:text-base font-semibold text-[#3f2abe] break-words">
               {session?.title || 'Sesión activa'}
           </p>
           <div className="mt-4 rounded-3xl bg-[#e6f2fa] p-5 md:p-6 text-sm md:text-base">
-            <p className="font-bold text-[#3f2abe]">Hola, {myName}</p>
-            <p className="mt-1 font-semibold text-[#3f2abe]">
-              Identidad de participación activada.
-            </p>
+            <p className="font-semibold text-[#3f2abe]">Envía preguntas y respuestas breves para no interrumpir la charla.</p>
             <p className="mt-1 font-semibold text-[#3f2abe]">Preguntas visibles: {visibleQuestions.length}</p>
-            <p className="mt-1 font-semibold text-[#3f2abe]">
-              Tus preguntas y respuestas pasan por moderación antes de mostrarse.
-            </p>
           </div>
+
+          <p
+            role="alert"
+            className="mt-3 rounded-2xl border border-[#8b0368] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#8b0368] break-words"
+          >
+            Tus preguntas y respuestas pasan por moderación antes de mostrarse.
+          </p>
+
+          {cooldownSeconds > 0 && (
+            <p
+              role="status"
+              aria-live="polite"
+              className="mt-2 rounded-2xl border border-[#64a2cc] bg-[#e6f2fa] px-4 py-3 text-sm font-bold text-[#3f2abe] break-words"
+            >
+              Puedes enviar otra pregunta en {cooldownSeconds}s.
+            </p>
+          )}
 
           {questionSuccess && (
             <p
@@ -563,10 +587,10 @@ export default function Participant({ user, session }) {
         </div>
       </section>
 
-      <div className="fixed bottom-0 left-0 right-0 z-30 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] bg-[#e6f2fa] md:static md:p-0">
+      <div className="fixed bottom-0 left-0 right-0 z-30 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] bg-[#e6f2fa]">
         <form
           onSubmit={handleSubmitQuestion}
-          className="w-full rounded-[2rem] bg-[#e6f2fa] p-4 md:p-5 shadow-lg flex flex-col gap-2 sm:flex-row sm:items-center"
+          className="mx-auto w-full max-w-[1200px] rounded-[2rem] bg-[#e6f2fa] p-4 md:p-5 shadow-lg flex flex-col gap-2 sm:flex-row sm:items-center"
         >
           <label htmlFor="participant-question-input" className="sr-only">
             Escribe tu pregunta
