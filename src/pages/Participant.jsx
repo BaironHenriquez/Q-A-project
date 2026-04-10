@@ -4,6 +4,49 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useQuestions } from '../hooks/useQuestions'
 
 const PARTICIPANT_ID_KEY = 'qna_participant_id'
+const PARTICIPANT_NAME_KEY = 'qna_user_name'
+const PARTICIPANT_AFFILIATION_KEY = 'qna_user_affiliation'
+const PARTICIPANT_AFFILIATION_DETAIL_KEY = 'qna_user_affiliation_detail'
+
+const AFFILIATION_OPTIONS = [
+  'Alcaldía',
+  'Administración Municipal',
+  'Juzgados de Policía Local',
+  'Secretaría Municipal',
+  'Secretaría Comunal de Planificación',
+  'Dirección de Administración y Finanzas',
+  'Dirección Jurídica',
+  'Dirección de Control',
+  'Dirección de Obras Municipales',
+  'Dirección de Tránsito',
+  'Dirección de Medioambiente, Aseo y Ornato',
+  'Dirección de Desarrollo Comunitario',
+  'Dirección de Servicios Traspasados',
+  'Dirección de Concesiones',
+  'Dirección de Operaciones',
+  'Dirección de Turismo',
+  'Dirección de Seguridad Pública',
+  'Externo',
+  'Otro',
+]
+
+const REQUIRES_AFFILIATION_DETAIL = new Set(['Externo', 'Otro'])
+
+const getStoredValue = (key) => {
+  if (typeof window === 'undefined') return ''
+  return localStorage.getItem(key) || ''
+}
+
+const hasCompleteParticipantProfile = () => {
+  const storedName = getStoredValue(PARTICIPANT_NAME_KEY).trim()
+  const storedAffiliation = getStoredValue(PARTICIPANT_AFFILIATION_KEY).trim()
+  const storedAffiliationDetail = getStoredValue(PARTICIPANT_AFFILIATION_DETAIL_KEY).trim()
+
+  if (!storedName || !storedAffiliation) return false
+  if (!REQUIRES_AFFILIATION_DETAIL.has(storedAffiliation)) return true
+
+  return Boolean(storedAffiliationDetail)
+}
 
 const getOrCreateParticipantId = () => {
   if (typeof window === 'undefined') return ''
@@ -33,10 +76,18 @@ export default function Participant({ user, session }) {
   const [authorizedSessionId, setAuthorizedSessionId] = useState('')
 
   const [myName, setMyName] = useState(
-    () => localStorage.getItem('qna_user_name') || '',
+    () => getStoredValue(PARTICIPANT_NAME_KEY),
   )
+  const [selectedAffiliation, setSelectedAffiliation] = useState(
+    () => getStoredValue(PARTICIPANT_AFFILIATION_KEY),
+  )
+  const [affiliationDetail, setAffiliationDetail] = useState(
+    () => getStoredValue(PARTICIPANT_AFFILIATION_DETAIL_KEY),
+  )
+  const [affiliationSearch, setAffiliationSearch] = useState('')
+  const [profileError, setProfileError] = useState('')
   const [isNameSet, setIsNameSet] = useState(
-    () => Boolean(localStorage.getItem('qna_user_name')),
+    hasCompleteParticipantProfile,
   )
   const [questionText, setQuestionText] = useState('')
   const [sendingQuestion, setSendingQuestion] = useState(false)
@@ -143,6 +194,12 @@ export default function Participant({ user, session }) {
   const visibleQuestions = sortedQuestions.filter(
     (question) => question.status === 'approved' && !question.isHidden,
   )
+
+  const filteredAffiliations = AFFILIATION_OPTIONS.filter((option) =>
+    option.toLowerCase().includes(affiliationSearch.trim().toLowerCase()),
+  )
+
+  const requiresAffiliationDetail = REQUIRES_AFFILIATION_DETAIL.has(selectedAffiliation)
 
   const cooldownSeconds = Math.max(0, Math.ceil((cooldownUntil - cooldownNow) / 1000))
 
@@ -278,6 +335,43 @@ export default function Participant({ user, session }) {
     }
   }
 
+  const handleEnterParticipantRoom = (event) => {
+    event.preventDefault()
+
+    const trimmedName = myName.trim()
+    const trimmedAffiliationDetail = affiliationDetail.trim()
+
+    if (!trimmedName) {
+      setProfileError('Ingresa tu nombre para participar.')
+      return
+    }
+
+    if (!selectedAffiliation) {
+      setProfileError('Selecciona tu área o institución para continuar.')
+      return
+    }
+
+    if (requiresAffiliationDetail && !trimmedAffiliationDetail) {
+      setProfileError(`Debes indicar a qué corresponde "${selectedAffiliation}".`)
+      return
+    }
+
+    setProfileError('')
+    localStorage.setItem(PARTICIPANT_NAME_KEY, trimmedName)
+    localStorage.setItem(PARTICIPANT_AFFILIATION_KEY, selectedAffiliation)
+
+    if (requiresAffiliationDetail) {
+      localStorage.setItem(PARTICIPANT_AFFILIATION_DETAIL_KEY, trimmedAffiliationDetail)
+      setAffiliationDetail(trimmedAffiliationDetail)
+    } else {
+      localStorage.removeItem(PARTICIPANT_AFFILIATION_DETAIL_KEY)
+      setAffiliationDetail('')
+    }
+
+    setMyName(trimmedName)
+    setIsNameSet(true)
+  }
+
   if (!hasSessionAccess) {
     return (
       <div className="min-h-screen bg-[#64a2cc] font-sans px-3 py-4 md:px-4 md:py-6 lg:px-6 lg:py-8 flex items-center justify-center">
@@ -336,19 +430,9 @@ export default function Participant({ user, session }) {
             {session?.title || 'Sesión activa'}
           </h2>
           <p className="text-sm md:text-base font-semibold mb-6 text-[#3f2abe]">
-            Ingresa un nombre para participar
+            Ingresa tu nombre y selecciona tu área para participar
           </p>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault()
-              const trimmedName = myName.trim()
-              if (!trimmedName) return
-
-              localStorage.setItem('qna_user_name', trimmedName)
-              setMyName(trimmedName)
-              setIsNameSet(true)
-            }}
-          >
+          <form onSubmit={handleEnterParticipantRoom}>
             <label htmlFor="participant-name" className="mb-1 block text-xs font-bold text-[#3f2abe]">
               Tu nombre para participar
             </label>
@@ -363,6 +447,72 @@ export default function Participant({ user, session }) {
               placeholder="Tu nombre..."
               className="h-12 md:h-14 w-full rounded-full bg-[#e6f2fa] px-5 text-center text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#3f2abe] outline-none mb-4"
             />
+
+            <label htmlFor="participant-affiliation-search" className="mb-1 block text-xs font-bold text-[#3f2abe] text-left">
+              Buscar área o institución
+            </label>
+            <input
+              id="participant-affiliation-search"
+              type="text"
+              value={affiliationSearch}
+              onChange={(event) => setAffiliationSearch(event.target.value)}
+              placeholder="Busca en la lista"
+              className="h-11 w-full rounded-full bg-[#e6f2fa] px-4 text-sm font-medium text-[#3f2abe] placeholder:text-[#3f2abe] outline-none mb-3"
+            />
+
+            <label htmlFor="participant-affiliation" className="mb-1 block text-xs font-bold text-[#3f2abe] text-left">
+              Selecciona tu área o institución
+            </label>
+            <select
+              id="participant-affiliation"
+              value={selectedAffiliation}
+              onChange={(event) => {
+                setSelectedAffiliation(event.target.value)
+                setProfileError('')
+              }}
+              size={7}
+              className="w-full rounded-2xl bg-[#e6f2fa] p-3 text-sm font-medium text-[#3f2abe] outline-none mb-3"
+            >
+              {filteredAffiliations.length > 0 ? (
+                filteredAffiliations.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))
+              ) : (
+                <option value="" disabled>
+                  Sin coincidencias para tu búsqueda
+                </option>
+              )}
+            </select>
+
+            {requiresAffiliationDetail && (
+              <>
+                <label htmlFor="participant-affiliation-detail" className="mb-1 block text-xs font-bold text-[#3f2abe] text-left">
+                  Especifica cuál ({selectedAffiliation})
+                </label>
+                <input
+                  id="participant-affiliation-detail"
+                  type="text"
+                  required
+                  maxLength={80}
+                  value={affiliationDetail}
+                  onChange={(event) => {
+                    setAffiliationDetail(event.target.value)
+                    setProfileError('')
+                  }}
+                  placeholder="Escribe tu área o institución"
+                  className="h-11 w-full rounded-full bg-[#e6f2fa] px-4 text-sm font-medium text-[#3f2abe] placeholder:text-[#3f2abe] outline-none mb-4"
+                />
+              </>
+            )}
+
+            {profileError && (
+              <p role="alert" className="alert-critical mb-3 break-words text-sm">
+                {profileError}
+              </p>
+            )}
+
             <button
               type="submit"
               className="h-12 md:h-14 w-full rounded-full bg-[#3f2abe] text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 md:text-base"
