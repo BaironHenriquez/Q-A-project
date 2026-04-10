@@ -12,16 +12,8 @@ export default function Presentation({ session }) {
   const featuredQuestions = useMemo(
     () =>
       [...approvedQuestions]
-        .sort((left, right) => {
-          if (Boolean(right.isPinned) !== Boolean(left.isPinned)) {
-            return Number(Boolean(right.isPinned)) - Number(Boolean(left.isPinned))
-          }
-
-          const voteDiff = (right.upvotes || 0) - (left.upvotes || 0)
-          if (voteDiff !== 0) return voteDiff
-
-          return (right.createdAt || 0) - (left.createdAt || 0)
-        }),
+        .sort((left, right) => (right.createdAt || 0) - (left.createdAt || 0))
+        .slice(0, 9),
     [approvedQuestions],
   )
   const focusQuestion = featuredQuestions[0] || null
@@ -98,7 +90,7 @@ export default function Presentation({ session }) {
                   return (
                     <article className="surface-base live-enter rounded-3xl p-5 shadow-sm md:p-6">
                       <span className="inline-flex rounded-full bg-[#39d3b5] px-3 py-1 text-xs font-extrabold text-[#3f2abe]">
-                        En foco
+                        Mas reciente
                       </span>
                       {focusQuestion.isPinned && (
                         <span className="ml-2 inline-flex rounded-full bg-[#e08ad4] px-3 py-1 text-xs font-bold text-[#3f2abe]">
