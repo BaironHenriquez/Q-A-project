@@ -97,6 +97,10 @@ Coleccion de preguntas por sesion:
 
 `artifacts/{appId}/public/data/sessions/{sessionId}/questions/{questionId}`
 
+Registro de actividad por participante:
+
+`artifacts/{appId}/public/data/sessions/{sessionId}/participants/{userId}`
+
 #### Pregunta
 
 - `author`
@@ -122,6 +126,37 @@ Coleccion de preguntas por sesion:
 - `isIncorrectVotes`
 - `isCorrectVotedBy[]`
 - `isIncorrectVotedBy[]`
+
+#### Participante (actividad)
+
+Documento base en `participants/{userId}`:
+
+- `userId`
+- `lastDisplayName`
+- `lastActivityAt`
+- `updatedAt`
+
+Subcoleccion `participants/{userId}/questions/{questionId}`:
+
+- `questionId`
+- `author`
+- `content`
+- `status`
+- `createdAt`
+
+Subcoleccion `participants/{userId}/answers/{answerId}`:
+
+- `answerId`
+- `questionId`
+- `author`
+- `content`
+- `status`
+- `createdAt`
+
+Subcoleccion `participants/{userId}/question_votes/{questionId}`:
+
+- `questionId`
+- `votedAt`
 
 ## Estructura del Proyecto
 
@@ -223,6 +258,7 @@ El proyecto incluye salvaguardas para concurrencia:
 - Votos de preguntas y votos de respuestas con transacciones.
 - Moderacion de respuestas con transaccion para evitar perdida de votos concurrentes.
 - Borrado de sesion con limpieza de preguntas historicas antes de remover el puntero activo.
+- Registro por usuario para preguntas, respuestas y "me sumo" dentro de `participants/{userId}`.
 
 ## Despliegue
 
