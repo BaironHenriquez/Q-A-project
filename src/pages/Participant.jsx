@@ -7,6 +7,7 @@ const PARTICIPANT_ID_KEY = 'qna_participant_id'
 const PARTICIPANT_NAME_KEY = 'qna_user_name'
 const PARTICIPANT_AFFILIATION_KEY = 'qna_user_affiliation'
 const PARTICIPANT_AFFILIATION_DETAIL_KEY = 'qna_user_affiliation_detail'
+const QUESTION_MAX_LENGTH = 500
 
 const AFFILIATION_OPTIONS = [
   'Alcaldía',
@@ -211,10 +212,17 @@ export default function Participant({ user, session }) {
 
   const cooldownSeconds = Math.max(0, Math.ceil((cooldownUntil - cooldownNow) / 1000))
   const answerCooldownSeconds = Math.max(0, Math.ceil((answerCooldownUntil - answerCooldownNow) / 1000))
+  const questionLength = questionText.length
+  const isQuestionOverLimit = questionLength > QUESTION_MAX_LENGTH
 
   const handleSubmitQuestion = async (event) => {
     event.preventDefault()
     if (!questionText.trim()) return
+    if (isQuestionOverLimit) {
+      setQuestionError(`La pregunta supera el límite de ${QUESTION_MAX_LENGTH} caracteres.`)
+      setQuestionSuccess('')
+      return
+    }
     if (cooldownSeconds > 0) return
     if (!isSessionOpen) {
       setQuestionError('La sesión está pausada. Espera a que moderación reanude preguntas.')
@@ -856,18 +864,28 @@ export default function Participant({ user, session }) {
           <input
             id="participant-question-input"
             type="text"
-            maxLength={100}
             value={questionText}
-            onChange={(event) => setQuestionText(event.target.value)}
+            onChange={(event) => {
+              setQuestionText(event.target.value)
+            }}
             placeholder={cooldownSeconds > 0 ? `Espera ${cooldownSeconds}s...` : 'Escribe tu pregunta'}
             className="h-12 md:h-14 w-full rounded-full bg-[#e6f2fa] px-5 text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#3f2abe] outline-none"
             disabled={sendingQuestion || cooldownSeconds > 0}
           />
+          <p className={`px-2 text-xs font-semibold ${isQuestionOverLimit ? 'text-[#8b0368]' : 'text-[#3f2abe]'}`}>
+            {questionLength}/{QUESTION_MAX_LENGTH} caracteres
+          </p>
+          {isQuestionOverLimit && (
+            <p role="alert" className="alert-warning px-2 text-xs">
+              La pregunta excede el máximo permitido. Reduce el texto para poder enviarla.
+            </p>
+          )}
           <button
             type="submit"
             disabled={
               sendingQuestion ||
               cooldownSeconds > 0 ||
+              isQuestionOverLimit ||
               !questionText.trim()
             }
             className="h-12 md:h-14 shrink-0 rounded-full bg-[#3f2abe] px-5 text-sm md:text-base font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60 inline-flex items-center gap-2"

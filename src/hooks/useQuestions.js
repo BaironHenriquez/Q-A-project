@@ -8,7 +8,7 @@ import {
 } from 'firebase/firestore'
 import { appId, db } from '../services/firebase'
 
-const MAX_QUESTION = 100
+const MAX_QUESTION = 500
 const MAX_ANSWER = 250
 
 const buildQuestionsCollectionRef = (sessionId) =>

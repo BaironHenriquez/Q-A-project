@@ -380,7 +380,7 @@ export default function Moderator({
                         <input
                           id={`edit-question-${question.id}`}
                           type="text"
-                          maxLength={100}
+                          maxLength={500}
                           value={editingText}
                           onChange={(event) => setEditingText(event.target.value)}
                           className="h-11 w-full rounded-full bg-[#e6f2fa] px-4 text-sm font-medium text-[#3f2abe] outline-none"
