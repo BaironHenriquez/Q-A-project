@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Hand, MessageSquare, SendHorizontal, Sparkles } from 'lucide-react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { useQuestions } from '../hooks/useQuestions'
 
 const PARTICIPANT_ID_KEY = 'qna_participant_id'
@@ -84,6 +84,7 @@ export default function Participant({ user, session }) {
   const [affiliationDetail, setAffiliationDetail] = useState(
     () => getStoredValue(PARTICIPANT_AFFILIATION_DETAIL_KEY),
   )
+  const [isAffiliationPickerOpen, setIsAffiliationPickerOpen] = useState(false)
   const [affiliationSearch, setAffiliationSearch] = useState('')
   const [profileError, setProfileError] = useState('')
   const [isNameSet, setIsNameSet] = useState(
@@ -95,11 +96,12 @@ export default function Participant({ user, session }) {
   const [questionSuccess, setQuestionSuccess] = useState('')
   const [cooldownUntil, setCooldownUntil] = useState(0)
   const [cooldownNow, setCooldownNow] = useState(() => Date.now())
+  const [answerCooldownUntil, setAnswerCooldownUntil] = useState(0)
+  const [answerCooldownNow, setAnswerCooldownNow] = useState(() => Date.now())
   const [answerDrafts, setAnswerDrafts] = useState({})
   const [expandedAnswerQuestionId, setExpandedAnswerQuestionId] = useState('')
   const [sendingAnswerQuestionId, setSendingAnswerQuestionId] = useState('')
   const [answerError, setAnswerError] = useState('')
-  const [answerSuccess, setAnswerSuccess] = useState('')
   const [isComposerCompact, setIsComposerCompact] = useState(false)
   const actorId = user?.uid || participantId || ''
   const isSessionOpen = session?.isAcceptingQuestions !== false
@@ -144,16 +146,6 @@ export default function Participant({ user, session }) {
   }, [questionSuccess])
 
   useEffect(() => {
-    if (!answerSuccess) return undefined
-
-    const timeoutId = window.setTimeout(() => {
-      setAnswerSuccess('')
-    }, 5000)
-
-    return () => window.clearTimeout(timeoutId)
-  }, [answerSuccess])
-
-  useEffect(() => {
     if (cooldownUntil <= Date.now()) return undefined
 
     const intervalId = window.setInterval(() => {
@@ -168,6 +160,22 @@ export default function Participant({ user, session }) {
       setCooldownUntil(0)
     }
   }, [cooldownNow, cooldownUntil])
+
+  useEffect(() => {
+    if (answerCooldownUntil <= Date.now()) return undefined
+
+    const intervalId = window.setInterval(() => {
+      setAnswerCooldownNow(Date.now())
+    }, 1000)
+
+    return () => window.clearInterval(intervalId)
+  }, [answerCooldownUntil])
+
+  useEffect(() => {
+    if (answerCooldownUntil > 0 && answerCooldownNow >= answerCooldownUntil) {
+      setAnswerCooldownUntil(0)
+    }
+  }, [answerCooldownNow, answerCooldownUntil])
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined
@@ -202,6 +210,7 @@ export default function Participant({ user, session }) {
   const requiresAffiliationDetail = REQUIRES_AFFILIATION_DETAIL.has(selectedAffiliation)
 
   const cooldownSeconds = Math.max(0, Math.ceil((cooldownUntil - cooldownNow) / 1000))
+  const answerCooldownSeconds = Math.max(0, Math.ceil((answerCooldownUntil - answerCooldownNow) / 1000))
 
   const handleSubmitQuestion = async (event) => {
     event.preventDefault()
@@ -269,9 +278,14 @@ export default function Participant({ user, session }) {
     const answerText = (answerDrafts[questionId] || '').trim()
     if (!answerText) return
     if (sendingAnswerQuestionId === questionId) return
+    if (answerCooldownSeconds > 0) {
+      setAnswerError(`Puedes enviar otra respuesta en ${answerCooldownSeconds}s.`)
+      setQuestionSuccess('')
+      return
+    }
     if (!actorId) {
       setAnswerError('No se pudo identificar tu usuario para responder.')
-      setAnswerSuccess('')
+      setQuestionSuccess('')
       return
     }
 
@@ -292,10 +306,11 @@ export default function Participant({ user, session }) {
         [questionId]: '',
       }))
       setExpandedAnswerQuestionId('')
-      setAnswerSuccess('Tu respuesta se envió y quedará visible cuando moderación la apruebe.')
+      setAnswerCooldownUntil(Date.now() + 5000)
+      setQuestionSuccess('Tu respuesta se envió y quedará visible cuando moderación la apruebe.')
     } catch (error) {
       setAnswerError(error.message || 'No se pudo enviar tu respuesta.')
-      setAnswerSuccess('')
+      setQuestionSuccess('')
     } finally {
       setSendingAnswerQuestionId('')
     }
@@ -325,6 +340,11 @@ export default function Participant({ user, session }) {
       return
     }
 
+    if (String(question.userId || '').trim() === String(actorId || '').trim()) {
+      setQuestionError('No puedes sumarte a tu propia pregunta.')
+      return
+    }
+
     try {
       await toggleVote({
         questionId: question.id,
@@ -332,6 +352,16 @@ export default function Participant({ user, session }) {
       })
     } catch (error) {
       setQuestionError(error.message || 'No se pudo registrar tu voto.')
+    }
+  }
+
+  const handleSelectAffiliation = (option) => {
+    setSelectedAffiliation(option)
+    setProfileError('')
+    setIsAffiliationPickerOpen(false)
+
+    if (!REQUIRES_AFFILIATION_DETAIL.has(option)) {
+      setAffiliationDetail('')
     }
   }
 
@@ -370,6 +400,14 @@ export default function Participant({ user, session }) {
 
     setMyName(trimmedName)
     setIsNameSet(true)
+  }
+
+  const handleReturnToTop = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+    setExpandedAnswerQuestionId('')
+    setAnswerError('')
   }
 
   if (!hasSessionAccess) {
@@ -432,7 +470,7 @@ export default function Participant({ user, session }) {
           <p className="text-sm md:text-base font-semibold mb-6 text-[#3f2abe]">
             Ingresa tu nombre y selecciona tu área para participar
           </p>
-          <form onSubmit={handleEnterParticipantRoom}>
+          <form onSubmit={handleEnterParticipantRoom} className="text-left">
             <label htmlFor="participant-name" className="mb-1 block text-xs font-bold text-[#3f2abe]">
               Tu nombre para participar
             </label>
@@ -448,43 +486,63 @@ export default function Participant({ user, session }) {
               className="h-12 md:h-14 w-full rounded-full bg-[#e6f2fa] px-5 text-center text-sm md:text-base font-medium text-[#3f2abe] placeholder:text-[#3f2abe] outline-none mb-4"
             />
 
-            <label htmlFor="participant-affiliation-search" className="mb-1 block text-xs font-bold text-[#3f2abe] text-left">
-              Buscar área o institución
-            </label>
-            <input
-              id="participant-affiliation-search"
-              type="text"
-              value={affiliationSearch}
-              onChange={(event) => setAffiliationSearch(event.target.value)}
-              placeholder="Busca en la lista"
-              className="h-11 w-full rounded-full bg-[#e6f2fa] px-4 text-sm font-medium text-[#3f2abe] placeholder:text-[#3f2abe] outline-none mb-3"
-            />
-
-            <label htmlFor="participant-affiliation" className="mb-1 block text-xs font-bold text-[#3f2abe] text-left">
+            <label className="mb-1 block text-xs font-bold text-[#3f2abe]">
               Selecciona tu área o institución
             </label>
-            <select
-              id="participant-affiliation"
-              value={selectedAffiliation}
-              onChange={(event) => {
-                setSelectedAffiliation(event.target.value)
-                setProfileError('')
-              }}
-              size={7}
-              className="w-full rounded-2xl bg-[#e6f2fa] p-3 text-sm font-medium text-[#3f2abe] outline-none mb-3"
+            <button
+              type="button"
+              onClick={() => setIsAffiliationPickerOpen((previous) => !previous)}
+              aria-expanded={isAffiliationPickerOpen}
+              className="surface-raised mb-3 flex h-11 w-full items-center justify-between rounded-full px-4 text-sm font-semibold text-[#3f2abe] shadow-sm"
             >
-              {filteredAffiliations.length > 0 ? (
-                filteredAffiliations.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))
-              ) : (
-                <option value="" disabled>
-                  Sin coincidencias para tu búsqueda
-                </option>
-              )}
-            </select>
+              <span className="truncate">
+                {selectedAffiliation || 'Pulsa para abrir la lista'}
+              </span>
+              <span className="ml-3 text-xs font-extrabold">{isAffiliationPickerOpen ? 'Cerrar' : 'Abrir'}</span>
+            </button>
+
+            {isAffiliationPickerOpen && (
+              <div className="surface-raised mb-3 rounded-2xl p-3 shadow-sm">
+                <label htmlFor="participant-affiliation-search" className="mb-1 block text-xs font-bold text-[#3f2abe]">
+                  Buscar área o institución
+                </label>
+                <input
+                  id="participant-affiliation-search"
+                  type="text"
+                  value={affiliationSearch}
+                  onChange={(event) => setAffiliationSearch(event.target.value)}
+                  placeholder="Busca en la lista"
+                  className="h-10 w-full rounded-full bg-[#e6f2fa] px-4 text-sm font-medium text-[#3f2abe] placeholder:text-[#3f2abe] outline-none"
+                />
+
+                <div className="mt-2 max-h-52 overflow-y-auto rounded-xl border border-[#64a2cc] bg-[#e6f2fa] p-2">
+                  {filteredAffiliations.length > 0 ? (
+                    filteredAffiliations.map((option) => {
+                      const isSelected = selectedAffiliation === option
+
+                      return (
+                        <button
+                          key={option}
+                          type="button"
+                          onClick={() => handleSelectAffiliation(option)}
+                          className={`mb-1 flex w-full items-center rounded-lg px-3 py-2 text-left text-sm font-semibold transition-colors ${
+                            isSelected
+                              ? 'bg-[#3f2abe] text-[#e6f2fa]'
+                              : 'text-[#3f2abe] hover:bg-[#d9ecf8]'
+                          }`}
+                        >
+                          {option}
+                        </button>
+                      )
+                    })
+                  ) : (
+                    <p className="px-2 py-3 text-sm font-semibold text-[#3f2abe]">
+                      Sin coincidencias para tu búsqueda.
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
 
             {requiresAffiliationDetail && (
               <>
@@ -508,7 +566,7 @@ export default function Participant({ user, session }) {
             )}
 
             {profileError && (
-              <p role="alert" className="alert-critical mb-3 break-words text-sm">
+              <p role="alert" className="alert-critical mb-3 break-words text-sm text-left">
                 {profileError}
               </p>
             )}
@@ -557,13 +615,13 @@ export default function Participant({ user, session }) {
             </p>
           )}
 
-          {answerSuccess && (
+          {answerCooldownSeconds > 0 && (
             <p
               role="status"
               aria-live="polite"
-              className="alert-success mt-2 break-words text-sm"
+              className="alert-info mt-2 break-words text-sm"
             >
-              {answerSuccess}
+              Puedes enviar otra respuesta en {answerCooldownSeconds}s.
             </p>
           )}
 
@@ -634,11 +692,15 @@ export default function Participant({ user, session }) {
                     <button
                       type="button"
                       onClick={() => handleToggleVote(question)}
+                      disabled={String(question.userId || '').trim() === String(actorId || '').trim()}
                       className={`h-10 min-w-[195px] rounded-full border border-[#64a2cc] px-3 text-xs font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 inline-flex items-center justify-center gap-2 ${
-                        hasVoted
+                        String(question.userId || '').trim() === String(actorId || '').trim()
+                          ? 'bg-[#d9ecf8] text-[#3f2abe] opacity-70 cursor-not-allowed'
+                          : hasVoted
                           ? 'bg-[#39d3b5] text-[#3f2abe]'
                           : 'surface-raised text-[#3f2abe]'
                       }`}
+                      title={String(question.userId || '').trim() === String(actorId || '').trim() ? 'No puedes sumarte a tu propia pregunta' : undefined}
                     >
                       <Hand size={14} />
                       Me sumo a la pregunta
@@ -738,7 +800,11 @@ export default function Participant({ user, session }) {
                     />
                     <button
                       type="submit"
-                      disabled={sendingAnswerQuestionId === question.id || !(answerDrafts[question.id] || '').trim()}
+                      disabled={
+                        sendingAnswerQuestionId === question.id ||
+                        answerCooldownSeconds > 0 ||
+                        !(answerDrafts[question.id] || '').trim()
+                      }
                       className="h-11 shrink-0 rounded-full bg-[#3f2abe] px-4 text-sm font-bold text-[#e6f2fa] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 disabled:opacity-60"
                     >
                       Responder
@@ -752,9 +818,13 @@ export default function Participant({ user, session }) {
         </section>
 
         <div className="flex flex-wrap gap-3">
-          <Link to="/" className="h-11 inline-flex items-center justify-center rounded-full bg-[#e6f2fa] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95">
-            Volver
-          </Link>
+          <button
+            type="button"
+            onClick={handleReturnToTop}
+            className="h-11 inline-flex items-center justify-center rounded-full bg-[#e6f2fa] px-6 text-sm font-bold text-[#3f2abe] shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95"
+          >
+            Volver arriba
+          </button>
         </div>
       </section>
 

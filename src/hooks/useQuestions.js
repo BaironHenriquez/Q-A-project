@@ -256,6 +256,11 @@ export function useQuestions(sessionId) {
         }
 
         const data = qSnap.data()
+        const questionAuthorId = normalizeActorId(data.userId)
+        if (questionAuthorId === actorId) {
+          throw new Error('No puedes sumarte a tu propia pregunta')
+        }
+
         const uniqueVoters = normalizeVoters(data.upvotedBy)
         const hasVoted = uniqueVoters.includes(actorId)
 
