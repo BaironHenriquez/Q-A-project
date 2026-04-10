@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { MessageSquare, SendHorizontal, Sparkles, ThumbsUp } from 'lucide-react'
+import { Hand, MessageSquare, SendHorizontal, Sparkles } from 'lucide-react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useQuestions } from '../hooks/useQuestions'
 
@@ -264,7 +264,7 @@ export default function Participant({ user, session }) {
 
   const handleToggleVote = async (question) => {
     if (!actorId) {
-      setQuestionError('No se pudo identificar tu usuario para registrar el +1.')
+      setQuestionError('No se pudo identificar tu usuario para registrar tu me sumo.')
       return
     }
 
@@ -484,14 +484,14 @@ export default function Participant({ user, session }) {
                     <button
                       type="button"
                       onClick={() => handleToggleVote(question)}
-                      className={`h-10 w-[130px] rounded-full border border-[#64a2cc] px-3 text-xs font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 inline-flex items-center justify-center gap-2 ${
+                      className={`h-10 min-w-[195px] rounded-full border border-[#64a2cc] px-3 text-xs font-bold shadow-sm transition-all transition-transform hover:opacity-90 hover:shadow-md active:scale-95 inline-flex items-center justify-center gap-2 ${
                         hasVoted
                           ? 'bg-[#39d3b5] text-[#3f2abe]'
                           : 'surface-raised text-[#3f2abe]'
                       }`}
                     >
-                      <ThumbsUp size={14} />
-                      {hasVoted ? 'Me resto' : 'Me sumo'}
+                      <Hand size={14} />
+                      Me sumo a la pregunta
                     </button>
 
                     <button
