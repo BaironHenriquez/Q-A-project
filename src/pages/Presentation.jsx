@@ -117,7 +117,7 @@ export default function Presentation({ session }) {
                               <p className="text-xs font-bold text-[#3f2abe] break-words">
                                 {latestApprovedAnswer.author || 'Anónimo'}
                               </p>
-                              <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words clamp-3">
+                              <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words">
                                 {latestApprovedAnswer.content}
                               </p>
                             </div>
@@ -181,7 +181,7 @@ export default function Presentation({ session }) {
                               <p className="text-xs font-bold text-[#3f2abe] break-words">
                                 {latestApprovedAnswer.author || 'Anónimo'}
                               </p>
-                              <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words clamp-2">
+                              <p className="mt-1 text-sm font-semibold text-[#3f2abe] break-words">
                                 {latestApprovedAnswer.content}
                               </p>
                             </div>
