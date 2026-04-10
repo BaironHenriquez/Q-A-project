@@ -161,7 +161,7 @@ export default function Presentation({ session }) {
                           Fijada
                         </span>
                       )}
-                      <p className="type-card-title mt-2 text-[#3f2abe] break-words clamp-2">
+                      <p className="type-card-title mt-2 text-[#3f2abe] break-words">
                         <span className="font-black">{question.author || 'Anónimo'}:</span>{' '}
                         {question.content}
                       </p>
